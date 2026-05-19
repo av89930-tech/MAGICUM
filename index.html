@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>MAGICUM | Digital Alchemist Atelier</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+    :root { --gold: #C9A96E; --dark: #0A0A08; --dark-card: #0D0D0B; --border-dim: #1F1F1C; --text-light: #D1CDC7; }
+    body { font-family: 'Jost', sans-serif; background-color: var(--dark); color: var(--text-light); overflow-x: hidden; cursor: crosshair; }
+    .cursor-glow { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(201, 169, 110, 0.12) 0%, transparent 45%); z-index: 999; }
+    .site-badge { position: absolute; top: 24px; left: 0; right: 0; text-align: center; font-size: 0.7rem; letter-spacing: 6px; opacity: 0.5; text-transform: uppercase; z-index: 20; }
+    .hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; text-align: center; padding: 0 20px; }
+    .hero-bg { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(10,10,8,0.85), rgba(10,10,8,0.9)), url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2000') center/cover no-repeat; z-index: -2; transition: transform 0.15s ease-out; }
+    .logo { color: var(--gold); font-size: 3rem; letter-spacing: 18px; text-transform: uppercase; font-weight: 300; margin-bottom: 1rem; }
+    .logo span { font-weight: 700; }
+    .btn-alchemy { background: transparent; border: 1.5px solid var(--gold); color: var(--gold); padding: 14px 42px; font-size: 0.8rem; letter-spacing: 5px; cursor: pointer; transition: 0.4s ease; text-transform: uppercase; margin-top: 2rem; }
+    .btn-alchemy:hover { background: var(--gold); color: var(--dark); box-shadow: 0 0 28px rgba(201,169,110,0.5); }
+    .laboratory { padding: 80px 20px 120px; background: #070705; }
+    .cards-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 40px; max-width: 1200px; margin: 0 auto; }
+    .card { background: var(--dark-card); border: 1px solid var(--border-dim); padding: 28px 24px; width: 380px; border-radius: 4px; transition: 0.6s; opacity: 0; transform: translateY(30px); }
+    .card.reveal { opacity: 1; transform: translateY(0); }
+    .preview-box { height: 240px; background: #000; border: 1px solid #1e1e1a; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; overflow: hidden; }
+    .preview-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
+    .fabric-catalog { background: #030302; border: 1px solid #1f1f1c; padding: 12px; max-height: 260px; overflow-y: auto; }
+    .fabric-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .fabric-item { cursor: pointer; border: 1px solid transparent; transition: 0.2s; text-align: center; }
+    .fabric-item img { width: 100%; aspect-ratio: 1; object-fit: cover; background: #222; }
+    .fabric-item span { display: block; font-size: 0.6rem; letter-spacing: 1px; margin-top: 6px; opacity: 0.7; }
+    .fabric-item.active { border-color: var(--gold); box-shadow: 0 0 12px rgba(201,169,110,0.4); }
+    .api-area { max-width: 460px; margin: 60px auto 0; text-align: center; }
+    .status-msg { text-align: center; margin-top: 24px; font-size: 0.75rem; letter-spacing: 1px; color: #b8b4a6; padding: 12px; background: #12120f; border-radius: 60px; }
+    .error { color: #e0a0a0; border-left: 3px solid #e0a0a0; background: #2a1a1a; }
+    .success { color: #a5d6a5; border-left: 3px solid #a5d6a5; }
+    .result-area { display: none; max-width: 880px; margin: 60px auto 0; padding: 0 20px; }
+    .slider-compare { position: relative; width: 100%; overflow: hidden; border: 1px solid var(--gold); border-radius: 8px; background: #000; user-select: none; }
+    .slider-img { width: 100%; display: block; pointer-events: none; }
+    .slider-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; }
+    .slider-overlay img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; pointer-events: none; }
+    .slider-handle { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--gold); cursor: ew-resize; z-index: 15; box-shadow: 0 0 10px var(--gold); }
+    .slider-handle::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 38px; height: 38px; background: #0D0D0B; border: 1.5px solid var(--gold); border-radius: 50%; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23C9A96E' viewBox='0 0 16 16'%3E%3Cpath d='M8 15a.5.5 0 0 0 .5-.5V9h5.5a.5.5 0 0 0 0-1H8.5V1.5a.5.5 0 0 0-1 0V8H2a.5.5 0 0 0 0 1h5.5v5.5a.5.5 0 0 0 .5.5z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: center; background-size: 18px; }
+    footer { text-align: center; padding: 80px 20px 40px; font-size: 0.6rem; letter-spacing: 4px; opacity: 0.3; }
+    @media (max-width: 860px) { .card { width: 100%; max-width: 420px; } }
+  </style>
+</head>
+<body>
+<div class="cursor-glow"></div>
+<div class="site-badge">⚜️ MAGICUM-SITE ⚜️</div>
+
+<section class="hero">
+  <div class="hero-bg" id="parallaxBg"></div>
+  <div class="logo">MAGIC<span>UM</span></div>
+  <p style="letter-spacing: 10px; opacity: 0.6; font-size: 0.7rem;">DIGITAL ALCHEMY ATELIER</p>
+  <button class="btn-alchemy" onclick="document.getElementById('lab').scrollIntoView({behavior:'smooth'})">ПОЧАТИ РИТУАЛ</button>
+  <div style="position: absolute; bottom: 32px; font-size: 0.55rem; letter-spacing: 8px; opacity: 0.3;">SCROLL ↓</div>
+</section>
+
+<section id="lab" class="laboratory">
+  <div class="cards-container">
+    <div class="card" id="card1">
+      <div style="font-size: 0.65rem; opacity: 0.5; letter-spacing: 3px; margin-bottom: 20px;">I. ВТІЛЕННЯ ФОРМИ</div>
+      <div id="furniturePreview" class="preview-box"><span style="opacity: 0.3;">⬇️ ОЧІКУВАННЯ ФОТО</span></div>
+      <button class="btn-alchemy" style="padding: 8px 20px; font-size: 0.7rem;" onclick="document.getElementById('furnitureInput').click()">ЗАВАНТАЖИТИ</button>
+      <input type="file" id="furnitureInput" accept="image/jpeg,image/png,image/webp" style="display: none;">
+    </div>
+    <div class="card" id="card2">
+      <div style="font-size: 0.65rem; opacity: 0.5; letter-spacing: 3px; margin-bottom: 20px;">II. ОБРАННЯ ЕСЕНЦІЇ</div>
+      <div class="fabric-catalog"><div class="fabric-grid" id="fabricGrid"></div></div>
+      <p id="selectedFabricLabel" style="font-size: 0.65rem; color: var(--gold); margin-top: 16px; letter-spacing: 1px;">❖ МАТЕРІЯ НЕ ОБРАНА</p>
+    </div>
+  </div>
+  <div class="api-area">
+    <button id="generateBtn" class="btn-alchemy" style="width: 100%; margin-top: 36px;">🔮 ПРОЯВИТИ ОБРАЗ</button>
+  </div>
+  <div id="statusMessage" class="status-msg">⛁ очікування завантажень</div>
+  <div id="resultArea" class="result-area">
+    <div class="slider-compare" id="sliderCompare">
+      <img id="sourceImg" class="slider-img" alt="original">
+      <div class="slider-overlay" id="sliderOverlay"><img id="outputImg" alt="result"></div>
+      <div class="slider-handle" id="sliderHandle"></div>
+    </div>
+    <div style="text-align: center; font-size: 0.6rem; margin-top: 12px; opacity: 0.6;">⇠ перетягніть: оригінал ⇢ візуалізація</div>
+  </div>
+</section>
+<footer>M M X X V I | MAGICUM ATELIER | ART OF TRANSFORMATION</footer>
+
+<script>
+  let furnitureBase64 = null, furnitureMime = null, fabricBase64 = null, fabricMime = null, fabricName = "";
+  const furnitureInput = document.getElementById('furnitureInput');
+  const furniturePreview = document.getElementById('furniturePreview');
+  const generateBtn = document.getElementById('generateBtn');
+  const statusDiv = document.getElementById('statusMessage');
+  const resultArea = document.getElementById('resultArea');
+  const sourceImg = document.getElementById('sourceImg');
+  const outputImg = document.getElementById('outputImg');
+  const selectedFabricSpan = document.getElementById('selectedFabricLabel');
+
+  const fabricPresets = [
+    { name: "ЗОЛОТИЙ ОКСАМИТ", color1: "#C9A96E", color2: "#B58B4B", pattern: "diagonal" },
+    { name: "СМАРАГДОВИЙ ШОВК", color1: "#1B4D3E", color2: "#2E7D5E", pattern: "cross" },
+    { name: "ГРАФІТОВИЙ ЛЬОН", color1: "#3D3D3D", color2: "#5A5A5A", pattern: "dots" },
+    { name: "ПОЛУНОЧНА СИНЬ", color1: "#1E2A5E", color2: "#3B4B9A", pattern: "stripes" },
+    { name: "КОРОЛІВСЬКИЙ БОРДО", color1: "#6B1E3D", color2: "#8E2B4F", pattern: "zigzag" },
+    { name: "СРІБНИЙ ШЕВРОН", color1: "#A0A5B0", color2: "#C9CDD6", pattern: "chevron" }
+  ];
+
+  function generateFabricSVG(preset) {
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+      <rect width="100" height="100" fill="${preset.color1}"/>
+      ${preset.pattern === "diagonal" ? `<path d="M0,0 L100,100 M100,0 L0,100" stroke="${preset.color2}" stroke-width="4"/>` : ''}
+      ${preset.pattern === "cross" ? `<line x1="20" y1="20" x2="80" y2="80" stroke="${preset.color2}" stroke-width="5"/><line x1="80" y1="20" x2="20" y2="80" stroke="${preset.color2}" stroke-width="5"/>` : ''}
+      ${preset.pattern === "dots" ? Array(25).fill().map((_,i) => `<circle cx="${10 + (i%5)*20}" cy="${10 + Math.floor(i/5)*20}" r="4" fill="${preset.color2}"/>`).join('') : ''}
+      ${preset.pattern === "stripes" ? Array(5).fill().map((_,i) => `<rect x="${i*20}" y="0" width="10" height="100" fill="${preset.color2}"/>`).join('') : ''}
+      ${preset.pattern === "zigzag" ? `<polygon points="0,50 20,30 40,50 60,30 80,50 100,30 100,70 80,50 60,70 40,50 20,70 0,50" fill="${preset.color2}"/>` : ''}
+      ${preset.pattern === "chevron" ? Array(4).fill().map((_,i) => `<polyline points="${i*25},0 ${i*25+12},15 ${i*25+25},0" stroke="${preset.color2}" fill="none" stroke-width="4"/>`).join('') : ''}
+    </svg>`;
+    return "data:image/svg+xml," + encodeURIComponent(svg);
+  }
+
+  const fabricGrid = document.getElementById('fabricGrid');
+  fabricPresets.forEach((preset) => {
+    const imgSrc = generateFabricSVG(preset);
+    const div = document.createElement('div');
+    div.className = 'fabric-item';
+    div.setAttribute('data-name', preset.name);
+    div.innerHTML = `<img src="${imgSrc}" alt="${preset.name}"><span>${preset.name}</span>`;
+    div.addEventListener('click', () => {
+      document.querySelectorAll('.fabric-item').forEach(el => el.classList.remove('active'));
+      div.classList.add('active');
+      fabricName = preset.name;
+      selectedFabricSpan.innerText = `✓ ${preset.name}`;
+      fetch(imgSrc).then(res => res.text()).then(svgText => {
+        fabricBase64 = btoa(unescape(encodeURIComponent(svgText)));
+        fabricMime = "image/svg+xml";
+      });
+    });
+    fabricGrid.appendChild(div);
+  });
+
+  furnitureInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const full = ev.target.result;
+      furnitureBase64 = full.split(',')[1];
+      furnitureMime = file.type;
+      furniturePreview.innerHTML = `<img src="${full}">`;
+      sourceImg.src = full;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  generateBtn.addEventListener('click', async () => {
+    if (!furnitureBase64) { statusDiv.innerText = "❌ Завантажте фото меблів"; statusDiv.className = "status-msg error"; return; }
+    if (!fabricBase64) { statusDiv.innerText = "❌ Оберіть тканину з каталогу"; statusDiv.className = "status-msg error"; return; }
+    generateBtn.disabled = true;
+    statusDiv.innerText = "✨ Алхімія запущена...";
+    statusDiv.className = "status-msg";
+    try {
+      const response = await fetch('/api/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ furnitureBase64, furnitureMime, fabricBase64, fabricMime })
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) throw new Error(data.error || "Помилка");
+      const resultUrl = `data:${data.mimeType || 'image/jpeg'};base64,${data.imageBase64}`;
+      outputImg.src = resultUrl;
+      resultArea.style.display = 'block';
+      initSlider();
+      statusDiv.innerText = "✅ Образ проявлено! Порівняйте оригінал і візуалізацію.";
+      statusDiv.className = "status-msg success";
+    } catch (err) {
+      statusDiv.innerText = `❌ Помилка: ${err.message}`;
+      statusDiv.className = "status-msg error";
+    } finally { generateBtn.disabled = false; }
+  });
+
+  function initSlider() {
+    const container = document.getElementById('sliderCompare');
+    const overlay = document.getElementById('sliderOverlay');
+    const handle = document.getElementById('sliderHandle');
+    if (!container) return;
+    let drag = false;
+    const update = (clientX) => {
+      const rect = container.getBoundingClientRect();
+      let x = clientX - rect.left;
+      x = Math.min(Math.max(x, 0), rect.width);
+      const percent = (x / rect.width) * 100;
+      handle.style.left = `${percent}%`;
+      overlay.style.clipPath = `inset(0 ${100 - percent}% 0 0)`;
+    };
+    const onMove = (e) => { if (drag) update(e.clientX); };
+    const onTouch = (e) => { if (drag && e.touches[0]) update(e.touches[0].clientX); };
+    handle.addEventListener('mousedown', () => drag = true);
+    window.addEventListener('mouseup', () => drag = false);
+    window.addEventListener('mousemove', onMove);
+    handle.addEventListener('touchstart', () => drag = true);
+    window.addEventListener('touchend', () => drag = false);
+    window.addEventListener('touchmove', onTouch);
+    handle.style.left = "50%";
+    overlay.style.clipPath = "inset(0 50% 0 0)";
+  }
+
+  window.addEventListener('mousemove', (e) => {
+    document.body.style.setProperty('--x', e.clientX + 'px');
+    document.body.style.setProperty('--y', e.clientY + 'px');
+    const bg = document.getElementById('parallaxBg');
+    if (bg) bg.style.transform = `translate(${(e.clientX - window.innerWidth/2) * 0.01}px, ${(e.clientY - window.innerHeight/2) * 0.01}px) scale(1.08)`;
+  });
+  new IntersectionObserver((entries) => entries.forEach(e => e.isIntersecting && e.target.classList.add('reveal')), { threshold: 0.2 }).observe(document.getElementById('card1'));
+  new IntersectionObserver((entries) => entries.forEach(e => e.isIntersecting && e.target.classList.add('reveal')), { threshold: 0.2 }).observe(document.getElementById('card2'));
+</script>
+</body>
+</html>
