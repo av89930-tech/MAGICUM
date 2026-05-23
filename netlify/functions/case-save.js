@@ -52,6 +52,10 @@ exports.handler = async (event) => {
     if (!isValidBase64(beforeB64) || !isValidBase64(afterB64)) {
       return { statusCode: 400, body: JSON.stringify({ success: false, error: 'Невалідні дані зображення' }) };
     }
+    const MAX_IMAGE_B64 = 500 * 1024; // 500 KB (~375 KB raw)
+    if (beforeB64.length > MAX_IMAGE_B64 || afterB64.length > MAX_IMAGE_B64) {
+      return { statusCode: 413, body: JSON.stringify({ success: false, error: 'Зображення занадто велике. Максимум 500 КБ.' }) };
+    }
 
     const now = new Date();
     const dateStr = now.toISOString().slice(0, 10).replace(/-/g, '');
