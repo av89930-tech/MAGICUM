@@ -83,11 +83,36 @@
     </div>
     <div style="text-align: center; font-size: 0.6rem; margin-top: 12px; opacity: 0.6;">⇠ перетягніть: оригінал ⇢ візуалізація</div>
   </div>
+  <div id="saveArea" style="display:none; max-width: 880px; margin: 32px auto 0; padding: 0 20px;">
+    <div style="background: var(--dark-card); border: 1px solid var(--border-dim); padding: 28px 24px; border-radius: 4px;">
+      <div style="font-size: 0.65rem; letter-spacing: 3px; opacity: 0.5; margin-bottom: 20px;">✦ ЗБЕРЕГТИ КЕЙ</div>
+      <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 20px;">
+        <div style="flex: 1; min-width: 140px;">
+          <label style="font-size: 0.6rem; letter-spacing: 2px; opacity: 0.6; display: block; margin-bottom: 8px;">ТИП МЕБЛІВ</label>
+          <select id="furnitureTypeInput" style="width:100%;background:#030302;border:1px solid var(--border-dim);color:var(--text-light);padding:10px;font-family:'Jost',sans-serif;font-size:0.75rem;cursor:pointer;">
+            <option value="диван">Диван</option>
+            <option value="крісло">Крісло</option>
+            <option value="пуф">Пуф</option>
+            <option value="стілець">Стілець</option>
+            <option value="кушетка">Кушетка</option>
+            <option value="інше">Інше</option>
+          </select>
+        </div>
+        <div style="flex: 1; min-width: 140px;">
+          <label style="font-size: 0.6rem; letter-spacing: 2px; opacity: 0.6; display: block; margin-bottom: 8px;">МІСТО (НЕ ОБОВʼЯЗКОВО)</label>
+          <input id="cityInput" type="text" placeholder="Київ" maxlength="50" style="width:100%;background:#030302;border:1px solid var(--border-dim);color:var(--text-light);padding:10px;font-family:'Jost',sans-serif;font-size:0.75rem;">
+        </div>
+      </div>
+      <button id="saveBtn" class="btn-alchemy" style="width:100%;">ЗБЕРЕГТИ ТА ОТРИМАТИ ПОСИЛАННЯ</button>
+      <div id="saveStatus" style="display:none; margin-top:16px;"></div>
+    </div>
+  </div>
 </section>
 <footer>M M X X V I | MAGICUM ATELIER | ART OF TRANSFORMATION</footer>
 
 <script>
   let furnitureBase64 = null, furnitureMime = null, fabricBase64 = null, fabricMime = null, fabricName = "";
+  let lastGeneratedB64 = null, lastGeneratedMime = null;
   const furnitureInput = document.getElementById('furnitureInput');
   const furniturePreview = document.getElementById('furniturePreview');
   const generateBtn = document.getElementById('generateBtn');
@@ -160,7 +185,7 @@
     statusDiv.innerText = "✨ Алхімія запущена...";
     statusDiv.className = "status-msg";
     try {
-      const response = await fetch('/api/generate', {
+      const response = await fetch('/.netlify/functions/ritual', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ furnitureBase64, furnitureMime, fabricBase64, fabricMime })
@@ -169,7 +194,11 @@
       if (!response.ok || !data.success) throw new Error(data.error || "Помилка");
       const resultUrl = `data:${data.mimeType || 'image/jpeg'};base64,${data.imageBase64}`;
       outputImg.src = resultUrl;
+      lastGeneratedB64 = data.imageBase64;
+      lastGeneratedMime = data.mimeType || 'image/jpeg';
       resultArea.style.display = 'block';
+      document.getElementById('saveArea').style.display = 'block';
+      document.getElementById('saveStatus').style.display = 'none';
       initSlider();
       statusDiv.innerText = "✅ Образ проявлено! Порівняйте оригінал і візуалізацію.";
       statusDiv.className = "status-msg success";
@@ -213,6 +242,58 @@
   });
   new IntersectionObserver((entries) => entries.forEach(e => e.isIntersecting && e.target.classList.add('reveal')), { threshold: 0.2 }).observe(document.getElementById('card1'));
   new IntersectionObserver((entries) => entries.forEach(e => e.isIntersecting && e.target.classList.add('reveal')), { threshold: 0.2 }).observe(document.getElementById('card2'));
+
+  function compressImage(base64, mime, maxW = 800, maxH = 600, quality = 0.8) {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let { width, height } = img;
+        const ratio = Math.min(maxW / width, maxH / height, 1);
+        canvas.width = Math.round(width * ratio);
+        canvas.height = Math.round(height * ratio);
+        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL('image/jpeg', quality).split(',')[1]);
+      };
+      img.onerror = () => resolve(base64);
+      img.src = `data:${mime};base64,${base64}`;
+    });
+  }
+
+  document.getElementById('saveBtn').addEventListener('click', async () => {
+    if (!lastGeneratedB64 || !furnitureBase64) return;
+    const saveBtn = document.getElementById('saveBtn');
+    const saveStatus = document.getElementById('saveStatus');
+    saveBtn.disabled = true;
+    saveStatus.style.display = 'block';
+    saveStatus.innerHTML = '<span style="opacity:0.6;font-size:0.75rem;letter-spacing:1px;">⏳ зберігаємо...</span>';
+    try {
+      const [beforeCompressed, afterCompressed] = await Promise.all([
+        compressImage(furnitureBase64, furnitureMime),
+        compressImage(lastGeneratedB64, lastGeneratedMime)
+      ]);
+      const furnitureType = document.getElementById('furnitureTypeInput').value;
+      const city = document.getElementById('cityInput').value.trim();
+      const res = await fetch('/case-save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ furnitureType, fabricName, city, beforeB64: beforeCompressed, afterB64: afterCompressed })
+      });
+      const data = await res.json();
+      if (!data.success) throw new Error(data.error || 'Помилка збереження');
+      const caseUrl = window.location.origin + data.url;
+      saveStatus.innerHTML = `
+        <div style="color:#a5d6a5;font-size:0.75rem;margin-bottom:12px;letter-spacing:1px;">✅ Кейс збережено!</div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input readonly value="${caseUrl}" style="flex:1;background:#030302;border:1px solid var(--border-dim);color:var(--gold);padding:10px;font-size:0.65rem;font-family:'Jost',sans-serif;letter-spacing:1px;">
+          <button onclick="navigator.clipboard.writeText('${caseUrl}')" class="btn-alchemy" style="padding:10px 16px;font-size:0.6rem;white-space:nowrap;">COPY</button>
+        </div>
+        <div style="margin-top:10px;"><a href="${data.url}" target="_blank" style="color:var(--gold);font-size:0.65rem;letter-spacing:2px;">ВІДКРИТИ КЕЙС →</a></div>`;
+    } catch (err) {
+      saveStatus.innerHTML = `<span style="color:#e0a0a0;font-size:0.75rem;">❌ ${err.message}</span>`;
+      saveBtn.disabled = false;
+    }
+  });
 </script>
 </body>
 </html>

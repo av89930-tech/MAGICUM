@@ -1,0 +1,42 @@
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "18"
+
+[functions."ritual"]
+  timeout = 26
+
+[functions."case-save"]
+  timeout = 15
+
+[functions."case"]
+  timeout = 15
+
+[functions."case-image"]
+  timeout = 10
+
+[functions."cases-list"]
+  timeout = 10
+
+[[redirects]]
+  from = "/case/:slug"
+  to = "/.netlify/functions/case?slug=:slug"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/case-image"
+  to = "/.netlify/functions/case-image"
+  status = 200
+
+[[redirects]]
+  from = "/case-save"
+  to = "/.netlify/functions/case-save"
+  status = 200
+
+[[redirects]]
+  from = "/cases-list"
+  to = "/.netlify/functions/cases-list"
+  status = 200
