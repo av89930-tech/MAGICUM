@@ -40,3 +40,8 @@
   from = "/cases-list"
   to = "/.netlify/functions/cases-list"
   status = 200
+
+[[redirects]]
+  from = "/cabinet"
+  to = "/cabinet/index.html"
+  status = 200

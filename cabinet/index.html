@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Кабінет | MAGICUM</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    /* Cabinet-specific styles */
+    nav { padding: 24px 40px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-dim); }
+    .nav-logo { color: var(--gold); font-size: 1.2rem; letter-spacing: 10px; text-transform: uppercase; font-weight: 300; text-decoration: none; }
+    .nav-logo b { font-weight: 700; }
+    .nav-back { color: var(--text-light); text-decoration: none; font-size: 0.65rem; letter-spacing: 3px; opacity: 0.5; transition: opacity .3s; }
+    .nav-back:hover { opacity: 1; }
+
+    .cab-header { max-width: 1100px; margin: 0 auto; padding: 52px 24px 32px; }
+    .cab-header h1 { font-size: 1.5rem; font-weight: 200; letter-spacing: 8px; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
+    .cab-header p { font-size: 0.6rem; letter-spacing: 4px; opacity: 0.35; }
+
+    /* Tabs */
+    .cab-tabs { max-width: 1100px; margin: 0 auto; padding: 0 24px 40px; display: flex; gap: 0; border-bottom: 1px solid var(--border-dim); }
+    .cab-tab { background: transparent; border: none; color: var(--text-light); padding: 14px 28px; font-size: 0.6rem; letter-spacing: 3px; cursor: pointer; font-family: 'Jost', sans-serif; text-transform: uppercase; opacity: 0.4; transition: 0.2s; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+    .cab-tab:hover { opacity: 0.7; }
+    .cab-tab.active { opacity: 1; color: var(--gold); border-bottom-color: var(--gold); }
+
+    /* Content area */
+    .cab-content { max-width: 1100px; margin: 0 auto; padding: 40px 24px 100px; }
+    .cab-section { display: none; }
+    .cab-section.active { display: block; }
+
+    /* History */
+    .hist-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+    .hist-card { background: var(--dark-card); border: 1px solid var(--border-dim); border-radius: 4px; overflow: hidden; transition: border-color 0.3s; }
+    .hist-card:hover { border-color: rgba(201,169,110,0.3); }
+    .hist-thumb { width: 100%; aspect-ratio: 4/3; overflow: hidden; background: #111; }
+    .hist-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .hist-info { padding: 12px; }
+    .hist-fabric { font-size: 0.6rem; letter-spacing: 2px; color: var(--gold); margin-bottom: 4px; }
+    .hist-type { font-size: 0.65rem; opacity: 0.7; margin-bottom: 4px; }
+    .hist-date { font-size: 0.55rem; letter-spacing: 1px; opacity: 0.35; margin-bottom: 8px; }
+    .hist-link { font-size: 0.55rem; letter-spacing: 2px; color: var(--gold); text-decoration: none; opacity: 0.7; transition: opacity 0.2s; }
+    .hist-link:hover { opacity: 1; }
+
+    /* Favorites */
+    .fav-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 16px; }
+    .fav-card { background: var(--dark-card); border: 1px solid var(--border-dim); border-radius: 4px; overflow: hidden; position: relative; transition: border-color 0.3s; }
+    .fav-card:hover { border-color: rgba(201,169,110,0.3); }
+    .fav-card img { width: 100%; aspect-ratio: 1; display: block; object-fit: cover; }
+    .fav-card-info { padding: 8px 10px; }
+    .fav-card-name { font-size: 0.55rem; letter-spacing: 1px; opacity: 0.7; line-height: 1.4; }
+    .fav-remove { position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.75); border: none; color: #666; font-size: 0.65rem; cursor: pointer; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+    .fav-remove:hover { color: #e0a0a0; }
+
+    /* Profile */
+    .profile-form { max-width: 480px; }
+    .form-group { margin-bottom: 24px; }
+    .form-label { font-size: 0.6rem; letter-spacing: 3px; opacity: 0.5; display: block; margin-bottom: 10px; text-transform: uppercase; }
+    .form-input { width: 100%; background: #030302; border: 1px solid var(--border-dim); color: var(--text-light); padding: 12px 16px; font-family: 'Jost', sans-serif; font-size: 0.8rem; transition: border-color 0.2s; outline: none; }
+    .form-input:focus { border-color: rgba(201,169,110,0.4); }
+    .form-input::placeholder { opacity: 0.3; }
+    .profile-note { font-size: 0.6rem; letter-spacing: 1px; opacity: 0.35; margin-top: 8px; }
+    .prof-saved { font-size: 0.65rem; color: #a5d6a5; letter-spacing: 2px; margin-top: 16px; min-height: 20px; }
+
+    /* Empty state */
+    .empty-state { text-align: center; padding: 80px 20px; }
+    .empty-state p { font-size: 0.65rem; letter-spacing: 3px; opacity: 0.35; margin-bottom: 28px; }
+    .empty-link { color: var(--gold); text-decoration: none; font-size: 0.65rem; letter-spacing: 3px; border: 1px solid var(--gold); padding: 12px 28px; transition: 0.3s; }
+    .empty-link:hover { background: var(--gold); color: var(--dark); }
+
+    /* Section heading */
+    .section-label { font-size: 0.6rem; letter-spacing: 4px; opacity: 0.4; margin-bottom: 28px; text-transform: uppercase; }
+
+    /* Clear history button */
+    .clear-btn { background: transparent; border: 1px solid #2a2a26; color: var(--text-light); padding: 8px 20px; font-size: 0.55rem; letter-spacing: 2px; cursor: pointer; font-family: 'Jost', sans-serif; text-transform: uppercase; transition: 0.2s; margin-bottom: 28px; }
+    .clear-btn:hover { border-color: #e0a0a0; color: #e0a0a0; }
+
+    @media (max-width: 640px) {
+      nav { padding: 16px 20px; }
+      .cab-header { padding: 36px 16px 24px; }
+      .cab-tabs { padding: 0 16px 32px; }
+      .cab-tab { padding: 12px 16px; }
+      .cab-content { padding: 32px 16px 80px; }
+      .hist-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">MAGIC<b>UM</b></a>
+  <a href="/" class="nav-back">← ЛАБОРАТОРІЯ</a>
+</nav>
+
+<div class="cab-header">
+  <h1>Кабінет</h1>
+  <p>ОСОБИСТИЙ ПРОСТІР АЛХІМІКА</p>
+</div>
+
+<div class="cab-tabs">
+  <button class="cab-tab active" data-section="history">ЛІТОПИС ЧАРІВ</button>
+  <button class="cab-tab" data-section="wishes">АТЛАС БАЖАНЬ</button>
+  <button class="cab-tab" data-section="profile">ПЕЧАТКА ТВОРЦЯ</button>
+</div>
+
+<div class="cab-content">
+
+  <!-- Літопис Чарів -->
+  <div class="cab-section active" id="section-history">
+    <p class="section-label">Ваші згенеровані образи</p>
+    <div id="historyContainer"></div>
+  </div>
+
+  <!-- Атлас Бажань -->
+  <div class="cab-section" id="section-wishes">
+    <p class="section-label">Обрані тканини</p>
+    <div id="wishesContainer"></div>
+  </div>
+
+  <!-- Печатка Творця -->
+  <div class="cab-section" id="section-profile">
+    <p class="section-label">Ваші налаштування</p>
+    <div class="profile-form">
+      <div class="form-group">
+        <label class="form-label" for="profName">Ваше ім'я</label>
+        <input class="form-input" id="profName" type="text" placeholder="Майстер Алхімік" maxlength="60">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="profCity">Ваше місто</label>
+        <input class="form-input" id="profCity" type="text" placeholder="Київ" maxlength="50">
+        <p class="profile-note">Буде автоматично підставлятись при збереженні кейсу</p>
+      </div>
+      <button id="saveProfile" class="btn-alchemy" style="padding: 12px 36px; font-size: 0.75rem;">ЗБЕРЕГТИ</button>
+      <p class="prof-saved" id="profStatus"></p>
+    </div>
+  </div>
+
+</div>
+
+<footer>M M X X V I | MAGICUM ATELIER | ART OF TRANSFORMATION</footer>
+
+<div class="music-player" id="musicPlayer">
+  <audio id="bgAudio" loop preload="none"></audio>
+  <button class="music-btn disabled" id="musicToggle" title="Встановіть MUSIC_URL у коді">♪</button>
+  <span class="music-label">SOUNDTRACK</span>
+</div>
+
+<script src="/fabrics.js"></script>
+<script>
+const FAV_KEY  = 'magicum_favFabrics';
+const HIST_KEY = 'magicum_history';
+const PROF_KEY = 'magicum_profile';
+
+// ─── Tab navigation ───────────────────────────────────
+document.querySelectorAll('.cab-tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.cab-tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.cab-section').forEach(s => s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('section-' + btn.dataset.section).classList.add('active');
+  });
+});
+
+// ─── History ──────────────────────────────────────────
+function renderHistory() {
+  const container = document.getElementById('historyContainer');
+  const hist = JSON.parse(localStorage.getItem(HIST_KEY) || '[]');
+
+  if (!hist.length) {
+    container.innerHTML = `<div class="empty-state"><p>ЩЕ НЕМАЄ ЗГЕНЕРОВАНИХ ОБРАЗІВ</p><a href="/" class="empty-link">ПОЧАТИ РИТУАЛ</a></div>`;
+    return;
+  }
+
+  const grid = document.createElement('div');
+  grid.className = 'hist-grid';
+
+  const clearBtn = document.createElement('button');
+  clearBtn.className = 'clear-btn';
+  clearBtn.textContent = '✕ ОЧИСТИТИ ЛІТОПИС';
+  clearBtn.addEventListener('click', () => {
+    if (confirm('Очистити весь Літопис Чарів?')) {
+      localStorage.removeItem(HIST_KEY);
+      renderHistory();
+    }
+  });
+
+  hist.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'hist-card';
+    const date = new Date(item.date).toLocaleDateString('uk-UA', { day: 'numeric', month: 'long' });
+    card.innerHTML = `
+      <div class="hist-thumb"><img src="data:image/jpeg;base64,${item.thumb}" alt="${item.furnitureType}" loading="lazy"></div>
+      <div class="hist-info">
+        <div class="hist-fabric">${item.fabricName || '—'}</div>
+        <div class="hist-type">${item.furnitureType || '—'}</div>
+        <div class="hist-date">${date}</div>
+        ${item.caseUrl ? `<a href="${item.caseUrl}" target="_blank" class="hist-link">ВІДКРИТИ КЕЙС →</a>` : ''}
+      </div>`;
+    grid.appendChild(card);
+  });
+
+  container.innerHTML = '';
+  container.appendChild(clearBtn);
+  container.appendChild(grid);
+}
+
+// ─── Favorites ────────────────────────────────────────
+function renderWishes() {
+  const container = document.getElementById('wishesContainer');
+  const favNames = JSON.parse(localStorage.getItem(FAV_KEY) || '[]');
+
+  if (!favNames.length) {
+    container.innerHTML = `<div class="empty-state"><p>НАТИСНІТЬ ♥ НА ТКАНИНУ В ЛАБОРАТОРІЇ</p><a href="/" class="empty-link">ДО ЛАБОРАТОРІЇ</a></div>`;
+    return;
+  }
+
+  const favPresets = fabricPresets.filter(p => favNames.includes(p.name));
+  const grid = document.createElement('div');
+  grid.className = 'fav-grid';
+
+  favPresets.forEach(preset => {
+    const imgSrc = generateFabricSVG(preset);
+    const card = document.createElement('div');
+    card.className = 'fav-card';
+    card.innerHTML = `
+      <img src="${imgSrc}" alt="${preset.name}">
+      <div class="fav-card-info"><div class="fav-card-name">${preset.name}</div></div>
+      <button class="fav-remove" data-name="${preset.name}" title="Видалити">✕</button>`;
+    card.querySelector('.fav-remove').addEventListener('click', () => {
+      const favs = JSON.parse(localStorage.getItem(FAV_KEY) || '[]');
+      const idx = favs.indexOf(preset.name);
+      if (idx !== -1) { favs.splice(idx, 1); localStorage.setItem(FAV_KEY, JSON.stringify(favs)); }
+      renderWishes();
+    });
+    grid.appendChild(card);
+  });
+
+  container.innerHTML = '';
+  container.appendChild(grid);
+}
+
+// ─── Profile ──────────────────────────────────────────
+function renderProfile() {
+  const prof = JSON.parse(localStorage.getItem(PROF_KEY) || '{}');
+  if (prof.name) document.getElementById('profName').value = prof.name;
+  if (prof.city) document.getElementById('profCity').value = prof.city;
+}
+
+document.getElementById('saveProfile').addEventListener('click', () => {
+  const prof = {
+    name: document.getElementById('profName').value.trim(),
+    city: document.getElementById('profCity').value.trim()
+  };
+  localStorage.setItem(PROF_KEY, JSON.stringify(prof));
+  const status = document.getElementById('profStatus');
+  status.textContent = '✅ Збережено';
+  setTimeout(() => { status.textContent = ''; }, 2500);
+});
+
+// ─── Init ─────────────────────────────────────────────
+renderHistory();
+renderWishes();
+renderProfile();
+</script>
+</body>
+</html>

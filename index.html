@@ -6,48 +6,12 @@
   <title>MAGICUM | Digital Alchemist Atelier</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;400;500;600&display=swap" rel="stylesheet">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
-    :root { --gold: #C9A96E; --dark: #0A0A08; --dark-card: #0D0D0B; --border-dim: #1F1F1C; --text-light: #D1CDC7; }
-    body { font-family: 'Jost', sans-serif; background-color: var(--dark); color: var(--text-light); overflow-x: hidden; cursor: crosshair; }
-    .cursor-glow { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(201, 169, 110, 0.12) 0%, transparent 45%); z-index: 999; }
-    .site-badge { position: absolute; top: 24px; left: 0; right: 0; text-align: center; font-size: 0.7rem; letter-spacing: 6px; opacity: 0.5; text-transform: uppercase; z-index: 20; }
-    .hero { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; text-align: center; padding: 0 20px; }
-    .hero-bg { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(10,10,8,0.85), rgba(10,10,8,0.9)), url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2000') center/cover no-repeat; z-index: -2; transition: transform 0.15s ease-out; }
-    .logo { color: var(--gold); font-size: 3rem; letter-spacing: 18px; text-transform: uppercase; font-weight: 300; margin-bottom: 1rem; }
-    .logo span { font-weight: 700; }
-    .btn-alchemy { background: transparent; border: 1.5px solid var(--gold); color: var(--gold); padding: 14px 42px; font-size: 0.8rem; letter-spacing: 5px; cursor: pointer; transition: 0.4s ease; text-transform: uppercase; margin-top: 2rem; }
-    .btn-alchemy:hover { background: var(--gold); color: var(--dark); box-shadow: 0 0 28px rgba(201,169,110,0.5); }
-    .laboratory { padding: 80px 20px 120px; background: #070705; }
-    .cards-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 40px; max-width: 1200px; margin: 0 auto; }
-    .card { background: var(--dark-card); border: 1px solid var(--border-dim); padding: 28px 24px; width: 380px; border-radius: 4px; transition: 0.6s; opacity: 0; transform: translateY(30px); }
-    .card.reveal { opacity: 1; transform: translateY(0); }
-    .preview-box { height: 240px; background: #000; border: 1px solid #1e1e1a; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; overflow: hidden; }
-    .preview-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
-    .fabric-catalog { background: #030302; border: 1px solid #1f1f1c; padding: 12px; max-height: 260px; overflow-y: auto; }
-    .fabric-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-    .fabric-item { cursor: pointer; border: 1px solid transparent; transition: 0.2s; text-align: center; }
-    .fabric-item img { width: 100%; aspect-ratio: 1; object-fit: cover; background: #222; }
-    .fabric-item span { display: block; font-size: 0.6rem; letter-spacing: 1px; margin-top: 6px; opacity: 0.7; }
-    .fabric-item.active { border-color: var(--gold); box-shadow: 0 0 12px rgba(201,169,110,0.4); }
-    .api-area { max-width: 460px; margin: 60px auto 0; text-align: center; }
-    .status-msg { text-align: center; margin-top: 24px; font-size: 0.75rem; letter-spacing: 1px; color: #b8b4a6; padding: 12px; background: #12120f; border-radius: 60px; }
-    .error { color: #e0a0a0; border-left: 3px solid #e0a0a0; background: #2a1a1a; }
-    .success { color: #a5d6a5; border-left: 3px solid #a5d6a5; }
-    .result-area { display: none; max-width: 880px; margin: 60px auto 0; padding: 0 20px; }
-    .slider-compare { position: relative; width: 100%; overflow: hidden; border: 1px solid var(--gold); border-radius: 8px; background: #000; user-select: none; }
-    .slider-img { width: 100%; display: block; pointer-events: none; }
-    .slider-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; }
-    .slider-overlay img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; pointer-events: none; }
-    .slider-handle { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--gold); cursor: ew-resize; z-index: 15; box-shadow: 0 0 10px var(--gold); }
-    .slider-handle::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 38px; height: 38px; background: #0D0D0B; border: 1.5px solid var(--gold); border-radius: 50%; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23C9A96E' viewBox='0 0 16 16'%3E%3Cpath d='M8 15a.5.5 0 0 0 .5-.5V9h5.5a.5.5 0 0 0 0-1H8.5V1.5a.5.5 0 0 0-1 0V8H2a.5.5 0 0 0 0 1h5.5v5.5a.5.5 0 0 0 .5.5z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: center; background-size: 18px; }
-    footer { text-align: center; padding: 80px 20px 40px; font-size: 0.6rem; letter-spacing: 4px; opacity: 0.3; }
-    @media (max-width: 860px) { .card { width: 100%; max-width: 420px; } }
-  </style>
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 <div class="cursor-glow"></div>
 <div class="site-badge">⚜️ MAGICUM-SITE ⚜️</div>
+<a href="/cabinet" class="cabinet-nav">🔮 КАБІНЕТ</a>
 
 <section class="hero">
   <div class="hero-bg" id="parallaxBg"></div>
@@ -59,22 +23,34 @@
 
 <section id="lab" class="laboratory">
   <div class="cards-container">
+
     <div class="card" id="card1">
       <div style="font-size: 0.65rem; opacity: 0.5; letter-spacing: 3px; margin-bottom: 20px;">I. ВТІЛЕННЯ ФОРМИ</div>
       <div id="furniturePreview" class="preview-box"><span style="opacity: 0.3;">⬇️ ОЧІКУВАННЯ ФОТО</span></div>
       <button class="btn-alchemy" style="padding: 8px 20px; font-size: 0.7rem;" onclick="document.getElementById('furnitureInput').click()">ЗАВАНТАЖИТИ</button>
       <input type="file" id="furnitureInput" accept="image/jpeg,image/png,image/webp" style="display: none;">
     </div>
+
     <div class="card" id="card2">
-      <div style="font-size: 0.65rem; opacity: 0.5; letter-spacing: 3px; margin-bottom: 20px;">II. ОБРАННЯ ЕСЕНЦІЇ</div>
+      <div style="font-size: 0.65rem; opacity: 0.5; letter-spacing: 3px; margin-bottom: 14px;">II. ОБРАННЯ ЕСЕНЦІЇ</div>
+      <div class="fabric-filters">
+        <button class="filter-tab active" data-cat="all">ВСІ</button>
+        <button class="filter-tab" data-cat="оксамит">ОКСАМИТ</button>
+        <button class="filter-tab" data-cat="льон">ЛЬОН</button>
+        <button class="filter-tab" data-cat="шовк">ШОВК</button>
+        <button class="filter-tab" data-cat="шкіра">ШКІРА</button>
+      </div>
       <div class="fabric-catalog"><div class="fabric-grid" id="fabricGrid"></div></div>
       <p id="selectedFabricLabel" style="font-size: 0.65rem; color: var(--gold); margin-top: 16px; letter-spacing: 1px;">❖ МАТЕРІЯ НЕ ОБРАНА</p>
     </div>
+
   </div>
+
   <div class="api-area">
     <button id="generateBtn" class="btn-alchemy" style="width: 100%; margin-top: 36px;">🔮 ПРОЯВИТИ ОБРАЗ</button>
   </div>
   <div id="statusMessage" class="status-msg">⛁ очікування завантажень</div>
+
   <div id="resultArea" class="result-area">
     <div class="slider-compare" id="sliderCompare">
       <img id="sourceImg" class="slider-img" alt="original">
@@ -83,6 +59,7 @@
     </div>
     <div style="text-align: center; font-size: 0.6rem; margin-top: 12px; opacity: 0.6;">⇠ перетягніть: оригінал ⇢ візуалізація</div>
   </div>
+
   <div id="saveArea" style="display:none; max-width: 880px; margin: 32px auto 0; padding: 0 20px;">
     <div style="background: var(--dark-card); border: 1px solid var(--border-dim); padding: 28px 24px; border-radius: 4px;">
       <div style="font-size: 0.65rem; letter-spacing: 3px; opacity: 0.5; margin-bottom: 20px;">✦ ЗБЕРЕГТИ КЕЙ</div>
@@ -107,193 +84,287 @@
       <div id="saveStatus" style="display:none; margin-top:16px;"></div>
     </div>
   </div>
+
 </section>
+
 <footer>M M X X V I | MAGICUM ATELIER | ART OF TRANSFORMATION</footer>
 
+<div class="music-player" id="musicPlayer">
+  <audio id="bgAudio" loop preload="none"></audio>
+  <button class="music-btn" id="musicToggle" title="Фонова музика">♪</button>
+  <span class="music-label">SOUNDTRACK</span>
+</div>
+
+<script src="/fabrics.js"></script>
 <script>
-  let furnitureBase64 = null, furnitureMime = null, fabricBase64 = null, fabricMime = null, fabricName = "";
-  let lastGeneratedB64 = null, lastGeneratedMime = null;
-  const furnitureInput = document.getElementById('furnitureInput');
-  const furniturePreview = document.getElementById('furniturePreview');
-  const generateBtn = document.getElementById('generateBtn');
-  const statusDiv = document.getElementById('statusMessage');
-  const resultArea = document.getElementById('resultArea');
-  const sourceImg = document.getElementById('sourceImg');
-  const outputImg = document.getElementById('outputImg');
-  const selectedFabricSpan = document.getElementById('selectedFabricLabel');
+// ═══════════════════════════════════════════════════
+// 🎵 Вставте URL вашого треку зі Suno.ai:
+const MUSIC_URL = '';
+// ═══════════════════════════════════════════════════
 
-  const fabricPresets = [
-    { name: "ЗОЛОТИЙ ОКСАМИТ", color1: "#C9A96E", color2: "#B58B4B", pattern: "diagonal" },
-    { name: "СМАРАГДОВИЙ ШОВК", color1: "#1B4D3E", color2: "#2E7D5E", pattern: "cross" },
-    { name: "ГРАФІТОВИЙ ЛЬОН", color1: "#3D3D3D", color2: "#5A5A5A", pattern: "dots" },
-    { name: "ПОЛУНОЧНА СИНЬ", color1: "#1E2A5E", color2: "#3B4B9A", pattern: "stripes" },
-    { name: "КОРОЛІВСЬКИЙ БОРДО", color1: "#6B1E3D", color2: "#8E2B4F", pattern: "zigzag" },
-    { name: "СРІБНИЙ ШЕВРОН", color1: "#A0A5B0", color2: "#C9CDD6", pattern: "chevron" }
-  ];
+const FAV_KEY  = 'magicum_favFabrics';
+const HIST_KEY = 'magicum_history';
+const PROF_KEY = 'magicum_profile';
 
-  function generateFabricSVG(preset) {
-    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
-      <rect width="100" height="100" fill="${preset.color1}"/>
-      ${preset.pattern === "diagonal" ? `<path d="M0,0 L100,100 M100,0 L0,100" stroke="${preset.color2}" stroke-width="4"/>` : ''}
-      ${preset.pattern === "cross" ? `<line x1="20" y1="20" x2="80" y2="80" stroke="${preset.color2}" stroke-width="5"/><line x1="80" y1="20" x2="20" y2="80" stroke="${preset.color2}" stroke-width="5"/>` : ''}
-      ${preset.pattern === "dots" ? Array(25).fill().map((_,i) => `<circle cx="${10 + (i%5)*20}" cy="${10 + Math.floor(i/5)*20}" r="4" fill="${preset.color2}"/>`).join('') : ''}
-      ${preset.pattern === "stripes" ? Array(5).fill().map((_,i) => `<rect x="${i*20}" y="0" width="10" height="100" fill="${preset.color2}"/>`).join('') : ''}
-      ${preset.pattern === "zigzag" ? `<polygon points="0,50 20,30 40,50 60,30 80,50 100,30 100,70 80,50 60,70 40,50 20,70 0,50" fill="${preset.color2}"/>` : ''}
-      ${preset.pattern === "chevron" ? Array(4).fill().map((_,i) => `<polyline points="${i*25},0 ${i*25+12},15 ${i*25+25},0" stroke="${preset.color2}" fill="none" stroke-width="4"/>`).join('') : ''}
-    </svg>`;
-    return "data:image/svg+xml," + encodeURIComponent(svg);
-  }
+let furnitureBase64 = null, furnitureMime = null;
+let fabricBase64 = null, fabricMime = null, fabricName = '';
+let lastGeneratedB64 = null, lastGeneratedMime = null;
+let currentHistId = null;
 
-  const fabricGrid = document.getElementById('fabricGrid');
-  fabricPresets.forEach((preset) => {
-    const imgSrc = generateFabricSVG(preset);
-    const div = document.createElement('div');
-    div.className = 'fabric-item';
-    div.setAttribute('data-name', preset.name);
-    div.innerHTML = `<img src="${imgSrc}" alt="${preset.name}"><span>${preset.name}</span>`;
-    div.addEventListener('click', () => {
-      document.querySelectorAll('.fabric-item').forEach(el => el.classList.remove('active'));
-      div.classList.add('active');
-      fabricName = preset.name;
-      selectedFabricSpan.innerText = `✓ ${preset.name}`;
-      fetch(imgSrc).then(res => res.text()).then(svgText => {
-        fabricBase64 = btoa(unescape(encodeURIComponent(svgText)));
-        fabricMime = "image/svg+xml";
-      });
+const furnitureInput    = document.getElementById('furnitureInput');
+const furniturePreview  = document.getElementById('furniturePreview');
+const generateBtn       = document.getElementById('generateBtn');
+const statusDiv         = document.getElementById('statusMessage');
+const resultArea        = document.getElementById('resultArea');
+const sourceImg         = document.getElementById('sourceImg');
+const outputImg         = document.getElementById('outputImg');
+const selectedFabricSpan = document.getElementById('selectedFabricLabel');
+
+// ─── LocalStorage helpers ─────────────────────────────
+function getFavs() { return JSON.parse(localStorage.getItem(FAV_KEY) || '[]'); }
+function setFavs(arr) { localStorage.setItem(FAV_KEY, JSON.stringify(arr)); }
+
+function saveToHistory(furnitureType, fabName, thumb) {
+  const id = Date.now();
+  const hist = JSON.parse(localStorage.getItem(HIST_KEY) || '[]');
+  hist.unshift({ id, date: new Date().toISOString(), furnitureType, fabricName: fabName, thumb, caseUrl: null });
+  if (hist.length > 50) hist.splice(50);
+  localStorage.setItem(HIST_KEY, JSON.stringify(hist));
+  return id;
+}
+
+function updateHistoryCaseUrl(id, caseUrl) {
+  const hist = JSON.parse(localStorage.getItem(HIST_KEY) || '[]');
+  const item = hist.find(h => h.id === id);
+  if (item) { item.caseUrl = caseUrl; localStorage.setItem(HIST_KEY, JSON.stringify(hist)); }
+}
+
+// ─── Fabric grid ──────────────────────────────────────
+const fabricGrid = document.getElementById('fabricGrid');
+const initFavs = getFavs();
+fabricPresets.forEach(preset => {
+  const imgSrc = generateFabricSVG(preset);
+  const isFav = initFavs.includes(preset.name);
+  const div = document.createElement('div');
+  div.className = 'fabric-item';
+  div.dataset.name = preset.name;
+  div.dataset.cat = preset.cat;
+  div.innerHTML = `<img src="${imgSrc}" alt="${preset.name}"><button class="fav-btn${isFav ? ' fav-active' : ''}" title="Атлас Бажань">♥</button><span>${preset.name}</span>`;
+
+  div.addEventListener('click', e => {
+    if (e.target.classList.contains('fav-btn')) return;
+    document.querySelectorAll('.fabric-item').forEach(el => el.classList.remove('active'));
+    div.classList.add('active');
+    fabricName = preset.name;
+    selectedFabricSpan.innerText = `✓ ${preset.name}`;
+    const svgStr = decodeURIComponent(imgSrc.replace('data:image/svg+xml,', ''));
+    fabricBase64 = btoa(unescape(encodeURIComponent(svgStr)));
+    fabricMime = 'image/svg+xml';
+  });
+
+  div.querySelector('.fav-btn').addEventListener('click', e => {
+    e.stopPropagation();
+    const btn = e.currentTarget;
+    const favs = getFavs();
+    const idx = favs.indexOf(preset.name);
+    if (idx === -1) { favs.push(preset.name); btn.classList.add('fav-active'); }
+    else { favs.splice(idx, 1); btn.classList.remove('fav-active'); }
+    setFavs(favs);
+  });
+
+  fabricGrid.appendChild(div);
+});
+
+// ─── Fabric filters ───────────────────────────────────
+document.querySelectorAll('.filter-tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const cat = btn.dataset.cat;
+    document.querySelectorAll('.fabric-item').forEach(item => {
+      item.style.display = (cat === 'all' || item.dataset.cat === cat) ? '' : 'none';
     });
-    fabricGrid.appendChild(div);
   });
+});
 
-  furnitureInput.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      const full = ev.target.result;
-      furnitureBase64 = full.split(',')[1];
-      furnitureMime = file.type;
-      furniturePreview.innerHTML = `<img src="${full}">`;
-      sourceImg.src = full;
+// ─── Furniture upload ─────────────────────────────────
+furnitureInput.addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const full = ev.target.result;
+    furnitureBase64 = full.split(',')[1];
+    furnitureMime = file.type;
+    furniturePreview.innerHTML = `<img src="${full}">`;
+    sourceImg.src = full;
+  };
+  reader.readAsDataURL(file);
+});
+
+// ─── Compress ─────────────────────────────────────────
+function compressImage(base64, mime, maxW = 800, maxH = 600, quality = 0.8) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const ratio = Math.min(maxW / img.width, maxH / img.height, 1);
+      canvas.width = Math.round(img.width * ratio);
+      canvas.height = Math.round(img.height * ratio);
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      resolve(canvas.toDataURL('image/jpeg', quality).split(',')[1]);
     };
-    reader.readAsDataURL(file);
+    img.onerror = () => resolve(base64);
+    img.src = `data:${mime};base64,${base64}`;
   });
+}
 
-  generateBtn.addEventListener('click', async () => {
-    if (!furnitureBase64) { statusDiv.innerText = "❌ Завантажте фото меблів"; statusDiv.className = "status-msg error"; return; }
-    if (!fabricBase64) { statusDiv.innerText = "❌ Оберіть тканину з каталогу"; statusDiv.className = "status-msg error"; return; }
-    generateBtn.disabled = true;
-    statusDiv.innerText = "✨ Алхімія запущена...";
-    statusDiv.className = "status-msg";
-    try {
-      const response = await fetch('/.netlify/functions/ritual', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ furnitureBase64, furnitureMime, fabricBase64, fabricMime })
-      });
-      const data = await response.json();
-      if (!response.ok || !data.success) throw new Error(data.error || "Помилка");
-      const resultUrl = `data:${data.mimeType || 'image/jpeg'};base64,${data.imageBase64}`;
-      outputImg.src = resultUrl;
-      lastGeneratedB64 = data.imageBase64;
-      lastGeneratedMime = data.mimeType || 'image/jpeg';
-      resultArea.style.display = 'block';
-      document.getElementById('saveArea').style.display = 'block';
-      document.getElementById('saveStatus').style.display = 'none';
-      initSlider();
-      statusDiv.innerText = "✅ Образ проявлено! Порівняйте оригінал і візуалізацію.";
-      statusDiv.className = "status-msg success";
-    } catch (err) {
-      statusDiv.innerText = `❌ Помилка: ${err.message}`;
-      statusDiv.className = "status-msg error";
-    } finally { generateBtn.disabled = false; }
-  });
-
-  function initSlider() {
-    const container = document.getElementById('sliderCompare');
-    const overlay = document.getElementById('sliderOverlay');
-    const handle = document.getElementById('sliderHandle');
-    if (!container) return;
-    let drag = false;
-    const update = (clientX) => {
-      const rect = container.getBoundingClientRect();
-      let x = clientX - rect.left;
-      x = Math.min(Math.max(x, 0), rect.width);
-      const percent = (x / rect.width) * 100;
-      handle.style.left = `${percent}%`;
-      overlay.style.clipPath = `inset(0 ${100 - percent}% 0 0)`;
-    };
-    const onMove = (e) => { if (drag) update(e.clientX); };
-    const onTouch = (e) => { if (drag && e.touches[0]) update(e.touches[0].clientX); };
-    handle.addEventListener('mousedown', () => drag = true);
-    window.addEventListener('mouseup', () => drag = false);
-    window.addEventListener('mousemove', onMove);
-    handle.addEventListener('touchstart', () => drag = true);
-    window.addEventListener('touchend', () => drag = false);
-    window.addEventListener('touchmove', onTouch);
-    handle.style.left = "50%";
-    overlay.style.clipPath = "inset(0 50% 0 0)";
-  }
-
-  window.addEventListener('mousemove', (e) => {
-    document.body.style.setProperty('--x', e.clientX + 'px');
-    document.body.style.setProperty('--y', e.clientY + 'px');
-    const bg = document.getElementById('parallaxBg');
-    if (bg) bg.style.transform = `translate(${(e.clientX - window.innerWidth/2) * 0.01}px, ${(e.clientY - window.innerHeight/2) * 0.01}px) scale(1.08)`;
-  });
-  new IntersectionObserver((entries) => entries.forEach(e => e.isIntersecting && e.target.classList.add('reveal')), { threshold: 0.2 }).observe(document.getElementById('card1'));
-  new IntersectionObserver((entries) => entries.forEach(e => e.isIntersecting && e.target.classList.add('reveal')), { threshold: 0.2 }).observe(document.getElementById('card2'));
-
-  function compressImage(base64, mime, maxW = 800, maxH = 600, quality = 0.8) {
-    return new Promise((resolve) => {
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        let { width, height } = img;
-        const ratio = Math.min(maxW / width, maxH / height, 1);
-        canvas.width = Math.round(width * ratio);
-        canvas.height = Math.round(height * ratio);
-        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-        resolve(canvas.toDataURL('image/jpeg', quality).split(',')[1]);
-      };
-      img.onerror = () => resolve(base64);
-      img.src = `data:${mime};base64,${base64}`;
+// ─── Generate ─────────────────────────────────────────
+generateBtn.addEventListener('click', async () => {
+  if (!furnitureBase64) { statusDiv.innerText = '❌ Завантажте фото меблів'; statusDiv.className = 'status-msg error'; return; }
+  if (!fabricBase64)    { statusDiv.innerText = '❌ Оберіть тканину з каталогу'; statusDiv.className = 'status-msg error'; return; }
+  generateBtn.disabled = true;
+  statusDiv.innerText = '✨ Алхімія запущена...';
+  statusDiv.className = 'status-msg';
+  try {
+    const response = await fetch('/.netlify/functions/ritual', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ furnitureBase64, furnitureMime, fabricBase64, fabricMime })
     });
-  }
+    const data = await response.json();
+    if (!response.ok || !data.success) throw new Error(data.error || 'Помилка');
 
-  document.getElementById('saveBtn').addEventListener('click', async () => {
-    if (!lastGeneratedB64 || !furnitureBase64) return;
-    const saveBtn = document.getElementById('saveBtn');
-    const saveStatus = document.getElementById('saveStatus');
-    saveBtn.disabled = true;
-    saveStatus.style.display = 'block';
-    saveStatus.innerHTML = '<span style="opacity:0.6;font-size:0.75rem;letter-spacing:1px;">⏳ зберігаємо...</span>';
-    try {
-      const [beforeCompressed, afterCompressed] = await Promise.all([
-        compressImage(furnitureBase64, furnitureMime),
-        compressImage(lastGeneratedB64, lastGeneratedMime)
-      ]);
-      const furnitureType = document.getElementById('furnitureTypeInput').value;
-      const city = document.getElementById('cityInput').value.trim();
-      const res = await fetch('/case-save', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ furnitureType, fabricName, city, beforeB64: beforeCompressed, afterB64: afterCompressed })
-      });
-      const data = await res.json();
-      if (!data.success) throw new Error(data.error || 'Помилка збереження');
-      const caseUrl = window.location.origin + data.url;
-      saveStatus.innerHTML = `
-        <div style="color:#a5d6a5;font-size:0.75rem;margin-bottom:12px;letter-spacing:1px;">✅ Кейс збережено!</div>
-        <div style="display:flex;gap:8px;align-items:center;">
-          <input readonly value="${caseUrl}" style="flex:1;background:#030302;border:1px solid var(--border-dim);color:var(--gold);padding:10px;font-size:0.65rem;font-family:'Jost',sans-serif;letter-spacing:1px;">
-          <button onclick="navigator.clipboard.writeText('${caseUrl}')" class="btn-alchemy" style="padding:10px 16px;font-size:0.6rem;white-space:nowrap;">COPY</button>
-        </div>
-        <div style="margin-top:10px;"><a href="${data.url}" target="_blank" style="color:var(--gold);font-size:0.65rem;letter-spacing:2px;">ВІДКРИТИ КЕЙС →</a></div>`;
-    } catch (err) {
-      saveStatus.innerHTML = `<span style="color:#e0a0a0;font-size:0.75rem;">❌ ${err.message}</span>`;
-      saveBtn.disabled = false;
+    const resultUrl = `data:${data.mimeType || 'image/jpeg'};base64,${data.imageBase64}`;
+    outputImg.src = resultUrl;
+    lastGeneratedB64 = data.imageBase64;
+    lastGeneratedMime = data.mimeType || 'image/jpeg';
+
+    resultArea.style.display = 'block';
+    document.getElementById('saveArea').style.display = 'block';
+    document.getElementById('saveStatus').style.display = 'none';
+
+    const prof = JSON.parse(localStorage.getItem(PROF_KEY) || '{}');
+    const cityInput = document.getElementById('cityInput');
+    if (prof.city && !cityInput.value) cityInput.value = prof.city;
+
+    initSlider();
+
+    const furnitureType = document.getElementById('furnitureTypeInput').value;
+    const histThumb = await compressImage(data.imageBase64, lastGeneratedMime, 200, 150, 0.4);
+    currentHistId = saveToHistory(furnitureType, fabricName, histThumb);
+
+    statusDiv.innerText = '✅ Образ проявлено! Порівняйте оригінал і візуалізацію.';
+    statusDiv.className = 'status-msg success';
+  } catch (err) {
+    statusDiv.innerText = `❌ Помилка: ${err.message}`;
+    statusDiv.className = 'status-msg error';
+  } finally { generateBtn.disabled = false; }
+});
+
+// ─── Slider ───────────────────────────────────────────
+function initSlider() {
+  const container = document.getElementById('sliderCompare');
+  const overlay   = document.getElementById('sliderOverlay');
+  const handle    = document.getElementById('sliderHandle');
+  if (!container) return;
+  let drag = false;
+  const update = clientX => {
+    const rect = container.getBoundingClientRect();
+    const pct = Math.min(Math.max((clientX - rect.left) / rect.width, 0), 1) * 100;
+    handle.style.left = `${pct}%`;
+    overlay.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
+  };
+  handle.addEventListener('mousedown', () => drag = true);
+  window.addEventListener('mouseup', () => drag = false);
+  window.addEventListener('mousemove', e => { if (drag) update(e.clientX); });
+  handle.addEventListener('touchstart', () => drag = true, { passive: true });
+  window.addEventListener('touchend', () => drag = false);
+  window.addEventListener('touchmove', e => { if (drag && e.touches[0]) update(e.touches[0].clientX); }, { passive: true });
+  handle.style.left = '50%';
+  overlay.style.clipPath = 'inset(0 50% 0 0)';
+}
+
+// ─── Save case ────────────────────────────────────────
+document.getElementById('saveBtn').addEventListener('click', async () => {
+  if (!lastGeneratedB64 || !furnitureBase64) return;
+  const saveBtn    = document.getElementById('saveBtn');
+  const saveStatus = document.getElementById('saveStatus');
+  saveBtn.disabled = true;
+  saveStatus.style.display = 'block';
+  saveStatus.innerHTML = '<span style="opacity:0.6;font-size:0.75rem;letter-spacing:1px;">⏳ зберігаємо...</span>';
+  try {
+    const [beforeCompressed, afterCompressed] = await Promise.all([
+      compressImage(furnitureBase64, furnitureMime),
+      compressImage(lastGeneratedB64, lastGeneratedMime)
+    ]);
+    const furnitureType = document.getElementById('furnitureTypeInput').value;
+    const city = document.getElementById('cityInput').value.trim();
+    const res = await fetch('/case-save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ furnitureType, fabricName, city, beforeB64: beforeCompressed, afterB64: afterCompressed })
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error || 'Помилка збереження');
+    const caseUrl = window.location.origin + data.url;
+
+    if (currentHistId) updateHistoryCaseUrl(currentHistId, caseUrl);
+    if (city) {
+      const prof = JSON.parse(localStorage.getItem(PROF_KEY) || '{}');
+      prof.city = city;
+      localStorage.setItem(PROF_KEY, JSON.stringify(prof));
+    }
+
+    saveStatus.innerHTML = `
+      <div style="color:#a5d6a5;font-size:0.75rem;margin-bottom:12px;letter-spacing:1px;">✅ Кейс збережено!</div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input readonly value="${caseUrl}" style="flex:1;background:#030302;border:1px solid var(--border-dim);color:var(--gold);padding:10px;font-size:0.65rem;font-family:'Jost',sans-serif;letter-spacing:1px;">
+        <button onclick="navigator.clipboard.writeText('${caseUrl}')" class="btn-alchemy" style="padding:10px 16px;font-size:0.6rem;white-space:nowrap;">COPY</button>
+      </div>
+      <div style="margin-top:10px;display:flex;gap:20px;">
+        <a href="${data.url}" target="_blank" style="color:var(--gold);font-size:0.65rem;letter-spacing:2px;">ВІДКРИТИ КЕЙС →</a>
+        <a href="/cabinet" style="color:var(--gold);font-size:0.65rem;letter-spacing:2px;opacity:0.6;">КАБІНЕТ →</a>
+      </div>`;
+  } catch (err) {
+    saveStatus.innerHTML = `<span style="color:#e0a0a0;font-size:0.75rem;">❌ ${err.message}</span>`;
+    saveBtn.disabled = false;
+  }
+});
+
+// ─── Cursor parallax ──────────────────────────────────
+window.addEventListener('mousemove', e => {
+  document.body.style.setProperty('--x', e.clientX + 'px');
+  document.body.style.setProperty('--y', e.clientY + 'px');
+  const bg = document.getElementById('parallaxBg');
+  if (bg) bg.style.transform = `translate(${(e.clientX - window.innerWidth/2) * 0.01}px, ${(e.clientY - window.innerHeight/2) * 0.01}px) scale(1.08)`;
+});
+
+// ─── Scroll reveal ────────────────────────────────────
+new IntersectionObserver(entries => entries.forEach(e => e.isIntersecting && e.target.classList.add('reveal')), { threshold: 0.2 }).observe(document.getElementById('card1'));
+new IntersectionObserver(entries => entries.forEach(e => e.isIntersecting && e.target.classList.add('reveal')), { threshold: 0.2 }).observe(document.getElementById('card2'));
+
+// ─── Music player ─────────────────────────────────────
+const audio    = document.getElementById('bgAudio');
+const musicBtn = document.getElementById('musicToggle');
+
+if (MUSIC_URL) {
+  audio.src = MUSIC_URL;
+  musicBtn.addEventListener('click', async () => {
+    if (audio.paused) {
+      await audio.play().catch(() => {});
+      musicBtn.innerHTML = '♫';
+      musicBtn.classList.add('playing');
+    } else {
+      audio.pause();
+      musicBtn.innerHTML = '♪';
+      musicBtn.classList.remove('playing');
     }
   });
+} else {
+  musicBtn.classList.add('disabled');
+  musicBtn.title = 'Встановіть MUSIC_URL у коді для увімкнення музики';
+}
 </script>
 </body>
 </html>
