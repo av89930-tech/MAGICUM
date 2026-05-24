@@ -56,17 +56,6 @@ nav {
   transition: opacity 0.4s, transform 0.4s;
 }
 nav.hide-nav { opacity: 0; pointer-events: none; transform: translateY(-100%); }
-.nav-logo {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 13px; font-weight: 400; letter-spacing: 4px;
-  color: var(--gold-light); text-transform: uppercase;
-}
-.nav-links { display: none; gap: 36px; align-items: center; }
-.nav-links a {
-  font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
-  color: var(--text-muted); text-decoration: none; transition: color 0.3s;
-}
-.nav-links a:hover { color: var(--gold-light); }
 .nav-lang {
   font-size: 11px; letter-spacing: 2px; color: var(--gold);
   border: 1px solid var(--border); padding: 6px 14px;
@@ -166,13 +155,6 @@ nav.hide-nav { opacity: 0; pointer-events: none; transform: translateY(-100%); }
 
 /* ── WORKSPACE ── */
 #workspace { padding: 16px 4vw 20px; position: relative; z-index: 1; }
-.section-header { display: none; margin-bottom: 40px; text-align: center; }
-.section-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(32px, 5vw, 48px); font-weight: 300; letter-spacing: 3px;
-  text-transform: uppercase; color: var(--text-primary); margin-bottom: 8px;
-}
-.section-subtitle { font-size: 12px; letter-spacing: 2px; color: var(--text-muted); }
 
 .workspace-grid {
   display: grid; grid-template-columns: 1fr;
@@ -453,11 +435,6 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
 <!-- NAV -->
 <nav>
   <button class="btn-shop" onclick="openShop()">✦ Магічне сховище<br>Майстра-Алхіміка</button>
-  <div class="nav-links">
-    <a href="#hero">Орден Магів</a>
-    <a href="#workspace">Лабораторія</a>
-
-  </div>
   <div class="nav-lang" id="navUserBadge" style="display:none;" onclick="openCabinet()"></div>
   <div class="nav-lang" id="navLang">UA</div>
 </nav>
@@ -486,11 +463,6 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
 
 <!-- WORKSPACE -->
 <section id="workspace">
-  <div class="section-header reveal">
-    <h2 class="section-title">Чарівна Лабораторія</h2>
-    <p class="section-subtitle">Завантажте меблі · оберіть тканину · проявіть образ</p>
-  </div>
-
   <div class="workspace-grid">
 
     <!-- ЛІВА: завантаження + кнопка -->
@@ -749,8 +721,6 @@ function loadFabricFromUrl(url, name) {
 }
 
 // ── Upload ──
-function triggerUpload(type) { document.getElementById('input-' + type).click(); }
-
 function handleUpload(type, input) {
   const file = input.files[0];
   if (!file) return;
