@@ -28,7 +28,7 @@
   --border: rgba(201,168,76,0.2);
 }
 
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; background: #000; }
 
 body {
   background: var(--bg-dark);
@@ -37,6 +37,8 @@ body {
   font-weight: 300;
   overflow-x: hidden;
   cursor: default;
+  max-width: 430px;
+  margin: 0 auto;
 }
 
 ::-webkit-scrollbar { width: 4px; }
@@ -45,7 +47,7 @@ body {
 
 /* ── NAV ── */
 nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  position: fixed; top: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 430px; z-index: 100;
   display: flex; align-items: center; justify-content: space-between;
   padding: 14px 16px;
   padding-top: max(14px, env(safe-area-inset-top));
