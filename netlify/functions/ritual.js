@@ -1,7 +1,7 @@
 const GEMINI_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
 const MODELS = [
-  'gemini-2.0-flash-exp',
-  'gemini-2.0-flash-preview-image-generation',
+  'gemini-2.5-flash-image',
+  'gemini-3.1-flash-image-preview',
 ];
 
 const OVERLOAD_CODES = new Set([429, 500, 503, 529]);
