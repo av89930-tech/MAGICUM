@@ -517,7 +517,7 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
     <div class="left-col reveal">
       <div class="upload-area">
 
-        <div class="upload-card" onclick="triggerUpload('photo')">
+        <div class="upload-card">
           <div class="card-header">
             <div class="card-label"><span class="card-icon">📷</span>Додати меблі</div>
             <div class="card-num">1</div>
@@ -529,7 +529,7 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
           <input type="file" id="input-photo" accept="image/*" style="display:none" onchange="handleUpload('photo',this)">
         </div>
 
-        <div class="upload-card" onclick="triggerUpload('fabric')">
+        <div class="upload-card">
           <div class="card-header">
             <div class="card-label"><span class="card-icon">🧵</span>Вибрати тканину</div>
             <div class="card-num">2</div>
@@ -901,7 +901,7 @@ function initSlider(container) {
 
   function autoStep() {
     pos += dir * 0.35;
-    if (pos >= 85) dir = -1;
+    if (pos >= 95) dir = -1;
     if (pos <= 15) dir =  1;
     setPos(pos);
     animId = requestAnimationFrame(autoStep);
