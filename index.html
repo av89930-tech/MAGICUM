@@ -3,206 +3,669 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>MAGICUM | Digital Alchemist Atelier</title>
+  <meta name="description" content="MAGICUM — AI-візуалізація переобивки м'яких меблів. Завантажте фото дивана та зразок тканини — отримайте магічний результат за секунди.">
+  <meta name="theme-color" content="#0e0e0e">
+  <meta property="og:title" content="MAGICUM — Чарівна Лабораторія">
+  <meta property="og:description" content="Зачаруйте ваші меблі одним кліком. AI-перетворення за секунди.">
+  <meta property="og:type" content="website">
+  <title>MAGICUM: AI візуалізація переобивки меблів</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>">
-  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --gold: #c9a84c;
+  --gold-light: #e8c97a;
+  --gold-dark: #9a7a2a;
+  --bg-dark: #0e0e0e;
+  --bg-card: #161616;
+  --bg-panel: #1a1a1a;
+  --text-primary: #f0ead8;
+  --text-muted: #8a8070;
+  --border: rgba(201,168,76,0.2);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg-dark);
+  color: var(--text-primary);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg-dark); }
+::-webkit-scrollbar-thumb { background: var(--gold-dark); }
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 48px;
+  background: linear-gradient(to bottom, rgba(14,14,14,0.95), transparent);
+  backdrop-filter: blur(4px);
+}
+.nav-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px; font-weight: 400; letter-spacing: 4px;
+  color: var(--gold-light); text-transform: uppercase;
+  text-decoration: none;
+}
+.nav-links { display: flex; gap: 36px; align-items: center; }
+.nav-links a {
+  font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--text-muted); text-decoration: none;
+  transition: color 0.3s;
+}
+.nav-links a:hover { color: var(--gold-light); }
+.nav-badge {
+  font-size: 11px; letter-spacing: 2px; color: var(--gold);
+  border: 1px solid var(--border); padding: 6px 14px;
+  cursor: pointer; transition: all 0.3s; text-decoration: none;
+}
+.nav-badge:hover { background: var(--gold); color: var(--bg-dark); }
+
+/* ── HERO ── */
+#hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 90px 8vw 48px;
+  overflow: hidden;
+  text-align: center;
+}
+
+.hero-bg {
+  position: absolute; inset: 0; z-index: 0;
+  background:
+    linear-gradient(to bottom, rgba(14,14,14,0.7) 0%, rgba(14,14,14,0.3) 40%, rgba(14,14,14,0.6) 70%, rgba(14,14,14,0.95) 100%),
+    url('https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=1400&q=80') center/cover no-repeat;
+}
+
+.hero-top {
+  position: relative; z-index: 2;
+  width: 100%;
+  animation: fadeUp 0.8s ease both;
+}
+
+.hero-eyebrow {
+  font-size: 10px; letter-spacing: 6px; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 24px;
+  display: flex; align-items: center; justify-content: center; gap: 16px;
+}
+.hero-eyebrow::before,
+.hero-eyebrow::after {
+  content: ''; width: 40px; height: 1px; background: var(--gold);
+}
+
+.hero-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(60px, 10vw, 120px);
+  font-weight: 300; letter-spacing: 16px; text-transform: uppercase;
+  color: var(--text-primary);
+  line-height: 0.9;
+  margin-bottom: 16px;
+}
+.hero-title em {
+  display: block;
+  font-style: italic; font-size: 0.35em; letter-spacing: 8px;
+  color: var(--gold-light);
+  margin-top: 12px;
+}
+
+.hero-sub {
+  color: var(--gold);
+  font-size: 12px; letter-spacing: 4px; text-transform: uppercase;
+  margin-top: 20px;
+}
+
+.hero-middle { flex: 1; min-height: 40px; }
+
+.hero-bottom {
+  position: relative; z-index: 2;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 14px;
+  width: 100%; max-width: 480px;
+  animation: fadeUp 0.8s 0.4s ease both;
+  opacity: 0;
+  animation-fill-mode: forwards;
+}
+
+.btn-hero-cta {
+  display: inline-flex; align-items: center; gap: 12px;
+  padding: 18px 56px;
+  background: linear-gradient(135deg, #b8922a, #c9a84c, #e8c97a, #c9a84c, #b8922a);
+  background-size: 200% auto;
+  color: var(--bg-dark);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px; font-weight: 700; letter-spacing: 5px; text-transform: uppercase;
+  text-decoration: none;
+  border: none; cursor: pointer;
+  animation: shimmer 3s linear infinite;
+  box-shadow: 0 0 40px rgba(201,168,76,0.3);
+  transition: box-shadow 0.3s, transform 0.3s;
+  width: 100%;
+  justify-content: center;
+}
+.btn-hero-cta:hover { box-shadow: 0 0 60px rgba(201,168,76,0.6); transform: translateY(-2px); }
+
+.hero-sub-link {
+  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--text-muted); text-decoration: none;
+  transition: color 0.3s;
+}
+.hero-sub-link:hover { color: var(--gold-light); }
+
+.scroll-cue {
+  position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
+  z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 6px;
+  font-size: 9px; letter-spacing: 4px; text-transform: uppercase; color: var(--text-muted);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+
+/* ── WORKSPACE ── */
+#workspace {
+  padding: 120px 6vw;
+  position: relative;
+  scroll-margin-top: 20px;
+}
+
+.section-header {
+  text-align: center; margin-bottom: 72px;
+}
+.section-eyebrow {
+  font-size: 10px; letter-spacing: 6px; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 16px;
+}
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(42px, 6vw, 72px);
+  font-weight: 300; letter-spacing: 6px; text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.workspace-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  max-width: 1200px; margin: 0 auto;
+  align-items: start;
+}
+
+.left-col { display: flex; flex-direction: column; gap: 8px; }
+.right-col { display: flex; flex-direction: column; gap: 16px; }
+
+/* Upload cards */
+.upload-area {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
+}
+
+.upload-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 24px;
+  transition: border-color 0.3s;
+  cursor: pointer;
+  position: relative; overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.upload-card::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(201,168,76,0.05), transparent);
+  opacity: 0; transition: opacity 0.3s;
+}
+.upload-card:hover { border-color: rgba(201,168,76,0.5); }
+.upload-card:hover::before { opacity: 1; }
+
+.card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px;
+}
+.card-label {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text-muted);
+}
+.card-icon { font-size: 14px; }
+.card-num {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--gold); color: var(--bg-dark);
+  font-size: 10px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.card-preview {
+  width: 100%; aspect-ratio: 4/3;
+  background: var(--bg-panel);
+  border: 1px dashed rgba(201,168,76,0.2);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden; position: relative; margin-bottom: 12px;
+  flex: 1;
+}
+.card-preview img {
+  width: 100%; height: 100%; object-fit: cover;
+}
+.card-placeholder {
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  color: var(--text-muted);
+}
+.card-placeholder-icon { font-size: 28px; opacity: 0.35; }
+.card-placeholder-text { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; }
+
+.card-btn {
+  width: 100%; padding: 10px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  cursor: pointer; transition: all 0.3s;
+}
+.card-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+/* Action + Status */
+.action-row {
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  margin-top: 8px;
+}
+
+.ritual-status {
+  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text-muted); text-align: center; min-height: 18px;
+}
+
+.btn-visualize {
+  display: inline-flex; align-items: center; gap: 14px;
+  padding: 22px 60px; width: 100%;
+  justify-content: center;
+  background: linear-gradient(135deg, #b8922a, #c9a84c, #e8c97a, #c9a84c, #b8922a);
+  background-size: 200% auto;
+  color: var(--bg-dark);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase;
+  border: none; cursor: pointer;
+  box-shadow: 0 0 60px rgba(201,168,76,0.4), inset 0 1px 0 rgba(255,255,255,0.2);
+  animation: shimmer 3s linear infinite;
+  transition: box-shadow 0.3s, transform 0.3s, opacity 0.3s;
+}
+.btn-visualize:hover:not(:disabled) { box-shadow: 0 0 80px rgba(201,168,76,0.7); transform: translateY(-3px); }
+.btn-visualize:disabled { opacity: 0.65; cursor: wait; }
+
+/* ── SLIDER ── */
+.slider-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4/3;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  cursor: col-resize;
+  user-select: none;
+  background: var(--bg-panel);
+  display: flex; align-items: center; justify-content: center;
+}
+.slider-empty {
+  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--text-muted); text-align: center;
+}
+.slider-img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover;
+}
+.slider-img.after { clip-path: inset(0 50% 0 0); }
+
+.slider-divider {
+  position: absolute; top: 0; bottom: 0;
+  left: 50%; width: 2px;
+  background: var(--gold);
+  z-index: 10; pointer-events: none;
+  box-shadow: 0 0 20px rgba(201,168,76,0.8);
+  display: none;
+}
+.slider-handle {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--gold);
+  display: none; align-items: center; justify-content: center;
+  box-shadow: 0 0 24px rgba(201,168,76,0.9);
+  z-index: 11; cursor: col-resize;
+  font-size: 11px; color: var(--bg-dark); font-weight: 700;
+}
+.slider-label {
+  position: absolute; bottom: 20px;
+  font-size: 10px; letter-spacing: 4px; text-transform: uppercase;
+  color: rgba(240,234,216,0.7);
+  background: rgba(14,14,14,0.6);
+  padding: 6px 14px; z-index: 5;
+  display: none;
+}
+.slider-label.before { left: 20px; }
+.slider-label.after  { right: 20px; }
+.slider-top-label {
+  position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
+  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--gold); background: rgba(14,14,14,0.7);
+  padding: 6px 20px; z-index: 5;
+  border: 1px solid var(--border);
+  display: none;
+}
+.slider-active .slider-divider,
+.slider-active .slider-handle,
+.slider-active .slider-label,
+.slider-active .slider-top-label,
+.slider-active .slider-empty { display: flex; }
+.slider-active .slider-handle { display: flex; }
+.slider-active .slider-label { display: block; }
+.slider-active .slider-top-label { display: block; }
+.slider-active .slider-empty { display: none; }
+
+/* ── SAVE AREA ── */
+.save-area {
+  display: none;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 28px 24px;
+}
+.save-eyebrow {
+  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--text-muted); margin-bottom: 20px;
+}
+.save-fields {
+  display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px;
+}
+.save-field { flex: 1; min-width: 120px; }
+.save-label {
+  font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text-muted); display: block; margin-bottom: 8px;
+}
+.save-select, .save-input {
+  width: 100%; background: var(--bg-panel);
+  border: 1px solid var(--border);
+  color: var(--text-primary); padding: 10px;
+  font-family: 'Montserrat', sans-serif; font-size: 12px;
+  cursor: pointer; outline: none;
+  transition: border-color 0.3s;
+}
+.save-select:focus, .save-input:focus { border-color: var(--gold); }
+.save-input::placeholder { color: var(--text-muted); }
+
+.btn-save {
+  width: 100%; padding: 14px;
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+  color: var(--bg-dark);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase;
+  border: none; cursor: pointer;
+  transition: opacity 0.3s;
+}
+.btn-save:hover { opacity: 0.9; }
+.btn-save:disabled { opacity: 0.5; cursor: default; }
+
+.save-status { margin-top: 14px; }
+.save-link {
+  color: var(--gold); font-size: 11px; letter-spacing: 2px;
+  text-decoration: underline;
+}
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 28px 6vw;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 8px;
+  text-align: center;
+}
+footer p {
+  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--text-muted);
+}
+footer span, footer a { color: var(--gold); }
+footer a { text-decoration: underline; }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 1; }
+}
+@keyframes shimmer {
+  0%   { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+
+/* ── REVEAL ── */
+.reveal {
+  opacity: 0; transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.in-view { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.15s; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 860px) {
+  nav { padding: 16px 20px; }
+  .nav-links { gap: 20px; }
+  .workspace-grid { grid-template-columns: 1fr; }
+  #workspace { padding: 80px 5vw; }
+  .hero-title { letter-spacing: 8px; }
+  .btn-visualize { padding: 18px 32px; font-size: 11px; }
+}
+@media (max-width: 560px) {
+  .nav-links a { display: none; }
+  .upload-area { grid-template-columns: 1fr; }
+}
+</style>
 </head>
 <body>
-<div class="cursor-glow"></div>
-<div class="site-badge">⚜️ MAGICUM-SITE ⚜️</div>
-<a href="/cabinet" class="cabinet-nav">🔮 КАБІНЕТ</a>
 
-<section class="hero">
-  <div class="hero-bg" id="parallaxBg"></div>
-  <div class="logo">MAGIC<span>UM</span></div>
-  <p style="letter-spacing: 10px; opacity: 0.6; font-size: 0.7rem;">DIGITAL ALCHEMY ATELIER</p>
-  <button class="btn-alchemy" onclick="document.getElementById('lab').scrollIntoView({behavior:'smooth'})">ПОЧАТИ РИТУАЛ</button>
-  <div style="position: absolute; bottom: 32px; font-size: 0.55rem; letter-spacing: 8px; opacity: 0.3;">SCROLL ↓</div>
+<nav>
+  <a href="/" class="nav-logo">MAGICUM</a>
+  <div class="nav-links">
+    <a href="/gallery">Галерея</a>
+    <a href="/cabinet">Кабінет</a>
+  </div>
+  <a href="/cabinet" class="nav-badge">🔮 UA</a>
+</nav>
+
+<main>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+
+  <div class="hero-top">
+    <div class="hero-eyebrow">Digital Alchemist Atelier</div>
+    <h1 class="hero-title">
+      MAGICUM
+      <em>Digital Alchemist</em>
+    </h1>
+    <p class="hero-sub">Зачаруйте ваші меблі одним кліком</p>
+  </div>
+
+  <div class="hero-middle"></div>
+
+  <div class="hero-bottom">
+    <a href="#workspace" class="btn-hero-cta">
+      <span>✦</span>
+      <span>Почати Ритуал</span>
+    </a>
+    <a href="#workspace" class="hero-sub-link">[ Перейти до Лабораторії ]</a>
+  </div>
+
+  <div class="scroll-cue">↓</div>
 </section>
 
-<section id="lab" class="laboratory">
-  <div class="cards-container">
-
-    <div class="card" id="card1">
-      <div style="font-size: 0.65rem; opacity: 0.5; letter-spacing: 3px; margin-bottom: 20px;">I. ВТІЛЕННЯ ФОРМИ</div>
-      <div id="furniturePreview" class="preview-box"><span style="opacity: 0.3;">⬇️ ОЧІКУВАННЯ ФОТО</span></div>
-      <button class="btn-alchemy" style="padding: 8px 20px; font-size: 0.7rem;" onclick="document.getElementById('furnitureInput').click()">ЗАВАНТАЖИТИ</button>
-      <input type="file" id="furnitureInput" accept="image/jpeg,image/png,image/webp" style="display: none;">
-    </div>
-
-    <div class="card" id="card2">
-      <div style="font-size: 0.65rem; opacity: 0.5; letter-spacing: 3px; margin-bottom: 14px;">II. ОБРАННЯ ЕСЕНЦІЇ</div>
-      <div class="fabric-filters">
-        <button class="filter-tab active" data-cat="all">ВСІ</button>
-        <button class="filter-tab" data-cat="оксамит">ОКСАМИТ</button>
-        <button class="filter-tab" data-cat="льон">ЛЬОН</button>
-        <button class="filter-tab" data-cat="шовк">ШОВК</button>
-        <button class="filter-tab" data-cat="шкіра">ШКІРА</button>
-      </div>
-      <div class="fabric-catalog"><div class="fabric-grid" id="fabricGrid"></div></div>
-      <p id="selectedFabricLabel" style="font-size: 0.65rem; color: var(--gold); margin-top: 16px; letter-spacing: 1px;">❖ МАТЕРІЯ НЕ ОБРАНА</p>
-    </div>
-
+<!-- WORKSPACE -->
+<section id="workspace">
+  <div class="section-header reveal">
+    <div class="section-eyebrow">AI · Переобивка · Магія</div>
+    <h2 class="section-title">Чарівна Лабораторія</h2>
   </div>
 
-  <div class="api-area">
-    <button id="generateBtn" class="btn-alchemy" style="width: 100%; margin-top: 36px;">🔮 ПРОЯВИТИ ОБРАЗ</button>
-  </div>
-  <div id="statusMessage" class="status-msg">⛁ очікування завантажень</div>
+  <div class="workspace-grid">
 
-  <div id="resultArea" class="result-area">
-    <div class="slider-compare" id="sliderCompare">
-      <img id="sourceImg" class="slider-img" alt="original">
-      <div class="slider-overlay" id="sliderOverlay"><img id="outputImg" alt="result"></div>
-      <div class="slider-handle" id="sliderHandle"></div>
-    </div>
-    <div style="text-align: center; font-size: 0.6rem; margin-top: 12px; opacity: 0.6;">⇠ перетягніть: оригінал ⇢ візуалізація</div>
-  </div>
+    <!-- ЛІВА КОЛОНКА -->
+    <div class="left-col reveal">
 
-  <div id="saveArea" style="display:none; max-width: 880px; margin: 32px auto 0; padding: 0 20px;">
-    <div style="background: var(--dark-card); border: 1px solid var(--border-dim); padding: 28px 24px; border-radius: 4px;">
-      <div style="font-size: 0.65rem; letter-spacing: 3px; opacity: 0.5; margin-bottom: 20px;">✦ ЗБЕРЕГТИ КЕЙ</div>
-      <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 20px;">
-        <div style="flex: 1; min-width: 140px;">
-          <label style="font-size: 0.6rem; letter-spacing: 2px; opacity: 0.6; display: block; margin-bottom: 8px;">ТИП МЕБЛІВ</label>
-          <select id="furnitureTypeInput" style="width:100%;background:#030302;border:1px solid var(--border-dim);color:var(--text-light);padding:10px;font-family:'Jost',sans-serif;font-size:0.75rem;cursor:pointer;">
-            <option value="диван">Диван</option>
-            <option value="крісло">Крісло</option>
-            <option value="пуф">Пуф</option>
-            <option value="стілець">Стілець</option>
-            <option value="кушетка">Кушетка</option>
-            <option value="інше">Інше</option>
-          </select>
+      <div class="upload-area">
+        <!-- Картка 1: Меблі -->
+        <div class="upload-card" onclick="triggerUpload('furniture')">
+          <div class="card-header">
+            <div class="card-label">
+              <span class="card-icon">🛋</span>
+              Меблі
+            </div>
+            <div class="card-num">1</div>
+          </div>
+          <div class="card-preview" id="furniture-preview">
+            <div class="card-placeholder" id="furniture-placeholder">
+              <div class="card-placeholder-icon">📷</div>
+              <div class="card-placeholder-text">Оберіть фото</div>
+            </div>
+          </div>
+          <button class="card-btn" onclick="triggerUpload('furniture')">Завантажити</button>
+          <input type="file" id="input-furniture" accept="image/*" style="display:none" onchange="handleUpload('furniture', this)">
         </div>
-        <div style="flex: 1; min-width: 140px;">
-          <label style="font-size: 0.6rem; letter-spacing: 2px; opacity: 0.6; display: block; margin-bottom: 8px;">МІСТО (НЕ ОБОВʼЯЗКОВО)</label>
-          <input id="cityInput" type="text" placeholder="Київ" maxlength="50" style="width:100%;background:#030302;border:1px solid var(--border-dim);color:var(--text-light);padding:10px;font-family:'Jost',sans-serif;font-size:0.75rem;">
+
+        <!-- Картка 2: Тканина -->
+        <div class="upload-card" onclick="triggerUpload('fabric')">
+          <div class="card-header">
+            <div class="card-label">
+              <span class="card-icon">🧶</span>
+              Тканина
+            </div>
+            <div class="card-num">2</div>
+          </div>
+          <div class="card-preview" id="fabric-preview">
+            <div class="card-placeholder" id="fabric-placeholder">
+              <div class="card-placeholder-icon">🎨</div>
+              <div class="card-placeholder-text">Зразок тканини</div>
+            </div>
+          </div>
+          <button class="card-btn" onclick="triggerUpload('fabric')">Завантажити</button>
+          <input type="file" id="input-fabric" accept="image/*" style="display:none" onchange="handleUpload('fabric', this)">
         </div>
       </div>
-      <button id="saveBtn" class="btn-alchemy" style="width:100%;">ЗБЕРЕГТИ ТА ОТРИМАТИ ПОСИЛАННЯ</button>
-      <div id="saveStatus" style="display:none; margin-top:16px;"></div>
+
+      <!-- Статус + Кнопка -->
+      <div class="action-row">
+        <div class="ritual-status" id="ritualStatus"></div>
+        <button class="btn-visualize" id="generateBtn" onclick="runVisualize()">
+          <span>✦</span>
+          <span id="btnText">ПРОЯВИТИ ОБРАЗ</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ПРАВА КОЛОНКА -->
+    <div class="right-col reveal reveal-delay-1">
+
+      <!-- Слайдер До/Після -->
+      <div class="slider-container" id="sliderContainer">
+        <div class="slider-empty">Результат з'явиться тут</div>
+        <img class="slider-img before" id="beforeImg" alt="До" draggable="false" style="display:none">
+        <img class="slider-img after" id="afterImg" alt="Після" draggable="false" style="display:none">
+        <div class="slider-top-label">До / Після</div>
+        <div class="slider-divider" id="sliderLine"></div>
+        <div class="slider-handle" id="sliderHandle">⟺</div>
+        <div class="slider-label before">ДО</div>
+        <div class="slider-label after">ПІСЛЯ</div>
+      </div>
+
+      <!-- Зберегти кейс -->
+      <div class="save-area" id="saveArea">
+        <div class="save-eyebrow">✦ Зберегти кейс</div>
+        <div class="save-fields">
+          <div class="save-field">
+            <label class="save-label">Тип меблів</label>
+            <select id="furnitureTypeInput" class="save-select">
+              <option value="диван">Диван</option>
+              <option value="крісло">Крісло</option>
+              <option value="пуф">Пуф</option>
+              <option value="стілець">Стілець</option>
+              <option value="кушетка">Кушетка</option>
+              <option value="інше">Інше</option>
+            </select>
+          </div>
+          <div class="save-field">
+            <label class="save-label">Місто (необов'язково)</label>
+            <input id="cityInput" type="text" placeholder="Київ" maxlength="50" class="save-input">
+          </div>
+        </div>
+        <button id="saveBtn" class="btn-save" onclick="saveCase()">ЗБЕРЕГТИ ТА ОТРИМАТИ ПОСИЛАННЯ</button>
+        <div id="saveStatus" class="save-status"></div>
+      </div>
+
     </div>
   </div>
-
 </section>
 
-<footer>M M X X V I | MAGICUM ATELIER | ART OF TRANSFORMATION</footer>
+</main>
 
-<div class="music-player" id="musicPlayer">
-  <audio id="bgAudio" loop preload="none"></audio>
-  <button class="music-btn" id="musicToggle" title="Фонова музика">♪</button>
-  <span class="music-label">SOUNDTRACK</span>
-</div>
+<footer>
+  <p>© 2026 <span>MAGICUM™</span> · Digital Alchemist Atelier · M M X X V I</p>
+  <p>Зв'язок: <a href="mailto:av89930@gmail.com">Надіслати ворона</a></p>
+</footer>
 
-<script src="/fabrics.js"></script>
 <script>
-// ═══════════════════════════════════════════════════
-// 🎵 Вставте URL вашого треку зі Suno.ai:
-const MUSIC_URL = '';
-// ═══════════════════════════════════════════════════
-
-const FAV_KEY  = 'magicum_favFabrics';
 const HIST_KEY = 'magicum_history';
 const PROF_KEY = 'magicum_profile';
 
 let furnitureBase64 = null, furnitureMime = null;
-let fabricBase64 = null, fabricMime = null, fabricName = '';
+let fabricBase64 = null, fabricMime = null;
+let fabricName = 'завантажена тканина';
 let lastGeneratedB64 = null, lastGeneratedMime = null;
 let currentHistId = null;
 
-const furnitureInput    = document.getElementById('furnitureInput');
-const furniturePreview  = document.getElementById('furniturePreview');
-const generateBtn       = document.getElementById('generateBtn');
-const statusDiv         = document.getElementById('statusMessage');
-const resultArea        = document.getElementById('resultArea');
-const sourceImg         = document.getElementById('sourceImg');
-const outputImg         = document.getElementById('outputImg');
-const selectedFabricSpan = document.getElementById('selectedFabricLabel');
-
-// ─── LocalStorage helpers ─────────────────────────────
-function getFavs() { return JSON.parse(localStorage.getItem(FAV_KEY) || '[]'); }
-function setFavs(arr) { localStorage.setItem(FAV_KEY, JSON.stringify(arr)); }
-
-function saveToHistory(furnitureType, fabName, thumb) {
-  const id = Date.now();
-  const hist = JSON.parse(localStorage.getItem(HIST_KEY) || '[]');
-  hist.unshift({ id, date: new Date().toISOString(), furnitureType, fabricName: fabName, thumb, caseUrl: null });
-  if (hist.length > 50) hist.splice(50);
-  localStorage.setItem(HIST_KEY, JSON.stringify(hist));
-  return id;
+// ── Upload ──
+function triggerUpload(type) {
+  document.getElementById('input-' + type).click();
 }
 
-function updateHistoryCaseUrl(id, caseUrl) {
-  const hist = JSON.parse(localStorage.getItem(HIST_KEY) || '[]');
-  const item = hist.find(h => h.id === id);
-  if (item) { item.caseUrl = caseUrl; localStorage.setItem(HIST_KEY, JSON.stringify(hist)); }
-}
-
-// ─── Fabric grid ──────────────────────────────────────
-const fabricGrid = document.getElementById('fabricGrid');
-const initFavs = getFavs();
-fabricPresets.forEach(preset => {
-  const imgSrc = generateFabricSVG(preset);
-  const isFav = initFavs.includes(preset.name);
-  const div = document.createElement('div');
-  div.className = 'fabric-item';
-  div.dataset.name = preset.name;
-  div.dataset.cat = preset.cat;
-  div.innerHTML = `<img src="${imgSrc}" alt="${preset.name}"><button class="fav-btn${isFav ? ' fav-active' : ''}" title="Атлас Бажань">♥</button><span>${preset.name}</span>`;
-
-  div.addEventListener('click', e => {
-    if (e.target.classList.contains('fav-btn')) return;
-    document.querySelectorAll('.fabric-item').forEach(el => el.classList.remove('active'));
-    div.classList.add('active');
-    fabricName = preset.name;
-    selectedFabricSpan.innerText = `✓ ${preset.name}`;
-    const svgStr = decodeURIComponent(imgSrc.replace('data:image/svg+xml,', ''));
-    fabricBase64 = btoa(unescape(encodeURIComponent(svgStr)));
-    fabricMime = 'image/svg+xml';
-  });
-
-  div.querySelector('.fav-btn').addEventListener('click', e => {
-    e.stopPropagation();
-    const btn = e.currentTarget;
-    const favs = getFavs();
-    const idx = favs.indexOf(preset.name);
-    if (idx === -1) { favs.push(preset.name); btn.classList.add('fav-active'); }
-    else { favs.splice(idx, 1); btn.classList.remove('fav-active'); }
-    setFavs(favs);
-  });
-
-  fabricGrid.appendChild(div);
-});
-
-// ─── Fabric filters ───────────────────────────────────
-document.querySelectorAll('.filter-tab').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    const cat = btn.dataset.cat;
-    document.querySelectorAll('.fabric-item').forEach(item => {
-      item.style.display = (cat === 'all' || item.dataset.cat === cat) ? '' : 'none';
-    });
-  });
-});
-
-// ─── Furniture upload ─────────────────────────────────
-furnitureInput.addEventListener('change', e => {
-  const file = e.target.files[0];
+function handleUpload(type, input) {
+  const file = input.files[0];
   if (!file) return;
   const reader = new FileReader();
   reader.onload = ev => {
     const full = ev.target.result;
-    furnitureBase64 = full.split(',')[1];
-    furnitureMime = file.type;
-    furniturePreview.innerHTML = `<img src="${full}">`;
-    sourceImg.src = full;
+    const b64 = full.split(',')[1];
+    const mime = file.type;
+
+    const preview = document.getElementById(type + '-preview');
+    const placeholder = document.getElementById(type + '-placeholder');
+
+    if (placeholder) placeholder.style.display = 'none';
+
+    let img = preview.querySelector('img');
+    if (!img) { img = document.createElement('img'); preview.appendChild(img); }
+    img.src = full;
+
+    if (type === 'furniture') {
+      furnitureBase64 = b64;
+      furnitureMime = mime;
+      const beforeImg = document.getElementById('beforeImg');
+      beforeImg.src = full;
+    } else {
+      fabricBase64 = b64;
+      fabricMime = mime;
+      fabricName = file.name.replace(/\.[^/.]+$/, '') || 'тканина';
+    }
   };
   reader.readAsDataURL(file);
-});
+}
 
-// ─── Compress ─────────────────────────────────────────
+// ── Compress ──
 function compressImage(base64, mime, maxW = 800, maxH = 600, quality = 0.8) {
   return new Promise(resolve => {
     const img = new Image();
@@ -219,13 +682,43 @@ function compressImage(base64, mime, maxW = 800, maxH = 600, quality = 0.8) {
   });
 }
 
-// ─── Generate ─────────────────────────────────────────
-generateBtn.addEventListener('click', async () => {
-  if (!furnitureBase64) { statusDiv.innerText = '❌ Завантажте фото меблів'; statusDiv.className = 'status-msg error'; return; }
-  if (!fabricBase64)    { statusDiv.innerText = '❌ Оберіть тканину з каталогу'; statusDiv.className = 'status-msg error'; return; }
-  generateBtn.disabled = true;
-  statusDiv.innerText = '✨ Алхімія запущена...';
-  statusDiv.className = 'status-msg';
+// ── Status ──
+function setStatus(msg, color = 'var(--text-muted)') {
+  const el = document.getElementById('ritualStatus');
+  el.textContent = msg;
+  el.style.color = color;
+}
+
+function setBtnState(loading) {
+  const btn = document.getElementById('generateBtn');
+  btn.disabled = loading;
+  document.getElementById('btnText').textContent = loading ? 'РИТУАЛ ТРИВАЄ...' : 'ПРОЯВИТИ ОБРАЗ';
+}
+
+// ── History ──
+function saveToHistory(furnitureType, fabName, thumb) {
+  const id = Date.now();
+  const hist = JSON.parse(localStorage.getItem(HIST_KEY) || '[]');
+  hist.unshift({ id, date: new Date().toISOString(), furnitureType, fabricName: fabName, thumb, caseUrl: null });
+  if (hist.length > 50) hist.splice(50);
+  localStorage.setItem(HIST_KEY, JSON.stringify(hist));
+  return id;
+}
+
+function updateHistoryCaseUrl(id, caseUrl) {
+  const hist = JSON.parse(localStorage.getItem(HIST_KEY) || '[]');
+  const item = hist.find(h => h.id === id);
+  if (item) { item.caseUrl = caseUrl; localStorage.setItem(HIST_KEY, JSON.stringify(hist)); }
+}
+
+// ── Main ritual ──
+async function runVisualize() {
+  if (!furnitureBase64) { setStatus('⚠ Завантажте фото меблів', 'var(--gold)'); return; }
+  if (!fabricBase64)    { setStatus('⚠ Завантажте фото тканини', 'var(--gold)'); return; }
+
+  setBtnState(true);
+  setStatus('✦ Алхімія запущена...', 'var(--gold-light)');
+
   try {
     const response = await fetch('/.netlify/functions/ritual', {
       method: 'POST',
@@ -233,66 +726,74 @@ generateBtn.addEventListener('click', async () => {
       body: JSON.stringify({ furnitureBase64, furnitureMime, fabricBase64, fabricMime })
     });
     const data = await response.json();
-    if (!response.ok || !data.success) throw new Error(data.error || 'Помилка');
+    if (!response.ok || !data.success) throw new Error(data.error || 'Помилка сервера');
 
-    const resultUrl = `data:${data.mimeType || 'image/jpeg'};base64,${data.imageBase64}`;
-    outputImg.src = resultUrl;
     lastGeneratedB64 = data.imageBase64;
     lastGeneratedMime = data.mimeType || 'image/jpeg';
 
-    resultArea.style.display = 'block';
+    const resultUrl = `data:${lastGeneratedMime};base64,${lastGeneratedB64}`;
+    const afterImg = document.getElementById('afterImg');
+    afterImg.src = resultUrl;
+
+    const beforeImg = document.getElementById('beforeImg');
+    beforeImg.style.display = '';
+    afterImg.style.display = '';
+
+    const container = document.getElementById('sliderContainer');
+    container.classList.add('slider-active');
+    initSlider(container);
+
     document.getElementById('saveArea').style.display = 'block';
-    document.getElementById('saveStatus').style.display = 'none';
+    document.getElementById('saveStatus').innerHTML = '';
 
     const prof = JSON.parse(localStorage.getItem(PROF_KEY) || '{}');
-    const cityInput = document.getElementById('cityInput');
-    if (prof.city && !cityInput.value) cityInput.value = prof.city;
-
-    initSlider();
+    if (prof.city) document.getElementById('cityInput').value = prof.city;
 
     const furnitureType = document.getElementById('furnitureTypeInput').value;
-    const histThumb = await compressImage(data.imageBase64, lastGeneratedMime, 200, 150, 0.4);
+    const histThumb = await compressImage(lastGeneratedB64, lastGeneratedMime, 200, 150, 0.4);
     currentHistId = saveToHistory(furnitureType, fabricName, histThumb);
 
-    statusDiv.innerText = '✅ Образ проявлено! Порівняйте оригінал і візуалізацію.';
-    statusDiv.className = 'status-msg success';
+    setStatus('✅ Образ проявлено! Порівняйте До та Після.', 'var(--gold-light)');
   } catch (err) {
-    statusDiv.innerText = `❌ Помилка: ${err.message}`;
-    statusDiv.className = 'status-msg error';
-  } finally { generateBtn.disabled = false; }
-});
-
-// ─── Slider ───────────────────────────────────────────
-function initSlider() {
-  const container = document.getElementById('sliderCompare');
-  const overlay   = document.getElementById('sliderOverlay');
-  const handle    = document.getElementById('sliderHandle');
-  if (!container) return;
-  let drag = false;
-  const update = clientX => {
-    const rect = container.getBoundingClientRect();
-    const pct = Math.min(Math.max((clientX - rect.left) / rect.width, 0), 1) * 100;
-    handle.style.left = `${pct}%`;
-    overlay.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
-  };
-  handle.addEventListener('mousedown', () => drag = true);
-  window.addEventListener('mouseup', () => drag = false);
-  window.addEventListener('mousemove', e => { if (drag) update(e.clientX); });
-  handle.addEventListener('touchstart', () => drag = true, { passive: true });
-  window.addEventListener('touchend', () => drag = false);
-  window.addEventListener('touchmove', e => { if (drag && e.touches[0]) update(e.touches[0].clientX); }, { passive: true });
-  handle.style.left = '50%';
-  overlay.style.clipPath = 'inset(0 50% 0 0)';
+    setStatus('❌ ' + err.message, '#e05555');
+  } finally {
+    setBtnState(false);
+  }
 }
 
-// ─── Save case ────────────────────────────────────────
-document.getElementById('saveBtn').addEventListener('click', async () => {
+// ── Slider ──
+function initSlider(container) {
+  const afterImg = document.getElementById('afterImg');
+  const line = document.getElementById('sliderLine');
+  const handle = document.getElementById('sliderHandle');
+  let dragging = false;
+
+  function update(clientX) {
+    const rect = container.getBoundingClientRect();
+    const pct = Math.min(Math.max((clientX - rect.left) / rect.width * 100, 0), 100);
+    line.style.left = handle.style.left = pct + '%';
+    afterImg.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
+  }
+
+  handle.onmousedown = () => dragging = true;
+  window.addEventListener('mouseup', () => dragging = false);
+  window.addEventListener('mousemove', e => { if (dragging) update(e.clientX); });
+  handle.addEventListener('touchstart', () => dragging = true, { passive: true });
+  window.addEventListener('touchend', () => dragging = false);
+  window.addEventListener('touchmove', e => { if (dragging && e.touches[0]) update(e.touches[0].clientX); }, { passive: true });
+  container.addEventListener('click', e => update(e.clientX));
+
+  update(container.getBoundingClientRect().left + container.offsetWidth / 2);
+}
+
+// ── Save case ──
+async function saveCase() {
   if (!lastGeneratedB64 || !furnitureBase64) return;
-  const saveBtn    = document.getElementById('saveBtn');
+  const saveBtn = document.getElementById('saveBtn');
   const saveStatus = document.getElementById('saveStatus');
   saveBtn.disabled = true;
-  saveStatus.style.display = 'block';
-  saveStatus.innerHTML = '<span style="opacity:0.6;font-size:0.75rem;letter-spacing:1px;">⏳ зберігаємо...</span>';
+  saveStatus.innerHTML = '<span style="font-size:11px;letter-spacing:1px;color:var(--text-muted);">⏳ Зберігаємо...</span>';
+
   try {
     const [beforeCompressed, afterCompressed] = await Promise.all([
       compressImage(furnitureBase64, furnitureMime),
@@ -300,6 +801,7 @@ document.getElementById('saveBtn').addEventListener('click', async () => {
     ]);
     const furnitureType = document.getElementById('furnitureTypeInput').value;
     const city = document.getElementById('cityInput').value.trim();
+
     const res = await fetch('/case-save', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -307,64 +809,34 @@ document.getElementById('saveBtn').addEventListener('click', async () => {
     });
     const data = await res.json();
     if (!data.success) throw new Error(data.error || 'Помилка збереження');
-    const caseUrl = window.location.origin + data.url;
 
+    const caseUrl = window.location.origin + data.url;
     if (currentHistId) updateHistoryCaseUrl(currentHistId, caseUrl);
     if (city) {
       const prof = JSON.parse(localStorage.getItem(PROF_KEY) || '{}');
-      prof.city = city;
-      localStorage.setItem(PROF_KEY, JSON.stringify(prof));
+      prof.city = city; localStorage.setItem(PROF_KEY, JSON.stringify(prof));
     }
 
     saveStatus.innerHTML = `
-      <div style="color:#a5d6a5;font-size:0.75rem;margin-bottom:12px;letter-spacing:1px;">✅ Кейс збережено!</div>
-      <div style="display:flex;gap:8px;align-items:center;">
-        <input readonly value="${caseUrl}" style="flex:1;background:#030302;border:1px solid var(--border-dim);color:var(--gold);padding:10px;font-size:0.65rem;font-family:'Jost',sans-serif;letter-spacing:1px;">
-        <button onclick="navigator.clipboard.writeText('${caseUrl}')" class="btn-alchemy" style="padding:10px 16px;font-size:0.6rem;white-space:nowrap;">COPY</button>
-      </div>
-      <div style="margin-top:10px;display:flex;gap:20px;">
-        <a href="${data.url}" target="_blank" style="color:var(--gold);font-size:0.65rem;letter-spacing:2px;">ВІДКРИТИ КЕЙС →</a>
-        <a href="/cabinet" style="color:var(--gold);font-size:0.65rem;letter-spacing:2px;opacity:0.6;">КАБІНЕТ →</a>
+      <div style="color:var(--gold-light);font-size:11px;margin-bottom:10px;letter-spacing:1px;">✅ Кейс збережено!</div>
+      <input readonly value="${caseUrl}" style="width:100%;background:var(--bg-panel);border:1px solid var(--border);color:var(--gold);padding:10px;font-size:11px;font-family:'Montserrat',sans-serif;letter-spacing:1px;margin-bottom:8px;">
+      <div style="display:flex;gap:16px;">
+        <a href="${data.url}" target="_blank" class="save-link">Відкрити кейс →</a>
+        <a href="/gallery" class="save-link" style="opacity:0.6;">Галерея →</a>
       </div>`;
   } catch (err) {
-    saveStatus.innerHTML = `<span style="color:#e0a0a0;font-size:0.75rem;">❌ ${err.message}</span>`;
+    saveStatus.innerHTML = `<span style="color:#e05555;font-size:11px;">❌ ${err.message}</span>`;
     saveBtn.disabled = false;
   }
-});
-
-// ─── Cursor parallax ──────────────────────────────────
-window.addEventListener('mousemove', e => {
-  document.body.style.setProperty('--x', e.clientX + 'px');
-  document.body.style.setProperty('--y', e.clientY + 'px');
-  const bg = document.getElementById('parallaxBg');
-  if (bg) bg.style.transform = `translate(${(e.clientX - window.innerWidth/2) * 0.01}px, ${(e.clientY - window.innerHeight/2) * 0.01}px) scale(1.08)`;
-});
-
-// ─── Scroll reveal ────────────────────────────────────
-new IntersectionObserver(entries => entries.forEach(e => e.isIntersecting && e.target.classList.add('reveal')), { threshold: 0.2 }).observe(document.getElementById('card1'));
-new IntersectionObserver(entries => entries.forEach(e => e.isIntersecting && e.target.classList.add('reveal')), { threshold: 0.2 }).observe(document.getElementById('card2'));
-
-// ─── Music player ─────────────────────────────────────
-const audio    = document.getElementById('bgAudio');
-const musicBtn = document.getElementById('musicToggle');
-
-if (MUSIC_URL) {
-  audio.src = MUSIC_URL;
-  musicBtn.addEventListener('click', async () => {
-    if (audio.paused) {
-      await audio.play().catch(() => {});
-      musicBtn.innerHTML = '♫';
-      musicBtn.classList.add('playing');
-    } else {
-      audio.pause();
-      musicBtn.innerHTML = '♪';
-      musicBtn.classList.remove('playing');
-    }
-  });
-} else {
-  musicBtn.classList.add('disabled');
-  musicBtn.title = 'Встановіть MUSIC_URL у коді для увімкнення музики';
 }
+
+// ── Scroll reveal ──
+const observer = new IntersectionObserver(entries =>
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in-view'); }),
+  { threshold: 0.15 }
+);
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 </script>
+
 </body>
 </html>
