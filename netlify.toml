@@ -43,5 +43,5 @@
 
 [[redirects]]
   from = "/cabinet"
-  to = "/cabinet/index.html"
-  status = 200
+  to = "/?cabinet=open"
+  status = 302
