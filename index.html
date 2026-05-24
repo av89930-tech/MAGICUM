@@ -726,6 +726,7 @@ window.addEventListener('DOMContentLoaded', () => {
   sliderDemo.classList.add('slider-active');
   afterImgEl.onload = () => initSlider(sliderDemo);
   afterImgEl.src = 'demo-result.jpg';
+  if (afterImgEl.complete) initSlider(sliderDemo);
 
   updateNavBadge();
 
@@ -880,9 +881,13 @@ function initSlider(container) {
   const handle   = document.getElementById('sliderHandle');
 
   handle.style.touchAction = 'none';
+  container.style.touchAction = 'none';
+
+  let pos = 50, dir = 1, animId = null, manual = false, dragging = false;
 
   function setPos(pct) {
     pct = Math.min(Math.max(pct, 2), 98);
+    pos = pct;
     line.style.left   = pct + '%';
     handle.style.left = pct + '%';
     afterImg.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
@@ -894,16 +899,33 @@ function initSlider(container) {
     setPos((clientX - rect.left) / rect.width * 100);
   }
 
-  let dragging = false;
-  handle.onmousedown  = e => { dragging = true; e.preventDefault(); };
-  handle.ontouchstart = e => { dragging = true; };
-  window.onmouseup    = () => dragging = false;
-  window.ontouchend   = () => dragging = false;
-  window.onmousemove  = e => { if (dragging) fromClientX(e.clientX); };
-  window.ontouchmove  = e => { if (dragging && e.touches[0]) { e.preventDefault(); fromClientX(e.touches[0].clientX); } };
-  container.onclick   = e => { if (e.target !== handle) fromClientX(e.clientX); };
+  function autoStep() {
+    pos += dir * 0.35;
+    if (pos >= 85) dir = -1;
+    if (pos <= 15) dir =  1;
+    setPos(pos);
+    animId = requestAnimationFrame(autoStep);
+  }
+
+  function stopAuto() {
+    if (!manual) {
+      manual = true;
+      cancelAnimationFrame(animId);
+    }
+  }
+
+  // Mouse
+  container.onmousedown = e => { stopAuto(); dragging = true; fromClientX(e.clientX); e.preventDefault(); };
+  window.onmouseup      = () => dragging = false;
+  window.onmousemove    = e => { if (dragging) fromClientX(e.clientX); };
+
+  // Touch
+  container.ontouchstart = e => { stopAuto(); dragging = true; if (e.touches[0]) fromClientX(e.touches[0].clientX); };
+  window.ontouchend      = () => dragging = false;
+  window.ontouchmove     = e => { if (dragging && e.touches[0]) { e.preventDefault(); fromClientX(e.touches[0].clientX); } };
 
   setPos(50);
+  setTimeout(() => { animId = requestAnimationFrame(autoStep); }, 300);
 }
 
 // ── History ──
