@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="description" content="MAGICUM — AI-візуалізація переобивки м'яких меблів. Завантажте фото дивана та зразок тканини — отримайте магічний результат за секунди.">
-  <meta name="theme-color" content="#0e0e0e">
-  <meta property="og:title" content="MAGICUM — Чарівна Лабораторія">
-  <meta property="og:description" content="Зачаруйте ваші меблі одним кліком. AI-перетворення за секунди.">
-  <meta property="og:type" content="website">
-  <title>MAGICUM: AI візуалізація переобивки меблів</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>">
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="MAGICUM — AI-візуалізація переобивки м'яких меблів. Завантажте фото дивана та зразок тканини — отримайте магічний результат за секунди.">
+<meta name="keywords" content="переобивка меблів, AI візуалізація, реставрація диванів, дизайн інтер'єру, MAGICUM">
+<meta name="theme-color" content="#0e0e0e">
+<meta property="og:title" content="MAGICUM — Чарівна Лабораторія">
+<meta property="og:description" content="Зачаруйте ваші меблі одним кліком. AI-перетворення за секунди.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://magicum.netlify.app/">
+<title>MAGICUM: AI візуалізація переобивки меблів</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -34,9 +36,9 @@ body {
   font-family: 'Montserrat', sans-serif;
   font-weight: 300;
   overflow-x: hidden;
+  cursor: default;
 }
 
-/* ── SCROLLBAR ── */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: var(--bg-dark); }
 ::-webkit-scrollbar-thumb { background: var(--gold-dark); }
@@ -46,273 +48,237 @@ nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
   display: flex; align-items: center; justify-content: space-between;
   padding: 20px 48px;
+  padding-top: max(20px, env(safe-area-inset-top));
   background: linear-gradient(to bottom, rgba(14,14,14,0.95), transparent);
   backdrop-filter: blur(4px);
+  transition: opacity 0.4s, transform 0.4s;
 }
+nav.hide-nav { opacity: 0; pointer-events: none; transform: translateY(-100%); }
 .nav-logo {
   font-family: 'Cormorant Garamond', serif;
   font-size: 13px; font-weight: 400; letter-spacing: 4px;
   color: var(--gold-light); text-transform: uppercase;
-  text-decoration: none;
 }
 .nav-links { display: flex; gap: 36px; align-items: center; }
 .nav-links a {
   font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
-  color: var(--text-muted); text-decoration: none;
-  transition: color 0.3s;
+  color: var(--text-muted); text-decoration: none; transition: color 0.3s;
 }
 .nav-links a:hover { color: var(--gold-light); }
-.nav-badge {
+.nav-lang {
   font-size: 11px; letter-spacing: 2px; color: var(--gold);
   border: 1px solid var(--border); padding: 6px 14px;
-  cursor: pointer; transition: all 0.3s; text-decoration: none;
+  cursor: pointer; transition: all 0.3s;
 }
-.nav-badge:hover { background: var(--gold); color: var(--bg-dark); }
+.nav-lang:hover { background: var(--gold); color: var(--bg-dark); }
+
+.btn-shop {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px; font-weight: 600; letter-spacing: 2px;
+  color: var(--gold-light); background: transparent;
+  border: 1px solid rgba(201,168,76,0.4); padding: 8px 16px;
+  cursor: pointer; position: relative; overflow: hidden;
+  transition: all 0.3s; white-space: normal; text-align: center; line-height: 1.4;
+}
+.btn-shop::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(201,168,76,0.15), transparent);
+  opacity: 0; transition: opacity 0.3s;
+}
+.btn-shop:hover { border-color: var(--gold); color: var(--gold); box-shadow: 0 0 20px rgba(201,168,76,0.2); }
+.btn-shop:hover::before { opacity: 1; }
 
 /* ── HERO ── */
 #hero {
-  position: relative;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  padding: 90px 8vw 48px;
-  overflow: hidden;
-  text-align: center;
+  position: relative; min-height: 100vh;
+  display: flex; flex-direction: column;
+  justify-content: space-between; align-items: center;
+  padding: 90px 8vw 48px; overflow: hidden; text-align: center;
 }
-
 .hero-bg {
   position: absolute; inset: 0; z-index: 0;
-  background:
-    linear-gradient(to bottom, rgba(14,14,14,0.7) 0%, rgba(14,14,14,0.3) 40%, rgba(14,14,14,0.6) 70%, rgba(14,14,14,0.95) 100%),
-    url('https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=1400&q=80') center/cover no-repeat;
+  background: url('https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=1400&q=80') center/cover no-repeat;
 }
-
+.hero-bg::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(180deg,
+    rgba(10,10,10,0.80) 0%, rgba(10,10,10,0.40) 25%,
+    rgba(10,10,10,0.10) 50%, rgba(10,10,10,0.40) 75%,
+    rgba(10,10,10,0.85) 100%);
+}
+.hero-bg::before {
+  content: ''; position: absolute; inset: 30px;
+  border: 1px solid rgba(201,168,76,0.12);
+  z-index: 1; pointer-events: none;
+}
 .hero-top {
-  position: relative; z-index: 2;
-  width: 100%;
+  position: relative; z-index: 2; width: 100%;
   animation: fadeUp 0.8s ease both;
 }
-
-.hero-eyebrow {
-  font-size: 10px; letter-spacing: 6px; text-transform: uppercase;
-  color: var(--gold); margin-bottom: 24px;
-  display: flex; align-items: center; justify-content: center; gap: 16px;
-}
-.hero-eyebrow::before,
-.hero-eyebrow::after {
-  content: ''; width: 40px; height: 1px; background: var(--gold);
-}
-
-.hero-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(60px, 10vw, 120px);
-  font-weight: 300; letter-spacing: 16px; text-transform: uppercase;
-  color: var(--text-primary);
-  line-height: 0.9;
-  margin-bottom: 16px;
-}
-.hero-title em {
-  display: block;
-  font-style: italic; font-size: 0.35em; letter-spacing: 8px;
-  color: var(--gold-light);
-  margin-top: 12px;
-}
-
-.hero-sub {
-  color: var(--gold);
-  font-size: 12px; letter-spacing: 4px; text-transform: uppercase;
-  margin-top: 20px;
-}
-
 .hero-middle { flex: 1; min-height: 40px; }
-
 .hero-bottom {
   position: relative; z-index: 2;
-  display: flex; flex-direction: column;
-  align-items: center; gap: 14px;
+  display: flex; flex-direction: column; align-items: center; gap: 14px;
   width: 100%; max-width: 480px;
   animation: fadeUp 0.8s 0.4s ease both;
-  opacity: 0;
-  animation-fill-mode: forwards;
 }
-
+.hero-eyebrow {
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  font-size: 9px; letter-spacing: 5px; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 20px;
+}
+.hero-eyebrow::before, .hero-eyebrow::after {
+  content: ''; width: 40px; height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+}
+.hero-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(48px, 14vw, 92px);
+  font-weight: 300; line-height: 0.95;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text-primary); margin-bottom: 12px;
+}
+.hero-title em {
+  display: block; font-style: italic; font-size: 0.5em;
+  color: var(--gold-light); letter-spacing: 4px; margin-top: 8px;
+}
+.hero-sub {
+  font-size: 14px; color: var(--text-muted);
+  letter-spacing: 2px; font-weight: 400;
+}
 .btn-hero-cta {
-  display: inline-flex; align-items: center; gap: 12px;
-  padding: 18px 56px;
-  background: linear-gradient(135deg, #b8922a, #c9a84c, #e8c97a, #c9a84c, #b8922a);
-  background-size: 200% auto;
-  color: var(--bg-dark);
-  font-family: 'Montserrat', sans-serif;
-  font-size: 11px; font-weight: 700; letter-spacing: 5px; text-transform: uppercase;
-  text-decoration: none;
-  border: none; cursor: pointer;
-  animation: shimmer 3s linear infinite;
-  box-shadow: 0 0 40px rgba(201,168,76,0.3);
-  transition: box-shadow 0.3s, transform 0.3s;
-  width: 100%;
-  justify-content: center;
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 16px 36px; width: 100%; justify-content: center;
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+  color: var(--bg-dark); font-family: 'Montserrat', sans-serif;
+  font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+  text-decoration: none; border: none; cursor: pointer;
+  transition: all 0.3s; box-shadow: 0 0 40px rgba(201,168,76,0.3);
 }
-.btn-hero-cta:hover { box-shadow: 0 0 60px rgba(201,168,76,0.6); transform: translateY(-2px); }
-
+.btn-hero-cta:hover { box-shadow: 0 0 60px rgba(201,168,76,0.6); transform: translateY(-3px); }
 .hero-sub-link {
-  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
-  color: var(--text-muted); text-decoration: none;
-  transition: color 0.3s;
+  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text-muted); text-decoration: none; transition: color 0.3s;
 }
 .hero-sub-link:hover { color: var(--gold-light); }
 
-.scroll-cue {
-  position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
-  z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 6px;
-  font-size: 9px; letter-spacing: 4px; text-transform: uppercase; color: var(--text-muted);
-  animation: scrollPulse 2s ease-in-out infinite;
-}
-
 /* ── WORKSPACE ── */
-#workspace {
-  padding: 120px 6vw;
-  position: relative;
-  scroll-margin-top: 20px;
-}
-
-.section-header {
-  text-align: center; margin-bottom: 72px;
-}
-.section-eyebrow {
-  font-size: 10px; letter-spacing: 6px; text-transform: uppercase;
-  color: var(--gold); margin-bottom: 16px;
-}
+#workspace { padding: 80px 6vw; position: relative; z-index: 1; }
+.section-header { margin-bottom: 40px; text-align: center; }
 .section-title {
   font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(42px, 6vw, 72px);
-  font-weight: 300; letter-spacing: 6px; text-transform: uppercase;
-  color: var(--text-primary);
+  font-size: clamp(32px, 5vw, 48px); font-weight: 300; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--text-primary); margin-bottom: 8px;
 }
+.section-subtitle { font-size: 12px; letter-spacing: 2px; color: var(--text-muted); }
 
 .workspace-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  max-width: 1200px; margin: 0 auto;
-  align-items: start;
+  display: grid; grid-template-columns: 2fr 1fr;
+  gap: 24px; max-width: 1200px; margin: 0 auto;
 }
-
-.left-col { display: flex; flex-direction: column; gap: 8px; }
-.right-col { display: flex; flex-direction: column; gap: 16px; }
+.left-col, .right-col { display: flex; flex-direction: column; gap: 16px; }
 
 /* Upload cards */
-.upload-area {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
-}
-
+.upload-area { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .upload-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  padding: 24px;
-  transition: border-color 0.3s;
-  cursor: pointer;
+  background: var(--bg-card); border: 1px solid var(--border);
+  padding: 20px; cursor: pointer; transition: all 0.3s;
   position: relative; overflow: hidden;
-  display: flex; flex-direction: column;
+  display: flex; flex-direction: column; gap: 12px;
 }
-.upload-card::before {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(135deg, rgba(201,168,76,0.05), transparent);
-  opacity: 0; transition: opacity 0.3s;
-}
-.upload-card:hover { border-color: rgba(201,168,76,0.5); }
-.upload-card:hover::before { opacity: 1; }
-
-.card-header {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 16px;
-}
+.upload-card:hover { background: var(--bg-panel); border-color: var(--gold); box-shadow: 0 0 30px rgba(201,168,76,0.15); }
+.card-header { display: flex; align-items: center; justify-content: space-between; }
 .card-label {
   display: flex; align-items: center; gap: 8px;
-  font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
-  color: var(--text-muted);
+  font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted);
 }
-.card-icon { font-size: 14px; }
+.card-icon { font-size: 18px; }
 .card-num {
   width: 22px; height: 22px; border-radius: 50%;
   background: var(--gold); color: var(--bg-dark);
   font-size: 10px; font-weight: 700;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
-
 .card-preview {
-  width: 100%; aspect-ratio: 4/3;
-  background: var(--bg-panel);
-  border: 1px dashed rgba(201,168,76,0.2);
-  display: flex; align-items: center; justify-content: center;
-  overflow: hidden; position: relative; margin-bottom: 12px;
-  flex: 1;
+  width: 100%; aspect-ratio: 1;
+  background: var(--bg-panel); border: 1px dashed rgba(201,168,76,0.2);
+  overflow: hidden; display: flex; align-items: center; justify-content: center;
 }
-.card-preview img {
-  width: 100%; height: 100%; object-fit: cover;
+.card-preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.card-preview-empty {
+  font-size: 10px; color: var(--text-muted); letter-spacing: 2px;
+  text-align: center; padding: 12px;
 }
-.card-placeholder {
-  display: flex; flex-direction: column; align-items: center; gap: 8px;
-  color: var(--text-muted);
-}
-.card-placeholder-icon { font-size: 28px; opacity: 0.35; }
-.card-placeholder-text { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; }
-
 .card-btn {
-  width: 100%; padding: 10px;
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text-muted);
-  font-family: 'Montserrat', sans-serif;
+  width: 100%; padding: 9px;
+  background: transparent; border: 1px solid var(--border);
+  color: var(--text-muted); font-family: 'Montserrat', sans-serif;
   font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
   cursor: pointer; transition: all 0.3s;
 }
 .card-btn:hover { border-color: var(--gold); color: var(--gold); }
 
-/* Action + Status */
-.action-row {
-  display: flex; flex-direction: column; align-items: center; gap: 10px;
-  margin-top: 8px;
-}
-
-.ritual-status {
-  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
-  color: var(--text-muted); text-align: center; min-height: 18px;
-}
-
+/* Visualize button */
 .btn-visualize {
   display: inline-flex; align-items: center; gap: 14px;
-  padding: 22px 60px; width: 100%;
-  justify-content: center;
+  padding: 22px 60px; width: 100%; justify-content: center;
   background: linear-gradient(135deg, #b8922a, #c9a84c, #e8c97a, #c9a84c, #b8922a);
   background-size: 200% auto;
-  color: var(--bg-dark);
-  font-family: 'Montserrat', sans-serif;
+  color: var(--bg-dark); font-family: 'Montserrat', sans-serif;
   font-size: 13px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase;
-  border: none; cursor: pointer;
+  border: none; cursor: pointer; transition: all 0.4s;
   box-shadow: 0 0 60px rgba(201,168,76,0.4), inset 0 1px 0 rgba(255,255,255,0.2);
   animation: shimmer 3s linear infinite;
-  transition: box-shadow 0.3s, transform 0.3s, opacity 0.3s;
 }
 .btn-visualize:hover:not(:disabled) { box-shadow: 0 0 80px rgba(201,168,76,0.7); transform: translateY(-3px); }
 .btn-visualize:disabled { opacity: 0.65; cursor: wait; }
 
+#ritualStatus {
+  margin-top: 12px; font-size: 11px; letter-spacing: 2px;
+  text-transform: uppercase; min-height: 16px; text-align: center;
+  color: var(--text-muted);
+}
+
+/* Right col — fabric catalog */
+.catalog-box {
+  background: var(--bg-card); border: 1px solid var(--border); padding: 20px;
+}
+.catalog-label {
+  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 16px; text-align: center;
+}
+.catalog-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px;
+}
+.catalog-item {
+  aspect-ratio: 1; overflow: hidden; cursor: pointer;
+  border: 2px solid transparent; transition: all 0.2s; position: relative;
+}
+.catalog-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.catalog-item:hover { border-color: var(--gold); }
+.catalog-item.selected { border-color: var(--gold); box-shadow: 0 0 16px rgba(201,168,76,0.4); }
+.catalog-item-name {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: rgba(0,0,0,0.7); font-size: 8px; letter-spacing: 1px;
+  text-transform: uppercase; color: var(--text-muted);
+  padding: 4px 6px; text-align: center;
+}
+.catalog-hint {
+  font-size: 9px; letter-spacing: 1px; color: var(--text-muted);
+  text-align: center; margin-top: 12px;
+}
+
 /* ── SLIDER ── */
+.slider-wrap { max-width: 1200px; margin: 32px auto 0; }
 .slider-container {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 4/3;
-  overflow: hidden;
-  border: 1px solid var(--border);
-  cursor: col-resize;
-  user-select: none;
+  position: relative; width: 100%; aspect-ratio: 16/7;
+  overflow: hidden; border: 1px solid var(--border);
+  cursor: col-resize; user-select: none;
   background: var(--bg-panel);
   display: flex; align-items: center; justify-content: center;
 }
 .slider-empty {
-  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+  font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
   color: var(--text-muted); text-align: center;
 }
 .slider-img {
@@ -320,14 +286,10 @@ nav {
   width: 100%; height: 100%; object-fit: cover;
 }
 .slider-img.after { clip-path: inset(0 50% 0 0); }
-
 .slider-divider {
-  position: absolute; top: 0; bottom: 0;
-  left: 50%; width: 2px;
-  background: var(--gold);
-  z-index: 10; pointer-events: none;
-  box-shadow: 0 0 20px rgba(201,168,76,0.8);
-  display: none;
+  position: absolute; top: 0; bottom: 0; left: 50%; width: 2px;
+  background: var(--gold); z-index: 10; pointer-events: none;
+  box-shadow: 0 0 20px rgba(201,168,76,0.8); display: none;
 }
 .slider-handle {
   position: absolute; top: 50%; left: 50%;
@@ -342,10 +304,8 @@ nav {
 .slider-label {
   position: absolute; bottom: 20px;
   font-size: 10px; letter-spacing: 4px; text-transform: uppercase;
-  color: rgba(240,234,216,0.7);
-  background: rgba(14,14,14,0.6);
-  padding: 6px 14px; z-index: 5;
-  display: none;
+  color: rgba(240,234,216,0.7); background: rgba(14,14,14,0.6);
+  padding: 6px 14px; z-index: 5; display: none;
 }
 .slider-label.before { left: 20px; }
 .slider-label.after  { right: 20px; }
@@ -353,129 +313,194 @@ nav {
   position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
   font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
   color: var(--gold); background: rgba(14,14,14,0.7);
-  padding: 6px 20px; z-index: 5;
-  border: 1px solid var(--border);
-  display: none;
+  padding: 6px 20px; z-index: 5; border: 1px solid var(--border); display: none;
 }
-.slider-active .slider-divider,
-.slider-active .slider-handle,
-.slider-active .slider-label,
-.slider-active .slider-top-label,
-.slider-active .slider-empty { display: flex; }
-.slider-active .slider-handle { display: flex; }
-.slider-active .slider-label { display: block; }
+.slider-active .slider-divider { display: block; }
+.slider-active .slider-handle  { display: flex; }
+.slider-active .slider-label   { display: block; }
 .slider-active .slider-top-label { display: block; }
-.slider-active .slider-empty { display: none; }
+.slider-active .slider-empty   { display: none; }
+
+#resultWatermark {
+  position: absolute; bottom: 40px; right: 12px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px; letter-spacing: 3px; text-transform: uppercase;
+  color: rgba(201,168,76,0.55); pointer-events: none; z-index: 6;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.8); display: none;
+}
 
 /* ── SAVE AREA ── */
 .save-area {
+  max-width: 1200px; margin: 24px auto 0;
+  background: var(--bg-card); border: 1px solid var(--border); padding: 28px 24px;
   display: none;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  padding: 28px 24px;
 }
 .save-eyebrow {
   font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
   color: var(--text-muted); margin-bottom: 20px;
 }
-.save-fields {
-  display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px;
-}
+.save-fields { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
 .save-field { flex: 1; min-width: 120px; }
-.save-label {
-  font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
-  color: var(--text-muted); display: block; margin-bottom: 8px;
-}
+.save-label { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 8px; }
 .save-select, .save-input {
-  width: 100%; background: var(--bg-panel);
-  border: 1px solid var(--border);
+  width: 100%; background: var(--bg-panel); border: 1px solid var(--border);
   color: var(--text-primary); padding: 10px;
   font-family: 'Montserrat', sans-serif; font-size: 12px;
-  cursor: pointer; outline: none;
-  transition: border-color 0.3s;
+  outline: none; transition: border-color 0.3s;
 }
 .save-select:focus, .save-input:focus { border-color: var(--gold); }
 .save-input::placeholder { color: var(--text-muted); }
-
 .btn-save {
   width: 100%; padding: 14px;
   background: linear-gradient(135deg, var(--gold-dark), var(--gold));
-  color: var(--bg-dark);
-  font-family: 'Montserrat', sans-serif;
+  color: var(--bg-dark); font-family: 'Montserrat', sans-serif;
   font-size: 11px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase;
-  border: none; cursor: pointer;
-  transition: opacity 0.3s;
+  border: none; cursor: pointer; transition: opacity 0.3s;
 }
 .btn-save:hover { opacity: 0.9; }
 .btn-save:disabled { opacity: 0.5; cursor: default; }
-
 .save-status { margin-top: 14px; }
-.save-link {
-  color: var(--gold); font-size: 11px; letter-spacing: 2px;
-  text-decoration: underline;
+
+/* ── FEATURES ── */
+#features { padding: 100px 6vw; }
+.features-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1px; max-width: 1100px; margin: 0 auto;
 }
+.feature-card {
+  background: var(--bg-card); padding: 48px 36px;
+  position: relative; overflow: hidden; transition: background 0.3s;
+}
+.feature-card:hover { background: var(--bg-panel); }
+.feature-card::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+  opacity: 0; transition: opacity 0.3s;
+}
+.feature-card:hover::after { opacity: 1; }
+.feature-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 40px; font-weight: 300; line-height: 1;
+  color: var(--gold); margin-bottom: 24px; display: block;
+}
+.feature-title { font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold-light); margin-bottom: 12px; }
+.feature-desc { font-size: 13px; line-height: 1.8; color: var(--text-muted); }
 
 /* ── FOOTER ── */
 footer {
-  border-top: 1px solid var(--border);
-  padding: 28px 6vw;
-  display: flex; flex-direction: column;
-  align-items: center; gap: 8px;
-  text-align: center;
+  border-top: 1px solid var(--border); padding: 24px 6vw;
+  display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;
 }
-footer p {
-  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
-  color: var(--text-muted);
+footer p { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--text-muted); }
+footer span, footer a { color: var(--gold); text-decoration: none; }
+
+/* ── MODAL ── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+  align-items: center; justify-content: center; padding: 20px;
 }
-footer span, footer a { color: var(--gold); }
-footer a { text-decoration: underline; }
+.modal-overlay.open { display: flex; animation: fadeOverlay 0.3s ease; }
+.modal-box {
+  background: var(--bg-card); border: 1px solid var(--border);
+  max-width: 520px; width: 100%; padding: 48px 40px;
+  position: relative; animation: slideUp 0.35s ease;
+  max-height: 90vh; overflow-y: auto;
+}
+.modal-close {
+  position: absolute; top: 16px; right: 20px;
+  background: none; border: none; color: var(--text-muted);
+  font-size: 20px; cursor: pointer; transition: color 0.2s;
+}
+.modal-close:hover { color: var(--gold); }
+.modal-eyebrow { font-size: 9px; letter-spacing: 5px; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
+.modal-title { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 300; color: var(--text-primary); margin-bottom: 8px; }
+.modal-subtitle { font-size: 12px; line-height: 1.7; color: var(--text-muted); margin-bottom: 28px; }
+.modal-subtitle strong { color: var(--gold-light); font-weight: 500; }
+.modal-divider { width: 100%; height: 1px; background: linear-gradient(to right, transparent, var(--gold), transparent); margin: 24px 0; }
+.modal-input {
+  width: 100%; padding: 14px 18px; background: var(--bg-panel);
+  border: 1px solid var(--border); color: var(--text-primary);
+  font-family: 'Montserrat', sans-serif; font-size: 13px; letter-spacing: 2px;
+  outline: none; transition: border-color 0.3s; text-align: center;
+}
+.modal-input:focus { border-color: var(--gold); }
+.modal-input::placeholder { color: var(--text-muted); letter-spacing: 1px; }
+.modal-btn {
+  width: 100%; margin-top: 14px; padding: 14px;
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+  color: var(--bg-dark); font-family: 'Montserrat', sans-serif;
+  font-size: 11px; font-weight: 700; letter-spacing: 3px;
+  text-transform: uppercase; border: none; cursor: pointer; transition: all 0.3s;
+}
+.modal-btn:hover { box-shadow: 0 0 30px rgba(201,168,76,0.4); transform: translateY(-1px); }
+.modal-error { font-size: 11px; color: #e05555; text-align: center; margin-top: 10px; letter-spacing: 1px; min-height: 16px; }
+
+/* Cabinet */
+.cabinet-tabs { display: flex; gap: 2px; margin-bottom: 24px; }
+.cab-tab {
+  flex: 1; padding: 10px 6px; background: var(--bg-panel);
+  border: 1px solid rgba(201,168,76,0.1); color: var(--text-muted);
+  font-family: 'Montserrat', sans-serif; font-size: 9px; letter-spacing: 1.5px;
+  text-transform: uppercase; cursor: pointer; transition: all 0.25s; text-align: center;
+}
+.cab-tab.active { background: rgba(201,168,76,0.1); border-color: var(--gold); color: var(--gold-light); }
+.cab-panel { display: none; }
+.cab-panel.active { display: block; }
+.gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; max-height: 260px; overflow-y: auto; }
+.gallery-item { position: relative; aspect-ratio: 4/3; background: var(--bg-panel); overflow: hidden; border: 1px solid rgba(201,168,76,0.1); }
+.gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+.gallery-item-date { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.75); font-size: 8px; letter-spacing: 1px; color: var(--text-muted); padding: 4px 6px; text-align: center; }
+.gallery-empty { grid-column: 1/-1; text-align: center; padding: 40px 20px; font-size: 11px; color: var(--text-muted); letter-spacing: 2px; line-height: 1.8; }
+.seal-preview { width: 100%; padding: 20px; background: var(--bg-panel); border: 1px solid var(--border); text-align: center; margin-bottom: 14px; min-height: 80px; display: flex; align-items: center; justify-content: center; }
+.seal-preview-text { font-family: 'Cormorant Garamond', serif; font-size: 18px; letter-spacing: 4px; color: rgba(201,168,76,0.6); text-transform: uppercase; }
 
 /* ── ANIMATIONS ── */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes scrollPulse {
-  0%, 100% { opacity: 0.4; }
-  50%       { opacity: 1; }
-}
-@keyframes shimmer {
-  0%   { background-position: 200% center; }
-  100% { background-position: -200% center; }
-}
+@keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes shimmer { 0% { background-position: 200% center; } 100% { background-position: -200% center; } }
+@keyframes fadeOverlay { from { opacity:0; } to { opacity:1; } }
+@keyframes slideUp { from { transform:translateY(30px); opacity:0; } to { transform:none; opacity:1; } }
 
-/* ── REVEAL ── */
-.reveal {
-  opacity: 0; transform: translateY(24px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
-}
-.reveal.in-view { opacity: 1; transform: translateY(0); }
-.reveal-delay-1 { transition-delay: 0.15s; }
+.reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease, transform 0.8s ease; }
+.reveal.visible { opacity: 1; transform: none; }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
 
 /* ── RESPONSIVE ── */
-@media (max-width: 860px) {
-  nav { padding: 16px 20px; }
-  .nav-links { gap: 20px; }
+@media (max-width: 768px) {
+  nav { padding: 14px 16px; }
+  .nav-links { display: none; }
+  .btn-shop { font-size: 10px; padding: 7px 10px; letter-spacing: 1px; }
+  #hero { min-height: 100dvh; padding: 70px 5vw 32px; }
+  .hero-title { font-size: clamp(40px, 13vw, 60px); }
+  #workspace { padding: 60px 4vw; }
   .workspace-grid { grid-template-columns: 1fr; }
-  #workspace { padding: 80px 5vw; }
-  .hero-title { letter-spacing: 8px; }
-  .btn-visualize { padding: 18px 32px; font-size: 11px; }
+  .features-grid { grid-template-columns: 1fr; }
+  .feature-card { padding: 32px 24px; }
+  .modal-box { padding: 32px 20px; }
+  .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+  .cabinet-tabs { flex-wrap: wrap; }
+  .slider-container { aspect-ratio: 4/3; }
 }
-@media (max-width: 560px) {
-  .nav-links a { display: none; }
+@media (max-width: 480px) {
   .upload-area { grid-template-columns: 1fr; }
+  .catalog-grid { grid-template-columns: repeat(3, 1fr); }
 }
 </style>
 </head>
 <body>
 
+<!-- NAV -->
 <nav>
-  <a href="/" class="nav-logo">MAGICUM</a>
+  <button class="btn-shop" onclick="openShop()">✦ Магічне сховище<br>Майстра-Алхіміка</button>
   <div class="nav-links">
-    <a href="/gallery">Галерея</a>
-    <a href="/cabinet">Кабінет</a>
+    <a href="#hero">Орден Магів</a>
+    <a href="#workspace">Лабораторія</a>
+    <a href="#features">Філософія</a>
   </div>
-  <a href="/cabinet" class="nav-badge">🔮 UA</a>
+  <div class="nav-lang" id="navUserBadge" style="display:none;" onclick="openCabinet()"></div>
+  <div class="nav-lang" id="navLang">UA</div>
 </nav>
 
 <main>
@@ -483,7 +508,6 @@ footer a { text-decoration: underline; }
 <!-- HERO -->
 <section id="hero">
   <div class="hero-bg"></div>
-
   <div class="hero-top">
     <div class="hero-eyebrow">Digital Alchemist Atelier</div>
     <h1 class="hero-title">
@@ -492,121 +516,159 @@ footer a { text-decoration: underline; }
     </h1>
     <p class="hero-sub">Зачаруйте ваші меблі одним кліком</p>
   </div>
-
   <div class="hero-middle"></div>
-
   <div class="hero-bottom">
     <a href="#workspace" class="btn-hero-cta">
-      <span>✦</span>
-      <span>Почати Ритуал</span>
+      <span>✦</span><span>Почати Ритуал</span>
     </a>
     <a href="#workspace" class="hero-sub-link">[ Перейти до Лабораторії ]</a>
   </div>
-
-  <div class="scroll-cue">↓</div>
 </section>
 
 <!-- WORKSPACE -->
 <section id="workspace">
   <div class="section-header reveal">
-    <div class="section-eyebrow">AI · Переобивка · Магія</div>
     <h2 class="section-title">Чарівна Лабораторія</h2>
+    <p class="section-subtitle">Завантажте меблі · оберіть тканину · проявіть образ</p>
   </div>
 
   <div class="workspace-grid">
 
-    <!-- ЛІВА КОЛОНКА -->
+    <!-- ЛІВА: завантаження + кнопка -->
     <div class="left-col reveal">
-
       <div class="upload-area">
-        <!-- Картка 1: Меблі -->
-        <div class="upload-card" onclick="triggerUpload('furniture')">
+
+        <div class="upload-card" onclick="triggerUpload('photo')">
           <div class="card-header">
-            <div class="card-label">
-              <span class="card-icon">🛋</span>
-              Меблі
-            </div>
+            <div class="card-label"><span class="card-icon">📷</span>Додати меблі</div>
             <div class="card-num">1</div>
           </div>
-          <div class="card-preview" id="furniture-preview">
-            <div class="card-placeholder" id="furniture-placeholder">
-              <div class="card-placeholder-icon">📷</div>
-              <div class="card-placeholder-text">Оберіть фото</div>
-            </div>
+          <div class="card-preview" id="photo-preview">
+            <div class="card-preview-empty" id="photo-placeholder">Завантажте фото меблів</div>
+            <img id="photo-img" alt="Меблі" style="display:none;" crossorigin="anonymous">
           </div>
-          <button class="card-btn" onclick="triggerUpload('furniture')">Завантажити</button>
-          <input type="file" id="input-furniture" accept="image/*" style="display:none" onchange="handleUpload('furniture', this)">
+          <button class="card-btn" onclick="triggerUpload('photo')">Завантажити</button>
+          <input type="file" id="input-photo" accept="image/*" style="display:none" onchange="handleUpload('photo',this)">
         </div>
 
-        <!-- Картка 2: Тканина -->
         <div class="upload-card" onclick="triggerUpload('fabric')">
           <div class="card-header">
-            <div class="card-label">
-              <span class="card-icon">🧶</span>
-              Тканина
-            </div>
+            <div class="card-label"><span class="card-icon">🧵</span>Вибрати тканину</div>
             <div class="card-num">2</div>
           </div>
           <div class="card-preview" id="fabric-preview">
-            <div class="card-placeholder" id="fabric-placeholder">
-              <div class="card-placeholder-icon">🎨</div>
-              <div class="card-placeholder-text">Зразок тканини</div>
-            </div>
+            <img id="fabric-img" src="https://images.unsplash.com/photo-1599122645830-3da9a4cb0d3a?w=400&q=80" alt="Тканина" crossorigin="anonymous">
           </div>
-          <button class="card-btn" onclick="triggerUpload('fabric')">Завантажити</button>
-          <input type="file" id="input-fabric" accept="image/*" style="display:none" onchange="handleUpload('fabric', this)">
+          <button class="card-btn" onclick="triggerUpload('fabric')">Завантажити своє</button>
+          <input type="file" id="input-fabric" accept="image/*" style="display:none" onchange="handleUpload('fabric',this)">
         </div>
+
       </div>
 
-      <!-- Статус + Кнопка -->
-      <div class="action-row">
-        <div class="ritual-status" id="ritualStatus"></div>
+      <div style="text-align:center;">
         <button class="btn-visualize" id="generateBtn" onclick="runVisualize()">
-          <span>✦</span>
-          <span id="btnText">ПРОЯВИТИ ОБРАЗ</span>
+          <span>✦</span><span id="btnText">ПРОЯВИТИ ОБРАЗ</span>
         </button>
+        <div id="ritualStatus"></div>
       </div>
     </div>
 
-    <!-- ПРАВА КОЛОНКА -->
+    <!-- ПРАВА: каталог тканин -->
     <div class="right-col reveal reveal-delay-1">
-
-      <!-- Слайдер До/Після -->
-      <div class="slider-container" id="sliderContainer">
-        <div class="slider-empty">Результат з'явиться тут</div>
-        <img class="slider-img before" id="beforeImg" alt="До" draggable="false" style="display:none">
-        <img class="slider-img after" id="afterImg" alt="Після" draggable="false" style="display:none">
-        <div class="slider-top-label">До / Після</div>
-        <div class="slider-divider" id="sliderLine"></div>
-        <div class="slider-handle" id="sliderHandle">⟺</div>
-        <div class="slider-label before">ДО</div>
-        <div class="slider-label after">ПІСЛЯ</div>
-      </div>
-
-      <!-- Зберегти кейс -->
-      <div class="save-area" id="saveArea">
-        <div class="save-eyebrow">✦ Зберегти кейс</div>
-        <div class="save-fields">
-          <div class="save-field">
-            <label class="save-label">Тип меблів</label>
-            <select id="furnitureTypeInput" class="save-select">
-              <option value="диван">Диван</option>
-              <option value="крісло">Крісло</option>
-              <option value="пуф">Пуф</option>
-              <option value="стілець">Стілець</option>
-              <option value="кушетка">Кушетка</option>
-              <option value="інше">Інше</option>
-            </select>
+      <div class="catalog-box">
+        <div class="catalog-label">Каталог тканин</div>
+        <div class="catalog-grid" id="catalogGrid">
+          <div class="catalog-item selected" onclick="selectFabric(this,'https://images.unsplash.com/photo-1599122645830-3da9a4cb0d3a?w=600&q=80','Оксамит')">
+            <img src="https://images.unsplash.com/photo-1599122645830-3da9a4cb0d3a?w=200&q=80" crossorigin="anonymous" alt="Оксамит">
+            <div class="catalog-item-name">Оксамит</div>
           </div>
-          <div class="save-field">
-            <label class="save-label">Місто (необов'язково)</label>
-            <input id="cityInput" type="text" placeholder="Київ" maxlength="50" class="save-input">
+          <div class="catalog-item" onclick="selectFabric(this,'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80','Льон')">
+            <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&q=80" crossorigin="anonymous" alt="Льон">
+            <div class="catalog-item-name">Льон</div>
+          </div>
+          <div class="catalog-item" onclick="selectFabric(this,'https://images.unsplash.com/photo-1573246123716-6b1782bfc499?w=600&q=80','Шовк')">
+            <img src="https://images.unsplash.com/photo-1573246123716-6b1782bfc499?w=200&q=80" crossorigin="anonymous" alt="Шовк">
+            <div class="catalog-item-name">Шовк</div>
+          </div>
+          <div class="catalog-item" onclick="selectFabric(this,'https://images.unsplash.com/photo-1531787895917-96b305d2aaeb?w=600&q=80','Шкіра')">
+            <img src="https://images.unsplash.com/photo-1531787895917-96b305d2aaeb?w=200&q=80" crossorigin="anonymous" alt="Шкіра">
+            <div class="catalog-item-name">Шкіра</div>
+          </div>
+          <div class="catalog-item" onclick="selectFabric(this,'https://images.unsplash.com/photo-1578500494198-246f612d03b3?w=600&q=80','Мікрофібра')">
+            <img src="https://images.unsplash.com/photo-1578500494198-246f612d03b3?w=200&q=80" crossorigin="anonymous" alt="Мікрофібра">
+            <div class="catalog-item-name">Мікрофібра</div>
+          </div>
+          <div class="catalog-item" onclick="selectFabric(this,'https://images.unsplash.com/photo-1601925228066-8d0a0e1b0e4a?w=600&q=80','Жаккард')">
+            <img src="https://images.unsplash.com/photo-1601925228066-8d0a0e1b0e4a?w=200&q=80" crossorigin="anonymous" alt="Жаккард">
+            <div class="catalog-item-name">Жаккард</div>
           </div>
         </div>
-        <button id="saveBtn" class="btn-save" onclick="saveCase()">ЗБЕРЕГТИ ТА ОТРИМАТИ ПОСИЛАННЯ</button>
-        <div id="saveStatus" class="save-status"></div>
+        <div class="catalog-hint">або завантажте власну тканину ↑</div>
       </div>
+    </div>
 
+  </div>
+
+  <!-- SLIDER -->
+  <div class="slider-wrap">
+    <div class="slider-container" id="sliderContainer">
+      <div class="slider-empty">Результат з'явиться тут після ритуалу</div>
+      <img class="slider-img before" id="beforeImg" alt="До" draggable="false" style="display:none">
+      <img class="slider-img after"  id="afterImg"  alt="Після" draggable="false" style="display:none">
+      <div class="slider-top-label">До / Після</div>
+      <div class="slider-divider"  id="sliderLine"></div>
+      <div class="slider-handle"   id="sliderHandle">⟺</div>
+      <div class="slider-label before">ДО</div>
+      <div class="slider-label after">ПІСЛЯ</div>
+      <div id="resultWatermark"></div>
+    </div>
+  </div>
+
+  <!-- SAVE -->
+  <div class="save-area" id="saveArea">
+    <div class="save-eyebrow">✦ Зберегти кейс</div>
+    <div class="save-fields">
+      <div class="save-field">
+        <label class="save-label">Тип меблів</label>
+        <select id="furnitureTypeInput" class="save-select">
+          <option value="диван">Диван</option>
+          <option value="крісло">Крісло</option>
+          <option value="пуф">Пуф</option>
+          <option value="стілець">Стілець</option>
+          <option value="кушетка">Кушетка</option>
+          <option value="інше">Інше</option>
+        </select>
+      </div>
+      <div class="save-field">
+        <label class="save-label">Місто (необов'язково)</label>
+        <input id="cityInput" type="text" placeholder="Київ" maxlength="50" class="save-input">
+      </div>
+    </div>
+    <button id="saveBtn" class="btn-save" onclick="saveCase()">ЗБЕРЕГТИ ТА ОТРИМАТИ ПОСИЛАННЯ</button>
+    <div id="saveStatus" class="save-status"></div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="section-header reveal">
+    <h2 class="section-title">Філософія Магіки</h2>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card reveal reveal-delay-1">
+      <span class="feature-num">1</span>
+      <h3 class="feature-title">Завантаження</h3>
+      <p class="feature-desc">Сфотографуйте ваші меблі та оберіть зразок тканини — з каталогу або власний.</p>
+    </div>
+    <div class="feature-card reveal reveal-delay-2">
+      <span class="feature-num">2</span>
+      <h3 class="feature-title">Трансформація</h3>
+      <p class="feature-desc">AI аналізує форму, текстуру та освітлення — і генерує фотореалістичний результат.</p>
+    </div>
+    <div class="feature-card reveal reveal-delay-3">
+      <span class="feature-num">3</span>
+      <h3 class="feature-title">Магія</h3>
+      <p class="feature-desc">Порівняйте До та Після, збережіть кейс і поділіться результатом з клієнтом.</p>
     </div>
   </div>
 </section>
@@ -614,24 +676,125 @@ footer a { text-decoration: underline; }
 </main>
 
 <footer>
-  <p>© 2026 <span>MAGICUM™</span> · Digital Alchemist Atelier · M M X X V I</p>
-  <p>Зв'язок: <a href="mailto:av89930@gmail.com">Надіслати ворона</a></p>
+  <p>✦ <span>MAGICUM</span> — Digital Alchemist Atelier ✦</p>
+  <p>© 2026 <span>MAGICUM™</span> · M M X X V I · <a href="mailto:av89930@gmail.com">Надіслати ворона</a></p>
 </footer>
+
+<!-- MODAL: SHOP -->
+<div class="modal-overlay" id="modalShop">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('modalShop')">✕</button>
+    <div class="modal-eyebrow">✦ Брама Магіки ✦</div>
+    <h2 class="modal-title">Магічне Сховище</h2>
+    <p class="modal-subtitle">Введіть <strong>ключ Брами</strong>, щоб отримати доступ до особистого кабінету Майстра-Алхіміка.</p>
+    <input type="text" id="gateKeyInput" class="modal-input" placeholder="Введіть ключ (напр. MAGICUM-2026)">
+    <div id="shopError" class="modal-error"></div>
+    <button class="modal-btn" onclick="verifyGateKey()">✦ ВІДКРИТИ БРАМУ</button>
+  </div>
+</div>
+
+<!-- MODAL: CABINET -->
+<div class="modal-overlay" id="modalCabinet">
+  <div class="modal-box" style="max-width:680px;">
+    <button class="modal-close" onclick="logout()">✦ ВИХІД</button>
+    <div class="modal-eyebrow">✦ Кабінет Майстра ✦</div>
+    <h2 class="modal-title" id="cabinetUserName"></h2>
+    <div class="cabinet-tabs">
+      <button class="cab-tab active" onclick="switchTab('litopys')">📜 Літопис Чарів</button>
+      <button class="cab-tab" onclick="switchTab('atlas')">🗺 Атлас Бажань</button>
+      <button class="cab-tab" onclick="switchTab('seal')">🔮 Печатка Творця</button>
+    </div>
+    <div class="cab-panel active" id="panel-litopys">
+      <button class="modal-btn" onclick="saveCurrentVisualization()">ЗБЕРЕГТИ ПОТОЧНИЙ ОБРАЗ</button>
+      <div class="gallery-grid" id="litopysGrid" style="margin-top:16px;">
+        <div class="gallery-empty">Літопис порожній.<br>Проявіть перший образ.</div>
+      </div>
+    </div>
+    <div class="cab-panel" id="panel-atlas">
+      <p style="font-size:11px;color:var(--text-muted);margin-bottom:12px;text-align:center;">Збережені образи з'являться тут.</p>
+      <div class="gallery-grid" id="atlasGrid">
+        <div class="gallery-empty" style="grid-column:1/-1;">Атлас порожній.</div>
+      </div>
+    </div>
+    <div class="cab-panel" id="panel-seal">
+      <p style="font-size:11px;color:var(--text-muted);margin-bottom:12px;">Підпишіть свої творіння:</p>
+      <div class="seal-preview"><div class="seal-preview-text" id="sealPreviewText">Ваша назва</div></div>
+      <input type="text" id="sealInput" class="modal-input" placeholder="Введіть назву/підпис" maxlength="40" oninput="updateSealPreview(this.value)">
+      <button class="modal-btn" onclick="saveSeal()">ЗАКРІПИТИ ПЕЧАТКУ</button>
+      <div id="sealStatus" style="text-align:center;font-size:10px;color:var(--gold);margin-top:8px;"></div>
+    </div>
+  </div>
+</div>
 
 <script>
 const HIST_KEY = 'magicum_history';
 const PROF_KEY = 'magicum_profile';
+const STORE = k => `mgc_${k}`;
+const VALID_KEYS = new Set(['MAGICUM-2026','BRAMA-ZOLOTA','ATELIE-PRO','MASTER-FABRIC','DIZAIN-STUDIO','RESTAVRATOR-UA']);
 
 let furnitureBase64 = null, furnitureMime = null;
-let fabricBase64 = null, fabricMime = null;
-let fabricName = 'завантажена тканина';
-let lastGeneratedB64 = null, lastGeneratedMime = null;
-let currentHistId = null;
+let fabricBase64    = null, fabricMime    = null;
+let fabricName      = 'Оксамит';
+let lastB64 = null, lastMime = null, currentHistId = null;
+
+// ── NAV hide on scroll past hero ──
+window.addEventListener('DOMContentLoaded', () => {
+  const nav  = document.querySelector('nav');
+  const hero = document.getElementById('hero');
+  function checkNav() { nav.classList.toggle('hide-nav', hero.getBoundingClientRect().bottom < 60); }
+  window.addEventListener('scroll', checkNav, { passive: true });
+  checkNav();
+
+  // Scroll reveal
+  const obs = new IntersectionObserver(entries =>
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+    { threshold: 0.15 }
+  );
+  document.querySelectorAll('.reveal').forEach(r => obs.observe(r));
+
+  // Smooth anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  // Load default fabric as base64 for Gemini
+  loadFabricFromUrl('https://images.unsplash.com/photo-1599122645830-3da9a4cb0d3a?w=600&q=80', 'Оксамит');
+
+  updateNavBadge();
+});
+
+// ── Fabric catalog ──
+function selectFabric(el, url, name) {
+  document.querySelectorAll('.catalog-item').forEach(i => i.classList.remove('selected'));
+  el.classList.add('selected');
+  fabricName = name;
+  loadFabricFromUrl(url, name);
+}
+
+function loadFabricFromUrl(url, name) {
+  const img = document.getElementById('fabric-img');
+  img.crossOrigin = 'anonymous';
+  img.onload = () => {
+    try {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth; canvas.height = img.naturalHeight;
+      canvas.getContext('2d').drawImage(img, 0, 0);
+      const data = canvas.toDataURL('image/jpeg', 0.9);
+      fabricBase64 = data.split(',')[1];
+      fabricMime   = 'image/jpeg';
+      fabricName   = name;
+    } catch(e) {
+      fabricBase64 = null;
+    }
+  };
+  img.src = url;
+}
 
 // ── Upload ──
-function triggerUpload(type) {
-  document.getElementById('input-' + type).click();
-}
+function triggerUpload(type) { document.getElementById('input-' + type).click(); }
 
 function handleUpload(type, input) {
   const file = input.files[0];
@@ -639,27 +802,20 @@ function handleUpload(type, input) {
   const reader = new FileReader();
   reader.onload = ev => {
     const full = ev.target.result;
-    const b64 = full.split(',')[1];
+    const b64  = full.split(',')[1];
     const mime = file.type;
 
-    const preview = document.getElementById(type + '-preview');
-    const placeholder = document.getElementById(type + '-placeholder');
-
-    if (placeholder) placeholder.style.display = 'none';
-
-    let img = preview.querySelector('img');
-    if (!img) { img = document.createElement('img'); preview.appendChild(img); }
-    img.src = full;
-
-    if (type === 'furniture') {
-      furnitureBase64 = b64;
-      furnitureMime = mime;
-      const beforeImg = document.getElementById('beforeImg');
-      beforeImg.src = full;
+    if (type === 'photo') {
+      furnitureBase64 = b64; furnitureMime = mime;
+      const img = document.getElementById('photo-img');
+      img.src = full; img.style.display = 'block';
+      document.getElementById('photo-placeholder').style.display = 'none';
+      document.getElementById('beforeImg').src = full;
     } else {
-      fabricBase64 = b64;
-      fabricMime = mime;
-      fabricName = file.name.replace(/\.[^/.]+$/, '') || 'тканина';
+      fabricBase64 = b64; fabricMime = mime;
+      fabricName   = file.name.replace(/\.[^/.]+$/, '') || 'тканина';
+      document.getElementById('fabric-img').src = full;
+      document.querySelectorAll('.catalog-item').forEach(i => i.classList.remove('selected'));
     }
   };
   reader.readAsDataURL(file);
@@ -671,8 +827,8 @@ function compressImage(base64, mime, maxW = 800, maxH = 600, quality = 0.8) {
     const img = new Image();
     img.onload = () => {
       const canvas = document.createElement('canvas');
-      const ratio = Math.min(maxW / img.width, maxH / img.height, 1);
-      canvas.width = Math.round(img.width * ratio);
+      const ratio  = Math.min(maxW / img.width, maxH / img.height, 1);
+      canvas.width  = Math.round(img.width  * ratio);
       canvas.height = Math.round(img.height * ratio);
       canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
       resolve(canvas.toDataURL('image/jpeg', quality).split(',')[1]);
@@ -685,59 +841,41 @@ function compressImage(base64, mime, maxW = 800, maxH = 600, quality = 0.8) {
 // ── Status ──
 function setStatus(msg, color = 'var(--text-muted)') {
   const el = document.getElementById('ritualStatus');
-  el.textContent = msg;
-  el.style.color = color;
+  el.textContent = msg; el.style.color = color;
 }
-
 function setBtnState(loading) {
   const btn = document.getElementById('generateBtn');
   btn.disabled = loading;
   document.getElementById('btnText').textContent = loading ? 'РИТУАЛ ТРИВАЄ...' : 'ПРОЯВИТИ ОБРАЗ';
 }
 
-// ── History ──
-function saveToHistory(furnitureType, fabName, thumb) {
-  const id = Date.now();
-  const hist = JSON.parse(localStorage.getItem(HIST_KEY) || '[]');
-  hist.unshift({ id, date: new Date().toISOString(), furnitureType, fabricName: fabName, thumb, caseUrl: null });
-  if (hist.length > 50) hist.splice(50);
-  localStorage.setItem(HIST_KEY, JSON.stringify(hist));
-  return id;
-}
-
-function updateHistoryCaseUrl(id, caseUrl) {
-  const hist = JSON.parse(localStorage.getItem(HIST_KEY) || '[]');
-  const item = hist.find(h => h.id === id);
-  if (item) { item.caseUrl = caseUrl; localStorage.setItem(HIST_KEY, JSON.stringify(hist)); }
-}
-
 // ── Main ritual ──
 async function runVisualize() {
   if (!furnitureBase64) { setStatus('⚠ Завантажте фото меблів', 'var(--gold)'); return; }
-  if (!fabricBase64)    { setStatus('⚠ Завантажте фото тканини', 'var(--gold)'); return; }
+  if (!fabricBase64)    { setStatus('⚠ Оберіть або завантажте тканину', 'var(--gold)'); return; }
 
   setBtnState(true);
   setStatus('✦ Алхімія запущена...', 'var(--gold-light)');
 
   try {
-    const response = await fetch('/.netlify/functions/ritual', {
+    const resp = await fetch('/.netlify/functions/ritual', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ furnitureBase64, furnitureMime, fabricBase64, fabricMime })
     });
-    const data = await response.json();
-    if (!response.ok || !data.success) throw new Error(data.error || 'Помилка сервера');
+    const data = await resp.json();
+    if (!resp.ok || !data.success) throw new Error(data.error || 'Помилка сервера');
 
-    lastGeneratedB64 = data.imageBase64;
-    lastGeneratedMime = data.mimeType || 'image/jpeg';
+    lastB64  = data.imageBase64;
+    lastMime = data.mimeType || 'image/jpeg';
 
-    const resultUrl = `data:${lastGeneratedMime};base64,${lastGeneratedB64}`;
-    const afterImg = document.getElementById('afterImg');
-    afterImg.src = resultUrl;
-
+    const resultUrl = `data:${lastMime};base64,${lastB64}`;
+    const afterImg  = document.getElementById('afterImg');
     const beforeImg = document.getElementById('beforeImg');
-    beforeImg.style.display = '';
-    afterImg.style.display = '';
+
+    afterImg.src  = resultUrl;
+    afterImg.style.display  = 'block';
+    beforeImg.style.display = 'block';
 
     const container = document.getElementById('sliderContainer');
     container.classList.add('slider-active');
@@ -745,17 +883,21 @@ async function runVisualize() {
 
     document.getElementById('saveArea').style.display = 'block';
     document.getElementById('saveStatus').innerHTML = '';
+    container.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
     const prof = JSON.parse(localStorage.getItem(PROF_KEY) || '{}');
     if (prof.city) document.getElementById('cityInput').value = prof.city;
 
     const furnitureType = document.getElementById('furnitureTypeInput').value;
-    const histThumb = await compressImage(lastGeneratedB64, lastGeneratedMime, 200, 150, 0.4);
+    const histThumb = await compressImage(lastB64, lastMime, 200, 150, 0.4);
     currentHistId = saveToHistory(furnitureType, fabricName, histThumb);
 
-    setStatus('✅ Образ проявлено! Порівняйте До та Після.', 'var(--gold-light)');
+    const seal = localStorage.getItem(getSealKey() || '') || '';
+    if (seal) activateSeal(seal);
+
+    setStatus('✦ ОБРАЗ ПРОЯВЛЕНО', 'var(--gold-light)');
   } catch (err) {
-    setStatus('❌ ' + err.message, '#e05555');
+    setStatus('❌ ' + err.message.slice(0, 80), '#e05555');
   } finally {
     setBtnState(false);
   }
@@ -764,14 +906,15 @@ async function runVisualize() {
 // ── Slider ──
 function initSlider(container) {
   const afterImg = document.getElementById('afterImg');
-  const line = document.getElementById('sliderLine');
-  const handle = document.getElementById('sliderHandle');
-  let dragging = false;
+  const line     = document.getElementById('sliderLine');
+  const handle   = document.getElementById('sliderHandle');
+  let dragging   = false;
 
   function update(clientX) {
     const rect = container.getBoundingClientRect();
-    const pct = Math.min(Math.max((clientX - rect.left) / rect.width * 100, 0), 100);
-    line.style.left = handle.style.left = pct + '%';
+    const pct  = Math.min(Math.max((clientX - rect.left) / rect.width * 100, 2), 98);
+    line.style.left   = pct + '%';
+    handle.style.left = pct + '%';
     afterImg.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
   }
 
@@ -781,48 +924,58 @@ function initSlider(container) {
   handle.addEventListener('touchstart', () => dragging = true, { passive: true });
   window.addEventListener('touchend', () => dragging = false);
   window.addEventListener('touchmove', e => { if (dragging && e.touches[0]) update(e.touches[0].clientX); }, { passive: true });
-  container.addEventListener('click', e => update(e.clientX));
+  container.addEventListener('click', e => { if (e.target !== handle) update(e.clientX); });
 
   update(container.getBoundingClientRect().left + container.offsetWidth / 2);
 }
 
+// ── History ──
+function saveToHistory(furnitureType, fabName, thumb) {
+  const id   = Date.now();
+  const hist = JSON.parse(localStorage.getItem(HIST_KEY) || '[]');
+  hist.unshift({ id, date: new Date().toISOString(), furnitureType, fabricName: fabName, thumb, caseUrl: null });
+  if (hist.length > 50) hist.splice(50);
+  localStorage.setItem(HIST_KEY, JSON.stringify(hist));
+  return id;
+}
+function updateHistoryCaseUrl(id, caseUrl) {
+  const hist = JSON.parse(localStorage.getItem(HIST_KEY) || '[]');
+  const item = hist.find(h => h.id === id);
+  if (item) { item.caseUrl = caseUrl; localStorage.setItem(HIST_KEY, JSON.stringify(hist)); }
+}
+
 // ── Save case ──
 async function saveCase() {
-  if (!lastGeneratedB64 || !furnitureBase64) return;
+  if (!lastB64 || !furnitureBase64) return;
   const saveBtn = document.getElementById('saveBtn');
   const saveStatus = document.getElementById('saveStatus');
   saveBtn.disabled = true;
-  saveStatus.innerHTML = '<span style="font-size:11px;letter-spacing:1px;color:var(--text-muted);">⏳ Зберігаємо...</span>';
-
+  saveStatus.innerHTML = '<span style="font-size:11px;color:var(--text-muted);">⏳ Зберігаємо...</span>';
   try {
     const [beforeCompressed, afterCompressed] = await Promise.all([
       compressImage(furnitureBase64, furnitureMime),
-      compressImage(lastGeneratedB64, lastGeneratedMime)
+      compressImage(lastB64, lastMime)
     ]);
     const furnitureType = document.getElementById('furnitureTypeInput').value;
     const city = document.getElementById('cityInput').value.trim();
-
-    const res = await fetch('/case-save', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const res  = await fetch('/case-save', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ furnitureType, fabricName, city, beforeB64: beforeCompressed, afterB64: afterCompressed })
     });
     const data = await res.json();
     if (!data.success) throw new Error(data.error || 'Помилка збереження');
-
     const caseUrl = window.location.origin + data.url;
     if (currentHistId) updateHistoryCaseUrl(currentHistId, caseUrl);
     if (city) {
       const prof = JSON.parse(localStorage.getItem(PROF_KEY) || '{}');
       prof.city = city; localStorage.setItem(PROF_KEY, JSON.stringify(prof));
     }
-
     saveStatus.innerHTML = `
-      <div style="color:var(--gold-light);font-size:11px;margin-bottom:10px;letter-spacing:1px;">✅ Кейс збережено!</div>
-      <input readonly value="${caseUrl}" style="width:100%;background:var(--bg-panel);border:1px solid var(--border);color:var(--gold);padding:10px;font-size:11px;font-family:'Montserrat',sans-serif;letter-spacing:1px;margin-bottom:8px;">
+      <div style="color:var(--gold-light);font-size:11px;margin-bottom:10px;">✅ Кейс збережено!</div>
+      <input readonly value="${caseUrl}" style="width:100%;background:var(--bg-panel);border:1px solid var(--border);color:var(--gold);padding:10px;font-size:11px;font-family:'Montserrat',sans-serif;margin-bottom:8px;">
       <div style="display:flex;gap:16px;">
-        <a href="${data.url}" target="_blank" class="save-link">Відкрити кейс →</a>
-        <a href="/gallery" class="save-link" style="opacity:0.6;">Галерея →</a>
+        <a href="${data.url}" target="_blank" style="color:var(--gold);font-size:11px;">Відкрити кейс →</a>
+        <a href="/gallery" style="color:var(--gold);font-size:11px;opacity:0.6;">Галерея →</a>
       </div>`;
   } catch (err) {
     saveStatus.innerHTML = `<span style="color:#e05555;font-size:11px;">❌ ${err.message}</span>`;
@@ -830,13 +983,132 @@ async function saveCase() {
   }
 }
 
-// ── Scroll reveal ──
-const observer = new IntersectionObserver(entries =>
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in-view'); }),
-  { threshold: 0.15 }
-);
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-</script>
+// ── Gate Key / Cabinet ──
+function getUser()    { return sessionStorage.getItem(STORE('user')); }
+function isLoggedIn() { return !!getUser(); }
 
+function openShop() {
+  if (isLoggedIn()) { openCabinet(); return; }
+  document.getElementById('shopError').textContent = '';
+  document.getElementById('gateKeyInput').value = '';
+  openModal('modalShop');
+  setTimeout(() => document.getElementById('gateKeyInput').focus(), 300);
+}
+
+function verifyGateKey() {
+  const key = document.getElementById('gateKeyInput').value.trim().toUpperCase();
+  const err = document.getElementById('shopError');
+  if (!key) { err.textContent = 'Введіть ключ'; return; }
+  if (!VALID_KEYS.has(key)) {
+    err.textContent = '✕ Ключ не знайдено в Книзі Брам';
+    return;
+  }
+  sessionStorage.setItem(STORE('user'), 'Майстер ' + key.split('-')[0]);
+  sessionStorage.setItem(STORE('key'),  key);
+  closeModal('modalShop');
+  updateNavBadge();
+  setTimeout(openCabinet, 200);
+}
+
+function updateNavBadge() {
+  const user  = getUser();
+  const badge = document.getElementById('navUserBadge');
+  const lang  = document.getElementById('navLang');
+  if (user) {
+    badge.textContent = '✦ ' + user;
+    badge.style.display = 'block';
+    lang.style.display  = 'none';
+    const seal = localStorage.getItem(getSealKey() || '');
+    if (seal) activateSeal(seal);
+  } else {
+    badge.style.display = 'none';
+    lang.style.display  = 'block';
+  }
+}
+
+function openCabinet() {
+  if (!isLoggedIn()) { openShop(); return; }
+  document.getElementById('cabinetUserName').textContent = getUser();
+  switchTab('litopys'); renderLitopys(); loadSeal();
+  openModal('modalCabinet');
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.cab-tab').forEach((t, i) =>
+    t.classList.toggle('active', ['litopys','atlas','seal'][i] === name)
+  );
+  document.querySelectorAll('.cab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+}
+
+// Літопис
+function getLitopysKey() { return STORE('litopys_' + (sessionStorage.getItem(STORE('key')) || 'guest')); }
+
+function saveCurrentVisualization() {
+  const afterImg  = document.getElementById('afterImg');
+  const beforeImg = document.getElementById('beforeImg');
+  if (!afterImg || afterImg.style.display === 'none') { alert('Спочатку проявіть образ!'); return; }
+  const entries = JSON.parse(localStorage.getItem(getLitopysKey()) || '[]');
+  const now = new Date();
+  entries.unshift({ after: afterImg.src, before: beforeImg.src, date: now.toLocaleDateString('uk-UA'), time: now.toLocaleTimeString('uk-UA', { hour:'2-digit', minute:'2-digit' }) });
+  if (entries.length > 30) entries.pop();
+  localStorage.setItem(getLitopysKey(), JSON.stringify(entries));
+  renderLitopys();
+}
+
+function renderLitopys() {
+  const grid    = document.getElementById('litopysGrid');
+  const entries = JSON.parse(localStorage.getItem(getLitopysKey()) || '[]');
+  if (!entries.length) { grid.innerHTML = '<div class="gallery-empty">Літопис порожній.<br>Проявіть перший образ.</div>'; return; }
+  grid.innerHTML = entries.map((e, i) => `
+    <div class="gallery-item">
+      <img src="${e.after}" alt="Образ ${i+1}">
+      <div class="gallery-item-date">${e.date} ${e.time}</div>
+    </div>`).join('');
+}
+
+// Печатка
+function getSealKey() { return STORE('seal_' + (sessionStorage.getItem(STORE('key')) || 'guest')); }
+
+function loadSeal() {
+  const seal = localStorage.getItem(getSealKey()) || '';
+  document.getElementById('sealInput').value = seal;
+  updateSealPreview(seal);
+}
+function updateSealPreview(val) {
+  document.getElementById('sealPreviewText').textContent = val || 'Ваша назва';
+}
+function saveSeal() {
+  const val = document.getElementById('sealInput').value.trim();
+  localStorage.setItem(getSealKey(), val);
+  document.getElementById('sealStatus').textContent = val ? '✦ Печатку закріплено' : '✦ Печатку знято';
+  activateSeal(val);
+  setTimeout(() => document.getElementById('sealStatus').textContent = '', 2500);
+}
+function activateSeal(text) {
+  const wm = document.getElementById('resultWatermark');
+  wm.textContent   = text || '';
+  wm.style.display = text ? 'block' : 'none';
+}
+
+// Logout
+function logout() {
+  sessionStorage.removeItem(STORE('user'));
+  sessionStorage.removeItem(STORE('key'));
+  closeModal('modalCabinet');
+  updateNavBadge();
+  activateSeal('');
+}
+
+// Modals
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(o =>
+  o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); })
+);
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(o => o.classList.remove('open'));
+});
+</script>
 </body>
 </html>
