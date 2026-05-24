@@ -476,16 +476,15 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
   .hero-title { font-size: clamp(40px, 13vw, 60px); }
   #workspace { padding: 60px 4vw; }
   .workspace-grid { grid-template-columns: 1fr; }
+  .right-col { display: none; }
   .features-grid { grid-template-columns: 1fr; }
   .feature-card { padding: 32px 24px; }
   .modal-box { padding: 32px 20px; }
   .gallery-grid { grid-template-columns: repeat(2, 1fr); }
   .cabinet-tabs { flex-wrap: wrap; }
   .slider-container { aspect-ratio: 4/3; }
-}
-@media (max-width: 480px) {
-  .upload-area { grid-template-columns: 1fr; }
-  .catalog-grid { grid-template-columns: repeat(3, 1fr); }
+  .slider-wrap { margin-top: 16px; }
+  .save-area { padding: 20px 16px; }
 }
 </style>
 </head>
@@ -544,8 +543,7 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
             <div class="card-num">1</div>
           </div>
           <div class="card-preview" id="photo-preview">
-            <div class="card-preview-empty" id="photo-placeholder">Завантажте фото меблів</div>
-            <img id="photo-img" alt="Меблі" style="display:none;" crossorigin="anonymous">
+            <img id="photo-img" src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&q=80" alt="Меблі" crossorigin="anonymous">
           </div>
           <button class="card-btn" onclick="triggerUpload('photo')">Завантажити</button>
           <input type="file" id="input-photo" accept="image/*" style="display:none" onchange="handleUpload('photo',this)">
@@ -676,8 +674,8 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
 </main>
 
 <footer>
-  <p>✦ <span>MAGICUM</span> — Digital Alchemist Atelier ✦</p>
-  <p>© 2026 <span>MAGICUM™</span> · M M X X V I · <a href="mailto:av89930@gmail.com">Надіслати ворона</a></p>
+  <p>Зв'язок з консерваторією: <span><a href="mailto:av89930@gmail.com">Надіслати ворона (Email)</a></span></p>
+  <p>© 2026 <span>MAGICUM™</span>. A brand born of magic. M M X X V I</p>
 </footer>
 
 <!-- MODAL: SHOP -->
@@ -760,8 +758,9 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Load default fabric as base64 for Gemini
+  // Load default images
   loadFabricFromUrl('https://images.unsplash.com/photo-1599122645830-3da9a4cb0d3a?w=600&q=80', 'Оксамит');
+  document.getElementById('beforeImg').src = 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&q=80';
 
   updateNavBadge();
 
