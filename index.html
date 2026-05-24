@@ -522,10 +522,10 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
             <div class="card-label"><span class="card-icon">📷</span>Додати меблі</div>
             <div class="card-num">1</div>
           </div>
-          <div class="card-preview" id="photo-preview">
+          <label for="input-photo" class="card-preview" id="photo-preview" style="cursor:pointer">
             <img id="photo-img" src="demo-sofa.jpg" alt="Меблі">
-          </div>
-          <button class="card-btn" onclick="triggerUpload('photo')">Завантажити</button>
+          </label>
+          <label for="input-photo" class="card-btn">Завантажити</label>
           <input type="file" id="input-photo" accept="image/*" style="display:none" onchange="handleUpload('photo',this)">
         </div>
 
@@ -534,10 +534,10 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
             <div class="card-label"><span class="card-icon">🧵</span>Вибрати тканину</div>
             <div class="card-num">2</div>
           </div>
-          <div class="card-preview" id="fabric-preview">
+          <label for="input-fabric" class="card-preview" id="fabric-preview" style="cursor:pointer">
             <img id="fabric-img" src="demo-fabric.jpg" alt="Тканина">
-          </div>
-          <button class="card-btn" onclick="triggerUpload('fabric')">Завантажити своє</button>
+          </label>
+          <label for="input-fabric" class="card-btn">Завантажити своє</label>
           <input type="file" id="input-fabric" accept="image/*" style="display:none" onchange="handleUpload('fabric',this)">
         </div>
 
