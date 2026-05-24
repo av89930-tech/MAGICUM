@@ -764,6 +764,12 @@ window.addEventListener('DOMContentLoaded', () => {
   loadFabricFromUrl('https://images.unsplash.com/photo-1599122645830-3da9a4cb0d3a?w=600&q=80', 'Оксамит');
 
   updateNavBadge();
+
+  // Автовідкриття кабінету при ?cabinet=open
+  if (new URLSearchParams(location.search).get('cabinet') === 'open') {
+    history.replaceState({}, '', '/');
+    setTimeout(openShop, 600);
+  }
 });
 
 // ── Fabric catalog ──
