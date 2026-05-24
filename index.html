@@ -283,7 +283,7 @@ nav.hide-nav { opacity: 0; pointer-events: none; transform: translateY(-100%); }
 }
 .slider-img {
   position: absolute; inset: 0;
-  width: 100%; height: 100%; object-fit: contain; background: var(--bg-panel);
+  width: 100%; height: 100%; object-fit: cover;
 }
 .slider-img.after { clip-path: inset(0 50% 0 0); }
 .slider-divider {
@@ -854,6 +854,8 @@ async function runVisualize() {
 
     const container = document.getElementById('sliderContainer');
     container.classList.add('slider-active');
+    const bw = beforeImg.naturalWidth, bh = beforeImg.naturalHeight;
+    if (bw && bh) container.style.aspectRatio = `${bw} / ${bh}`;
     initSlider(container);
 
     document.getElementById('saveArea').style.display = 'block';
