@@ -1,5 +1,6 @@
 const GEMINI_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
 const MODELS = [
+  'gemini-2.0-flash-exp',
   'gemini-2.0-flash-preview-image-generation',
 ];
 

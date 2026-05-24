@@ -517,28 +517,32 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
     <div class="left-col reveal">
       <div class="upload-area">
 
-        <div class="upload-card">
+        <div class="upload-card" style="position:relative">
+          <input type="file" id="input-photo" accept="image/*"
+            style="position:absolute;inset:0;opacity:0;cursor:pointer;z-index:10;width:100%;height:100%"
+            onchange="handleUpload('photo',this)">
           <div class="card-header">
             <div class="card-label"><span class="card-icon">📷</span>Додати меблі</div>
             <div class="card-num">1</div>
           </div>
-          <label for="input-photo" class="card-preview" id="photo-preview" style="cursor:pointer">
+          <div class="card-preview" id="photo-preview">
             <img id="photo-img" src="demo-sofa.jpg" alt="Меблі">
-          </label>
-          <label for="input-photo" class="card-btn">Завантажити</label>
-          <input type="file" id="input-photo" accept="image/*" style="display:none" onchange="handleUpload('photo',this)">
+          </div>
+          <div class="card-btn">Завантажити</div>
         </div>
 
-        <div class="upload-card">
+        <div class="upload-card" style="position:relative">
+          <input type="file" id="input-fabric" accept="image/*"
+            style="position:absolute;inset:0;opacity:0;cursor:pointer;z-index:10;width:100%;height:100%"
+            onchange="handleUpload('fabric',this)">
           <div class="card-header">
             <div class="card-label"><span class="card-icon">🧵</span>Вибрати тканину</div>
             <div class="card-num">2</div>
           </div>
-          <label for="input-fabric" class="card-preview" id="fabric-preview" style="cursor:pointer">
+          <div class="card-preview" id="fabric-preview">
             <img id="fabric-img" src="demo-fabric.jpg" alt="Тканина">
-          </label>
-          <label for="input-fabric" class="card-btn">Завантажити своє</label>
-          <input type="file" id="input-fabric" accept="image/*" style="display:none" onchange="handleUpload('fabric',this)">
+          </div>
+          <div class="card-btn">Завантажити своє</div>
         </div>
 
       </div>
