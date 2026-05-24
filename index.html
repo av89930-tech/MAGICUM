@@ -854,6 +854,8 @@ async function runVisualize() {
 
     const container = document.getElementById('sliderContainer');
     container.classList.add('slider-active');
+    const bw = beforeImg.naturalWidth, bh = beforeImg.naturalHeight;
+    if (bw && bh) container.style.aspectRatio = `${bw} / ${bh}`;
     initSlider(container);
 
     document.getElementById('saveArea').style.display = 'block';
