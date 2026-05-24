@@ -717,15 +717,15 @@ window.addEventListener('DOMContentLoaded', () => {
 
   // Load default demo images
   loadFabricFromUrl('demo-fabric.jpg', 'Демо тканина');
-  const beforeImg = document.getElementById('beforeImg');
-  const afterImg  = document.getElementById('afterImg');
-  beforeImg.src = 'demo-sofa.jpg';
-  afterImg.src  = 'demo-result.jpg';
-  beforeImg.style.display = 'block';
-  afterImg.style.display  = 'block';
+  const beforeImgEl = document.getElementById('beforeImg');
+  const afterImgEl  = document.getElementById('afterImg');
+  beforeImgEl.src = 'demo-sofa.jpg';
+  beforeImgEl.style.display = 'block';
+  afterImgEl.style.display  = 'block';
   const sliderDemo = document.getElementById('sliderContainer');
   sliderDemo.classList.add('slider-active');
-  initSlider(sliderDemo);
+  afterImgEl.onload = () => initSlider(sliderDemo);
+  afterImgEl.src = 'demo-result.jpg';
 
   updateNavBadge();
 
@@ -878,25 +878,32 @@ function initSlider(container) {
   const afterImg = document.getElementById('afterImg');
   const line     = document.getElementById('sliderLine');
   const handle   = document.getElementById('sliderHandle');
-  let dragging   = false;
 
-  function update(clientX) {
-    const rect = container.getBoundingClientRect();
-    const pct  = Math.min(Math.max((clientX - rect.left) / rect.width * 100, 2), 98);
+  handle.style.touchAction = 'none';
+
+  function setPos(pct) {
+    pct = Math.min(Math.max(pct, 2), 98);
     line.style.left   = pct + '%';
     handle.style.left = pct + '%';
     afterImg.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
   }
 
-  handle.onmousedown = () => dragging = true;
-  window.addEventListener('mouseup', () => dragging = false);
-  window.addEventListener('mousemove', e => { if (dragging) update(e.clientX); });
-  handle.addEventListener('touchstart', () => dragging = true, { passive: true });
-  window.addEventListener('touchend', () => dragging = false);
-  window.addEventListener('touchmove', e => { if (dragging && e.touches[0]) update(e.touches[0].clientX); }, { passive: true });
-  container.addEventListener('click', e => { if (e.target !== handle) update(e.clientX); });
+  function fromClientX(clientX) {
+    const rect = container.getBoundingClientRect();
+    if (!rect.width) return;
+    setPos((clientX - rect.left) / rect.width * 100);
+  }
 
-  update(container.getBoundingClientRect().left + container.offsetWidth / 2);
+  let dragging = false;
+  handle.onmousedown  = e => { dragging = true; e.preventDefault(); };
+  handle.ontouchstart = e => { dragging = true; };
+  window.onmouseup    = () => dragging = false;
+  window.ontouchend   = () => dragging = false;
+  window.onmousemove  = e => { if (dragging) fromClientX(e.clientX); };
+  window.ontouchmove  = e => { if (dragging && e.touches[0]) { e.preventDefault(); fromClientX(e.touches[0].clientX); } };
+  container.onclick   = e => { if (e.target !== handle) fromClientX(e.clientX); };
+
+  setPos(50);
 }
 
 // ── History ──
