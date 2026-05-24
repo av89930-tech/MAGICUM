@@ -361,30 +361,6 @@ nav.hide-nav { opacity: 0; pointer-events: none; transform: translateY(-100%); }
 .btn-save:disabled { opacity: 0.5; cursor: default; }
 .save-status { margin-top: 14px; }
 
-/* ── FEATURES ── */
-#features { padding: 100px 6vw; }
-.features-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 1px; max-width: 1100px; margin: 0 auto;
-}
-.feature-card {
-  background: var(--bg-card); padding: 48px 36px;
-  position: relative; overflow: hidden; transition: background 0.3s;
-}
-.feature-card:hover { background: var(--bg-panel); }
-.feature-card::after {
-  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(to right, transparent, var(--gold), transparent);
-  opacity: 0; transition: opacity 0.3s;
-}
-.feature-card:hover::after { opacity: 1; }
-.feature-num {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 40px; font-weight: 300; line-height: 1;
-  color: var(--gold); margin-bottom: 24px; display: block;
-}
-.feature-title { font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold-light); margin-bottom: 12px; }
-.feature-desc { font-size: 13px; line-height: 1.8; color: var(--text-muted); }
 
 /* ── FOOTER ── */
 footer {
@@ -477,8 +453,7 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
   #workspace { padding: 60px 4vw; }
   .workspace-grid { grid-template-columns: 1fr; }
   .right-col { display: none; }
-  .features-grid { grid-template-columns: 1fr; }
-  .feature-card { padding: 32px 24px; }
+
   .modal-box { padding: 32px 20px; }
   .gallery-grid { grid-template-columns: repeat(2, 1fr); }
   .cabinet-tabs { flex-wrap: wrap; }
@@ -496,7 +471,7 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
   <div class="nav-links">
     <a href="#hero">Орден Магів</a>
     <a href="#workspace">Лабораторія</a>
-    <a href="#features">Філософія</a>
+
   </div>
   <div class="nav-lang" id="navUserBadge" style="display:none;" onclick="openCabinet()"></div>
   <div class="nav-lang" id="navLang">UA</div>
@@ -647,29 +622,6 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
   </div>
 </section>
 
-<!-- FEATURES -->
-<section id="features">
-  <div class="section-header reveal">
-    <h2 class="section-title">Філософія Магіки</h2>
-  </div>
-  <div class="features-grid">
-    <div class="feature-card reveal reveal-delay-1">
-      <span class="feature-num">1</span>
-      <h3 class="feature-title">Завантаження</h3>
-      <p class="feature-desc">Сфотографуйте ваші меблі та оберіть зразок тканини — з каталогу або власний.</p>
-    </div>
-    <div class="feature-card reveal reveal-delay-2">
-      <span class="feature-num">2</span>
-      <h3 class="feature-title">Трансформація</h3>
-      <p class="feature-desc">AI аналізує форму, текстуру та освітлення — і генерує фотореалістичний результат.</p>
-    </div>
-    <div class="feature-card reveal reveal-delay-3">
-      <span class="feature-num">3</span>
-      <h3 class="feature-title">Магія</h3>
-      <p class="feature-desc">Порівняйте До та Після, збережіть кейс і поділіться результатом з клієнтом.</p>
-    </div>
-  </div>
-</section>
 
 </main>
 
