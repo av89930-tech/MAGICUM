@@ -4,7 +4,6 @@ const MODELS = [
   'gemini-3.1-flash-image-preview',
 ];
 
-// Статус-коди, які означають перевантаження — варто пробувати fallback
 const OVERLOAD_CODES = new Set([429, 500, 503, 529]);
 
 async function callGemini(model, requestBody, apiKey) {
@@ -16,10 +15,24 @@ async function callGemini(model, requestBody, apiKey) {
   return { ok: response.ok, status: response.status, data };
 }
 
+// Відправляє повідомлення в Telegram — fire and forget, не блокує відповідь
+function tgNotify(token, chatId, text) {
+  if (!token || !chatId) return;
+  fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML' })
+  }).catch(() => {});
+}
+
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: JSON.stringify({ success: false, error: 'Method not allowed' }) };
   }
+
+  const TG_TOKEN   = process.env.TELEGRAM_BOT_TOKEN;
+  const TG_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
+  const time = new Date().toLocaleString('uk-UA', { timeZone: 'Europe/Kyiv' });
 
   try {
     const { furnitureBase64, furnitureMime, fabricBase64, fabricMime } = JSON.parse(event.body || '{}');
@@ -51,18 +64,25 @@ exports.handler = async (event) => {
     };
 
     let lastError = null;
+    const attempted = [];
 
     for (const model of MODELS) {
       const { ok, status, data } = await callGemini(model, requestBody, GEMINI_API_KEY);
+      attempted.push(model);
 
       if (!ok) {
         lastError = data.error?.message || `Gemini ${model} failed (${status})`;
-        // Перевантаження або серверна помилка — пробуємо наступну модель
         if (OVERLOAD_CODES.has(status)) {
           console.warn(`[ritual] ${model} overloaded (${status}), trying fallback`);
           continue;
         }
-        // Інша помилка (400, 401, 404…) — fallback не допоможе
+        tgNotify(TG_TOKEN, TG_CHAT_ID,
+          `❌ <b>MAGICUM — помилка</b>\n` +
+          `Модель: <code>${model}</code>\n` +
+          `Код: ${status}\n` +
+          `Помилка: ${lastError}\n` +
+          `⏰ ${time}`
+        );
         return { statusCode: 500, body: JSON.stringify({ success: false, error: lastError }) };
       }
 
@@ -78,6 +98,17 @@ exports.handler = async (event) => {
         continue;
       }
 
+      const isFallback = attempted.length > 1;
+      // Сповіщення: завжди при fallback, або лише при помилках — змінити умову за потребою
+      if (isFallback) {
+        tgNotify(TG_TOKEN, TG_CHAT_ID,
+          `⚡ <b>MAGICUM — fallback спрацював</b>\n` +
+          `Основна: <code>${MODELS[0]}</code> — перевантажена\n` +
+          `Резерв: <code>${model}</code> — OK\n` +
+          `⏰ ${time}`
+        );
+      }
+
       return {
         statusCode: 200,
         headers: { 'Content-Type': 'application/json' },
@@ -85,10 +116,21 @@ exports.handler = async (event) => {
       };
     }
 
+    tgNotify(TG_TOKEN, TG_CHAT_ID,
+      `🔴 <b>MAGICUM — всі моделі недоступні</b>\n` +
+      `Спробували: ${attempted.join(', ')}\n` +
+      `Помилка: ${lastError}\n` +
+      `⏰ ${time}`
+    );
     return { statusCode: 503, body: JSON.stringify({ success: false, error: lastError || 'All models unavailable' }) };
 
   } catch (err) {
     console.error('ritual error:', err);
+    tgNotify(TG_TOKEN, TG_CHAT_ID,
+      `💥 <b>MAGICUM — критична помилка</b>\n` +
+      `<code>${err.message}</code>\n` +
+      `⏰ ${time}`
+    );
     return { statusCode: 500, body: JSON.stringify({ success: false, error: err.message }) };
   }
 };
