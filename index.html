@@ -269,7 +269,7 @@ nav.hide-nav { opacity: 0; pointer-events: none; transform: translateY(-100%); }
 }
 
 /* ── SLIDER ── */
-.slider-wrap { max-width: 1200px; margin: 32px auto 0; display: none; }
+.slider-wrap { max-width: 1200px; margin: 32px auto 0; }
 .slider-container {
   position: relative; width: 100%; aspect-ratio: 16/7;
   overflow: hidden; border: 1px solid var(--border);
@@ -839,7 +839,6 @@ async function runVisualize() {
     afterImg.style.display  = 'block';
     beforeImg.style.display = 'block';
 
-    document.querySelector('.slider-wrap').style.display = 'block';
     const container = document.getElementById('sliderContainer');
     container.classList.add('slider-active');
     initSlider(container);
