@@ -726,6 +726,7 @@ window.addEventListener('DOMContentLoaded', () => {
   sliderDemo.classList.add('slider-active');
   afterImgEl.onload = () => initSlider(sliderDemo);
   afterImgEl.src = 'demo-result.jpg';
+  if (afterImgEl.complete) initSlider(sliderDemo);
 
   updateNavBadge();
 
@@ -924,7 +925,7 @@ function initSlider(container) {
   window.ontouchmove     = e => { if (dragging && e.touches[0]) { e.preventDefault(); fromClientX(e.touches[0].clientX); } };
 
   setPos(50);
-  animId = requestAnimationFrame(autoStep);
+  setTimeout(() => { animId = requestAnimationFrame(autoStep); }, 300);
 }
 
 // ── History ──
