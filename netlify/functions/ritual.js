@@ -15,8 +15,44 @@ async function callGemini(model, requestBody, apiKey) {
   return { ok: response.ok, status: response.status, data };
 }
 
-// Відправляє повідомлення в Telegram — fire and forget, не блокує відповідь
-function tgNotify(token, chatId, text) {
+// Відправляє альбом із 3 фото (диван + тканина + результат) + підпис
+async function tgSendRitual({ token, chatId, sofa64, sofaMime, fabric64, fabricMime, result64, resultMime, model, isFallback, ip, time }) {
+  if (!token || !chatId) return;
+  try {
+    const modelLine = isFallback
+      ? `⚡ Резерв: <code>${model}</code> (основна перевантажена)`
+      : `✅ Модель: <code>${model}</code>`;
+
+    const caption =
+      `🔮 <b>MAGICUM — Ритуал завершено</b>\n` +
+      `👤 ${ip}\n` +
+      `${modelLine}\n` +
+      `⏰ ${time}`;
+
+    const media = JSON.stringify([
+      { type: 'photo', media: 'attach://sofa',   caption: '🛋 Диван (вхід)' },
+      { type: 'photo', media: 'attach://fabric', caption: '🧵 Тканина (вхід)' },
+      { type: 'photo', media: 'attach://result', caption, parse_mode: 'HTML' },
+    ]);
+
+    const form = new FormData();
+    form.append('chat_id', chatId);
+    form.append('media', media);
+    form.append('sofa',   new Blob([Buffer.from(sofa64,   'base64')], { type: sofaMime   || 'image/jpeg' }), 'sofa.jpg');
+    form.append('fabric', new Blob([Buffer.from(fabric64, 'base64')], { type: fabricMime || 'image/jpeg' }), 'fabric.jpg');
+    form.append('result', new Blob([Buffer.from(result64, 'base64')], { type: resultMime || 'image/jpeg' }), 'result.jpg');
+
+    await fetch(`https://api.telegram.org/bot${token}/sendMediaGroup`, {
+      method: 'POST',
+      body: form
+    });
+  } catch (e) {
+    console.error('[tg] album error:', e.message);
+  }
+}
+
+// Текстове сповіщення — для помилок
+function tgNotifyError(token, chatId, text) {
   if (!token || !chatId) return;
   fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
     method: 'POST',
@@ -32,6 +68,10 @@ exports.handler = async (event) => {
 
   const TG_TOKEN   = process.env.TELEGRAM_BOT_TOKEN;
   const TG_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
+
+  const ip   = event.headers['x-nf-client-connection-ip']
+            || event.headers['x-forwarded-for']?.split(',')[0]?.trim()
+            || 'невідомо';
   const time = new Date().toLocaleString('uk-UA', { timeZone: 'Europe/Kyiv' });
 
   try {
@@ -52,7 +92,7 @@ exports.handler = async (event) => {
       contents: [{ parts: [
         { text: prompt },
         { inline_data: { mime_type: furnitureMime, data: furnitureBase64 } },
-        { inline_data: { mime_type: fabricMime, data: fabricBase64 } }
+        { inline_data: { mime_type: fabricMime,    data: fabricBase64    } }
       ]}],
       generationConfig: { temperature: 0.7, responseModalities: ['IMAGE', 'TEXT'], candidateCount: 1 },
       safetySettings: [
@@ -76,11 +116,11 @@ exports.handler = async (event) => {
           console.warn(`[ritual] ${model} overloaded (${status}), trying fallback`);
           continue;
         }
-        tgNotify(TG_TOKEN, TG_CHAT_ID,
-          `❌ <b>MAGICUM — помилка</b>\n` +
+        tgNotifyError(TG_TOKEN, TG_CHAT_ID,
+          `❌ <b>MAGICUM — помилка API</b>\n` +
+          `👤 ${ip}\n` +
           `Модель: <code>${model}</code>\n` +
-          `Код: ${status}\n` +
-          `Помилка: ${lastError}\n` +
+          `Код: ${status} | ${lastError}\n` +
           `⏰ ${time}`
         );
         return { statusCode: 500, body: JSON.stringify({ success: false, error: lastError }) };
@@ -99,15 +139,15 @@ exports.handler = async (event) => {
       }
 
       const isFallback = attempted.length > 1;
-      // Сповіщення: завжди при fallback, або лише при помилках — змінити умову за потребою
-      if (isFallback) {
-        tgNotify(TG_TOKEN, TG_CHAT_ID,
-          `⚡ <b>MAGICUM — fallback спрацював</b>\n` +
-          `Основна: <code>${MODELS[0]}</code> — перевантажена\n` +
-          `Резерв: <code>${model}</code> — OK\n` +
-          `⏰ ${time}`
-        );
-      }
+
+      // Відправляємо альбом у Telegram (fire and forget)
+      tgSendRitual({
+        token: TG_TOKEN, chatId: TG_CHAT_ID,
+        sofa64: furnitureBase64, sofaMime: furnitureMime,
+        fabric64: fabricBase64,  fabricMime,
+        result64: imageBase64,   resultMime: mimeType,
+        model, isFallback, ip, time
+      });
 
       return {
         statusCode: 200,
@@ -116,18 +156,20 @@ exports.handler = async (event) => {
       };
     }
 
-    tgNotify(TG_TOKEN, TG_CHAT_ID,
+    tgNotifyError(TG_TOKEN, TG_CHAT_ID,
       `🔴 <b>MAGICUM — всі моделі недоступні</b>\n` +
+      `👤 ${ip}\n` +
       `Спробували: ${attempted.join(', ')}\n` +
-      `Помилка: ${lastError}\n` +
+      `${lastError}\n` +
       `⏰ ${time}`
     );
     return { statusCode: 503, body: JSON.stringify({ success: false, error: lastError || 'All models unavailable' }) };
 
   } catch (err) {
     console.error('ritual error:', err);
-    tgNotify(TG_TOKEN, TG_CHAT_ID,
+    tgNotifyError(TG_TOKEN, TG_CHAT_ID,
       `💥 <b>MAGICUM — критична помилка</b>\n` +
+      `👤 ${ip}\n` +
       `<code>${err.message}</code>\n` +
       `⏰ ${time}`
     );
