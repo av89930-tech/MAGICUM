@@ -1,5 +1,12 @@
 const { getStore } = require('@netlify/blobs');
 
+function blobStore(context) {
+  const opts = { name: 'magicum', context };
+  if (process.env.NETLIFY_SITE_ID)    opts.siteID = process.env.NETLIFY_SITE_ID;
+  if (process.env.NETLIFY_BLOBS_TOKEN) opts.token  = process.env.NETLIFY_BLOBS_TOKEN;
+  return getStore(opts);
+}
+
 const SITE = 'https://magicum.netlify.app';
 
 function esc(str) {
@@ -22,7 +29,7 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    const store = getStore({ name: 'magicum', context });
+    const store = blobStore(context);
     const raw = await store.get(`case:${slug}`);
 
     if (!raw) {

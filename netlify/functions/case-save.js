@@ -1,5 +1,12 @@
 const { getStore } = require('@netlify/blobs');
 
+function blobStore(context) {
+  const opts = { name: 'magicum', context };
+  if (process.env.NETLIFY_SITE_ID)    opts.siteID = process.env.NETLIFY_SITE_ID;
+  if (process.env.NETLIFY_BLOBS_TOKEN) opts.token  = process.env.NETLIFY_BLOBS_TOKEN;
+  return getStore(opts);
+}
+
 const TRANSLIT = {
   'а':'a','б':'b','в':'v','г':'h','д':'d','е':'e','є':'ie','ж':'zh','з':'z',
   'и':'y','і':'i','ї':'i','й':'y','к':'k','л':'l','м':'m','н':'n','о':'o',
@@ -30,7 +37,7 @@ exports.handler = async (event, context) => {
   const today = new Date().toISOString().slice(0, 10);
 
   try {
-    const store = getStore({ name: 'magicum', context });
+    const store = blobStore(context);
 
     // Rate limit: max 10 saves per IP per day
     const rlKey = `ratelimit:${ip}:${today}`;
