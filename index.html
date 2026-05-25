@@ -468,10 +468,6 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
     <!-- ЛІВА: завантаження + кнопка -->
     <div class="left-col">
 
-      <!-- inputs поза картками, off-screen — не display:none -->
-      <input type="file" id="input-photo"  accept="image/*" style="position:fixed;left:-9999px;width:1px;height:1px;" onchange="handleUpload('photo',this)">
-      <input type="file" id="input-fabric" accept="image/*" style="position:fixed;left:-9999px;width:1px;height:1px;" onchange="handleUpload('fabric',this)">
-
       <div class="upload-area">
 
         <div class="upload-card">
@@ -483,7 +479,10 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
             <div class="card-preview-empty" id="photo-empty">Оберіть фото</div>
             <img id="photo-img" style="display:none;" alt="Меблі">
           </div>
-          <button type="button" class="card-btn" onclick="document.getElementById('input-photo').click()">Завантажити</button>
+          <input type="file" id="input-photo" accept="image/*"
+            style="position:absolute;width:0;height:0;left:0;top:0;"
+            onchange="handleUpload('photo',this)">
+          <label class="card-btn" for="input-photo">Завантажити</label>
         </div>
 
         <div class="upload-card">
@@ -495,7 +494,10 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
             <div class="card-preview-empty" id="fabric-empty">Оберіть тканину</div>
             <img id="fabric-img" style="display:none;" alt="Тканина">
           </div>
-          <button type="button" class="card-btn" onclick="document.getElementById('input-fabric').click()">Завантажити своє</button>
+          <input type="file" id="input-fabric" accept="image/*"
+            style="position:absolute;width:0;height:0;left:0;top:0;"
+            onchange="handleUpload('fabric',this)">
+          <label class="card-btn" for="input-fabric">Завантажити своє</label>
         </div>
 
       </div>
