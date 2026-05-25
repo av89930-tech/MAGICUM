@@ -955,7 +955,14 @@ function loadFabricFromUrl(url, name) {
     try {
       const canvas = document.createElement('canvas');
       canvas.width = img.naturalWidth; canvas.height = img.naturalHeight;
-      canvas.getContext('2d').drawImage(img, 0, 0);
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      // Extract dominant color for ritual overlay
+      const small = document.createElement('canvas'); small.width = small.height = 6;
+      small.getContext('2d').drawImage(img, 0, 0, 6, 6);
+      const d = small.getContext('2d').getImageData(0,0,6,6).data;
+      let r=0,g=0,b=0; for(let i=0;i<d.length;i+=4){r+=d[i];g+=d[i+1];b+=d[i+2];}
+      const n=d.length/4; _ritualFabricColor=`rgb(${~~(r/n)},${~~(g/n)},${~~(b/n)})`;
       const data = canvas.toDataURL('image/jpeg', 0.9);
       fabricBase64 = data.split(',')[1];
       fabricMime   = 'image/jpeg';
