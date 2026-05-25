@@ -467,35 +467,36 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
 
     <!-- ЛІВА: завантаження + кнопка -->
     <div class="left-col">
+
+      <!-- inputs поза картками, off-screen — не display:none -->
+      <input type="file" id="input-photo"  accept="image/*" style="position:fixed;left:-9999px;width:1px;height:1px;" onchange="handleUpload('photo',this)">
+      <input type="file" id="input-fabric" accept="image/*" style="position:fixed;left:-9999px;width:1px;height:1px;" onchange="handleUpload('fabric',this)">
+
       <div class="upload-area">
 
-        <label class="upload-card">
-          <input type="file" id="input-photo" accept="image/*"
-            style="opacity:0.001;position:absolute;inset:0;width:100%;height:100%;cursor:pointer;z-index:5;"
-            onchange="handleUpload('photo',this)">
+        <div class="upload-card">
           <div class="card-header">
             <div class="card-label"><span class="card-icon">📷</span>Додати меблі</div>
             <div class="card-num">1</div>
           </div>
           <div class="card-preview" id="photo-preview">
-            <img id="photo-img" src="demo-sofa.jpg" alt="Меблі">
+            <div class="card-preview-empty" id="photo-empty">Оберіть фото</div>
+            <img id="photo-img" style="display:none;" alt="Меблі">
           </div>
-          <div class="card-btn">Завантажити</div>
-        </label>
+          <button type="button" class="card-btn" onclick="document.getElementById('input-photo').click()">Завантажити</button>
+        </div>
 
-        <label class="upload-card">
-          <input type="file" id="input-fabric" accept="image/*"
-            style="opacity:0.001;position:absolute;inset:0;width:100%;height:100%;cursor:pointer;z-index:5;"
-            onchange="handleUpload('fabric',this)">
+        <div class="upload-card">
           <div class="card-header">
             <div class="card-label"><span class="card-icon">🧵</span>Вибрати тканину</div>
             <div class="card-num">2</div>
           </div>
           <div class="card-preview" id="fabric-preview">
-            <img id="fabric-img" src="demo-fabric.jpg" alt="Тканина">
+            <div class="card-preview-empty" id="fabric-empty">Оберіть тканину</div>
+            <img id="fabric-img" style="display:none;" alt="Тканина">
           </div>
-          <div class="card-btn">Завантажити своє</div>
-        </label>
+          <button type="button" class="card-btn" onclick="document.getElementById('input-fabric').click()">Завантажити своє</button>
+        </div>
 
       </div>
 
@@ -671,8 +672,7 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Load default demo images
-  loadFabricFromUrl('demo-fabric.jpg', 'Демо тканина');
+  // Load demo slider
   const beforeImgEl = document.getElementById('beforeImg');
   const afterImgEl  = document.getElementById('afterImg');
   beforeImgEl.src = 'demo-sofa.jpg';
@@ -734,10 +734,15 @@ function handleUpload(type, input) {
       furnitureBase64 = b64; furnitureMime = mime; furnitureDataUrl = full;
       const img = document.getElementById('photo-img');
       img.src = full; img.style.display = 'block';
+      const em = document.getElementById('photo-empty');
+      if (em) em.style.display = 'none';
     } else {
       fabricBase64 = b64; fabricMime = mime;
       fabricName   = file.name.replace(/\.[^/.]+$/, '') || 'тканина';
-      document.getElementById('fabric-img').src = full;
+      const img = document.getElementById('fabric-img');
+      img.src = full; img.style.display = 'block';
+      const em = document.getElementById('fabric-empty');
+      if (em) em.style.display = 'none';
       document.querySelectorAll('.catalog-item').forEach(i => i.classList.remove('selected'));
     }
   };
