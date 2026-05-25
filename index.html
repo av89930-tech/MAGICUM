@@ -672,18 +672,6 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Load demo slider
-  const beforeImgEl = document.getElementById('beforeImg');
-  const afterImgEl  = document.getElementById('afterImg');
-  beforeImgEl.src = 'demo-sofa.jpg';
-  beforeImgEl.style.display = 'block';
-  afterImgEl.style.display  = 'block';
-  const sliderDemo = document.getElementById('sliderContainer');
-  sliderDemo.classList.add('slider-active');
-  afterImgEl.onload = () => initSlider(sliderDemo);
-  afterImgEl.src = 'demo-result.jpg';
-  if (afterImgEl.complete) initSlider(sliderDemo);
-
   updateNavBadge();
 
   // Автовідкриття кабінету при ?cabinet=open
