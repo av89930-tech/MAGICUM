@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MAGICUM — Рекламна анімація</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --gold: #C9A96E;
+  --gold2: #FFD84A;
+  --gold3: #E8C870;
+  --dark: #060508;
+}
+
+body {
+  background: var(--dark);
+  font-family: 'Georgia', serif;
+  overflow: hidden;
+  width: 100vw; height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* ─── SCENE ─── */
+#scene {
+  position: relative;
+  width: 430px; height: 760px;
+  overflow: hidden;
+  background: #060508;
+  border-radius: 4px;
+  perspective: 1200px;
+}
+
+/* ─── BACKGROUND LIBRARY ─── */
+#bgLib {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 50% 80%, rgba(140,90,20,0.18) 0%, transparent 70%),
+    radial-gradient(ellipse 80% 60% at 20% 50%, rgba(80,50,10,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 60% at 80% 50%, rgba(80,50,10,0.12) 0%, transparent 60%);
+  animation: bgPulse 8s ease-in-out infinite;
+}
+@keyframes bgPulse {
+  0%,100% { opacity:.85; }
+  50%      { opacity:1; }
+}
+
+/* Library shelves - SVG drawn */
+#bgSvg { position:absolute; inset:0; width:100%; height:100%; opacity:0.22; }
+
+/* ─── CANDLES ─── */
+.candle {
+  position: absolute; bottom: 0;
+  width: 6px;
+  animation: candleFlicker 2s ease-in-out infinite;
+}
+.candle .flame {
+  width: 10px; height: 18px;
+  border-radius: 50% 50% 30% 30%;
+  background: radial-gradient(ellipse at 50% 80%, #fff 0%, #FFD84A 30%, #FF8C00 60%, transparent 80%);
+  margin-left: -2px;
+  filter: blur(1.5px);
+  animation: flameAnim 0.3s ease-in-out infinite alternate;
+}
+@keyframes flameAnim {
+  from { transform: scaleX(1) scaleY(1) translateY(0); opacity:0.9; }
+  to   { transform: scaleX(0.8) scaleY(1.15) translateY(-2px); opacity:1; }
+}
+@keyframes candleFlicker {
+  0%,100% { filter: drop-shadow(0 0 6px rgba(255,200,50,.5)); }
+  50%      { filter: drop-shadow(0 0 12px rgba(255,200,50,.8)); }
+}
+
+/* ─── CARD ─── */
+#card {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 360px;
+  transform: translate(-50%,-50%) rotateX(0deg);
+  transform-style: preserve-3d;
+  animation: cardFloat 6s ease-in-out infinite;
+  opacity: 0;
+  animation-fill-mode: forwards;
+}
+@keyframes cardFloat {
+  0%,100% { transform: translate(-50%,-50%) rotateX(2deg) rotateY(-1deg) translateZ(0); }
+  33%      { transform: translate(-50%,-52%) rotateX(-1deg) rotateY(2deg) translateZ(10px); }
+  66%      { transform: translate(-50%,-48%) rotateX(2deg) rotateY(-2deg) translateZ(5px); }
+}
+
+#cardInner {
+  background: linear-gradient(160deg, #0E0C14 0%, #12100A 40%, #0A0C10 100%);
+  border: 1px solid rgba(201,169,110,0.35);
+  border-radius: 16px;
+  padding: 28px 24px 24px;
+  box-shadow:
+    0 0 60px rgba(201,169,110,0.12),
+    0 0 120px rgba(201,169,110,0.06),
+    inset 0 1px 0 rgba(201,169,110,0.2),
+    inset 0 -1px 0 rgba(201,169,110,0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* card shimmer */
+#cardInner::before {
+  content:'';
+  position:absolute; inset:0;
+  background: linear-gradient(105deg,
+    transparent 30%,
+    rgba(201,169,110,0.06) 50%,
+    transparent 70%);
+  animation: shimmer 4s ease-in-out infinite;
+}
+@keyframes shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+/* corner ornaments */
+.corner {
+  position: absolute;
+  width: 20px; height: 20px;
+  border-color: rgba(201,169,110,0.5);
+  border-style: solid;
+}
+.corner.tl { top:8px; left:8px;  border-width:1px 0 0 1px; }
+.corner.tr { top:8px; right:8px; border-width:1px 1px 0 0; }
+.corner.bl { bottom:8px; left:8px;  border-width:0 0 1px 1px; }
+.corner.br { bottom:8px; right:8px; border-width:0 1px 1px 0; }
+
+/* ─── TITLE ─── */
+#titleWrap {
+  text-align: center;
+  margin-bottom: 18px;
+  opacity: 0;
+  transform: translateY(-12px);
+  transition: opacity .8s ease, transform .8s ease;
+}
+#titleWrap.show { opacity:1; transform:translateY(0); }
+
+#mainTitle {
+  font-size: 2.1rem;
+  letter-spacing: 10px;
+  color: var(--gold2);
+  text-transform: uppercase;
+  font-weight: normal;
+  text-shadow:
+    0 0 20px rgba(255,216,74,0.6),
+    0 0 40px rgba(255,216,74,0.3),
+    0 0 80px rgba(255,216,74,0.15);
+  animation: titleGlow 3s ease-in-out infinite;
+}
+@keyframes titleGlow {
+  0%,100% { text-shadow: 0 0 20px rgba(255,216,74,.5),0 0 40px rgba(255,216,74,.25); }
+  50%      { text-shadow: 0 0 30px rgba(255,216,74,.9),0 0 60px rgba(255,216,74,.4),0 0 100px rgba(255,216,74,.2); }
+}
+
+#subTitle {
+  font-size: 0.6rem;
+  letter-spacing: 5px;
+  color: rgba(201,169,110,0.7);
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+/* ─── COMPASS / ASTROLABE ─── */
+#compassWrap {
+  position: relative;
+  width: 200px; height: 200px;
+  margin: 0 auto 18px;
+  opacity: 0;
+  transform: scale(0.7) rotateZ(-20deg);
+  transition: opacity 1s ease, transform 1s ease;
+}
+#compassWrap.show { opacity:1; transform: scale(1) rotateZ(0deg); }
+
+#compassWrap canvas { display:block; }
+
+/* ─── SOFA REVEAL ─── */
+#sofaReveal {
+  position: relative;
+  height: 130px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 18px;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity .8s ease, transform .8s ease;
+  border: 1px solid rgba(201,169,110,0.2);
+}
+#sofaReveal.show { opacity:1; transform:translateY(0); }
+
+#sofaBefore, #sofaAfter {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.55rem; letter-spacing: 3px; text-transform: uppercase;
+  color: rgba(201,169,110,0.6);
+}
+#sofaBefore {
+  background: linear-gradient(135deg, #1a1408 0%, #221c10 100%);
+  clip-path: inset(0 100% 0 0);
+  animation: sofaSlide 3s 4.5s ease-in-out forwards;
+}
+#sofaAfter {
+  background: linear-gradient(135deg, #0d1420 0%, #101a28 100%);
+}
+@keyframes sofaSlide {
+  0%   { clip-path: inset(0 100% 0 0); }
+  100% { clip-path: inset(0 0% 0 0); }
+}
+
+/* Sofa SVG drawings */
+.sofa-svg { width:100%; height:100%; }
+
+/* divider line */
+#sofaDivider {
+  position:absolute; top:0; bottom:0; width:2px;
+  background: linear-gradient(to bottom, transparent, var(--gold2), transparent);
+  left: 50%;
+  opacity: 0;
+  animation: dividerShow 0.3s 6.5s ease forwards;
+  box-shadow: 0 0 8px rgba(255,216,74,0.8);
+}
+@keyframes dividerShow { to { opacity:1; } }
+
+#beforeLabel, #afterLabel {
+  position:absolute; bottom:6px;
+  font-size: 0.45rem; letter-spacing:3px; color: rgba(201,169,110,0.5);
+}
+#beforeLabel { left:10px; }
+#afterLabel  { right:10px; }
+
+/* ─── TEXT BLOCK ─── */
+#textBlock {
+  text-align: center;
+  margin-bottom: 20px;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity .8s ease, transform .8s ease;
+}
+#textBlock.show { opacity:1; transform:translateY(0); }
+
+#tagline {
+  font-size: 0.72rem;
+  color: rgba(209,205,199,0.9);
+  line-height: 1.7;
+  letter-spacing: 0.5px;
+}
+#tagline b { color: var(--gold); }
+
+/* ─── CTA BUTTON ─── */
+#ctaWrap {
+  text-align: center;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity .8s ease, transform .8s ease;
+}
+#ctaWrap.show { opacity:1; transform:translateY(0); }
+
+#ctaBtn {
+  display: inline-block;
+  background: linear-gradient(135deg, #C9A96E, #E8C870, #C9A96E);
+  background-size: 200% 100%;
+  color: #0A0808;
+  font-size: 0.6rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  padding: 14px 28px;
+  border-radius: 2px;
+  border: none;
+  cursor: pointer;
+  font-family: 'Georgia', serif;
+  font-weight: bold;
+  animation: btnShimmer 2.5s ease-in-out infinite;
+  box-shadow: 0 4px 24px rgba(201,169,110,0.4), 0 0 40px rgba(201,169,110,0.15);
+}
+@keyframes btnShimmer {
+  0%,100% { background-position:0% 50%; box-shadow:0 4px 24px rgba(201,169,110,.4); }
+  50%      { background-position:100% 50%; box-shadow:0 4px 36px rgba(201,169,110,.7),0 0 60px rgba(201,169,110,.25); }
+}
+
+/* ─── PARTICLE CANVAS ─── */
+#particles {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* ─── URL TAG ─── */
+#urlTag {
+  position: absolute;
+  bottom: 16px; left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.5rem;
+  letter-spacing: 4px;
+  color: rgba(201,169,110,0.4);
+  text-transform: uppercase;
+  opacity: 0;
+  transition: opacity 1s ease;
+  z-index: 20;
+}
+#urlTag.show { opacity:1; }
+
+/* ─── INTRO FLASH ─── */
+#introFlash {
+  position: absolute; inset:0;
+  background: radial-gradient(ellipse at 50% 50%, rgba(255,216,74,0.9) 0%, transparent 70%);
+  z-index: 100;
+  animation: introFlash .8s ease-out forwards;
+}
+@keyframes introFlash {
+  0%   { opacity:1; }
+  100% { opacity:0; pointer-events:none; }
+}
+
+/* ─── RUNE RING OVERLAY ─── */
+#runeRing {
+  position:absolute; inset:0;
+  pointer-events:none;
+  z-index:5;
+  animation: runeRotate 40s linear infinite;
+  opacity: 0.04;
+}
+@keyframes runeRotate { from{transform:rotate(0)} to{transform:rotate(360deg)} }
+
+</style>
+</head>
+<body>
+
+<div id="scene">
+  <!-- Background -->
+  <div id="bgLib"></div>
+
+  <!-- Library SVG background -->
+  <svg id="bgSvg" viewBox="0 0 430 760" xmlns="http://www.w3.org/2000/svg">
+    <!-- Arch ceiling -->
+    <path d="M0,200 Q215,20 430,200" stroke="#C9A96E" stroke-width="1.5" fill="none"/>
+    <path d="M40,220 Q215,60 390,220" stroke="#C9A96E" stroke-width="0.5" fill="none" opacity="0.5"/>
+    <!-- Left bookshelf -->
+    <rect x="0" y="200" width="60" height="560" fill="#1a1208"/>
+    <line x1="0" y1="250" x2="60" y2="250" stroke="#C9A96E" stroke-width="0.8"/>
+    <line x1="0" y1="300" x2="60" y2="300" stroke="#C9A96E" stroke-width="0.8"/>
+    <line x1="0" y1="350" x2="60" y2="350" stroke="#C9A96E" stroke-width="0.8"/>
+    <line x1="0" y1="400" x2="60" y2="400" stroke="#C9A96E" stroke-width="0.8"/>
+    <line x1="0" y1="450" x2="60" y2="450" stroke="#C9A96E" stroke-width="0.8"/>
+    <line x1="0" y1="500" x2="60" y2="500" stroke="#C9A96E" stroke-width="0.8"/>
+    <!-- Book spines left -->
+    <rect x="5"  y="255" width="8"  height="40" fill="#4a2010" rx="1"/>
+    <rect x="15" y="258" width="6"  height="37" fill="#2a1a40" rx="1"/>
+    <rect x="23" y="253" width="9"  height="42" fill="#1a3020" rx="1"/>
+    <rect x="34" y="257" width="7"  height="38" fill="#3a2010" rx="1"/>
+    <rect x="43" y="255" width="10" height="40" fill="#402010" rx="1"/>
+    <rect x="5"  y="305" width="7"  height="40" fill="#2a1a40" rx="1"/>
+    <rect x="14" y="308" width="9"  height="37" fill="#1a2a40" rx="1"/>
+    <rect x="25" y="303" width="6"  height="42" fill="#3a1010" rx="1"/>
+    <rect x="33" y="307" width="8"  height="38" fill="#1a3020" rx="1"/>
+    <rect x="43" y="305" width="10" height="40" fill="#402a10" rx="1"/>
+    <!-- Right bookshelf -->
+    <rect x="370" y="200" width="60" height="560" fill="#1a1208"/>
+    <line x1="370" y1="250" x2="430" y2="250" stroke="#C9A96E" stroke-width="0.8"/>
+    <line x1="370" y1="300" x2="430" y2="300" stroke="#C9A96E" stroke-width="0.8"/>
+    <line x1="370" y1="350" x2="430" y2="350" stroke="#C9A96E" stroke-width="0.8"/>
+    <line x1="370" y1="400" x2="430" y2="400" stroke="#C9A96E" stroke-width="0.8"/>
+    <line x1="370" y1="450" x2="430" y2="450" stroke="#C9A96E" stroke-width="0.8"/>
+    <!-- Book spines right -->
+    <rect x="375" y="255" width="8"  height="40" fill="#3a2010" rx="1"/>
+    <rect x="385" y="258" width="9"  height="37" fill="#2a1040" rx="1"/>
+    <rect x="396" y="253" width="6"  height="42" fill="#1a2a30" rx="1"/>
+    <rect x="404" y="257" width="9"  height="38" fill="#402010" rx="1"/>
+    <rect x="415" y="255" width="8"  height="40" fill="#2a1020" rx="1"/>
+    <rect x="375" y="305" width="9"  height="40" fill="#1a3020" rx="1"/>
+    <rect x="386" y="308" width="7"  height="37" fill="#3a1010" rx="1"/>
+    <rect x="395" y="303" width="8"  height="42" fill="#2a1a40" rx="1"/>
+    <rect x="405" y="307" width="9"  height="38" fill="#402a10" rx="1"/>
+    <rect x="416" y="305" width="8"  height="40" fill="#1a2040" rx="1"/>
+    <!-- Floor -->
+    <line x1="0" y1="720" x2="430" y2="720" stroke="#C9A96E" stroke-width="0.5"/>
+    <line x1="60" y1="720" x2="215" y2="760" stroke="#C9A96E" stroke-width="0.3" opacity="0.4"/>
+    <line x1="370" y1="720" x2="215" y2="760" stroke="#C9A96E" stroke-width="0.3" opacity="0.4"/>
+    <line x1="215" y1="720" x2="215" y2="760" stroke="#C9A96E" stroke-width="0.3" opacity="0.4"/>
+    <!-- Table silhouette -->
+    <rect x="80" y="680" width="270" height="8" fill="#1a140a" rx="2"/>
+    <rect x="100" y="688" width="10" height="32" fill="#1a140a"/>
+    <rect x="320" y="688" width="10" height="32" fill="#1a140a"/>
+    <!-- Scroll on table -->
+    <ellipse cx="180" cy="678" rx="25" ry="6" fill="#2a1e0e" opacity="0.8"/>
+    <rect x="155" y="665" width="50" height="13" rx="3" fill="#c8a96e" opacity="0.2"/>
+  </svg>
+
+  <!-- Rune ring bg -->
+  <svg id="runeRing" viewBox="0 0 430 760">
+    <circle cx="215" cy="380" r="300" stroke="#C9A96E" stroke-width="0.5" fill="none"/>
+    <circle cx="215" cy="380" r="250" stroke="#C9A96E" stroke-width="0.3" fill="none" stroke-dasharray="8 12"/>
+    <text font-family="serif" font-size="14" fill="#C9A96E">
+      <textPath href="#runeCircle">✦ MAGICUM ✦ DIGITAL ✦ ALCHEMIST ✦ ATELIER ✦ МИСТЕЦТВО ✦ ТРАНСФОРМАЦІЇ ✦ </textPath>
+    </text>
+    <defs>
+      <path id="runeCircle" d="M215,80 a300,300 0 1,1 -0.01,0"/>
+    </defs>
+  </svg>
+
+  <!-- Candles -->
+  <div class="candle" style="left:80px; bottom:650px">
+    <div class="flame"></div>
+    <div style="width:6px;height:50px;background:linear-gradient(#d4a84b,#8b6914);border-radius:2px"></div>
+  </div>
+  <div class="candle" style="left:340px; bottom:655px; animation-delay:.7s">
+    <div class="flame" style="animation-delay:.3s"></div>
+    <div style="width:6px;height:40px;background:linear-gradient(#d4a84b,#8b6914);border-radius:2px"></div>
+  </div>
+  <div class="candle" style="left:55px; bottom:620px; animation-delay:1.2s">
+    <div class="flame" style="animation-delay:.6s"></div>
+    <div style="width:4px;height:30px;background:linear-gradient(#d4a84b,#8b6914);border-radius:2px"></div>
+  </div>
+  <div class="candle" style="left:368px; bottom:618px; animation-delay:.4s">
+    <div class="flame" style="animation-delay:.9s"></div>
+    <div style="width:4px;height:28px;background:linear-gradient(#d4a84b,#8b6914);border-radius:2px"></div>
+  </div>
+
+  <!-- Particle canvas -->
+  <canvas id="particles" width="430" height="760"></canvas>
+
+  <!-- Main card -->
+  <div id="card">
+    <div id="cardInner">
+      <div class="corner tl"></div>
+      <div class="corner tr"></div>
+      <div class="corner bl"></div>
+      <div class="corner br"></div>
+
+      <!-- Title -->
+      <div id="titleWrap">
+        <div id="mainTitle">MAGIC<span style="font-weight:900">UM</span></div>
+        <div id="subTitle">Digital Alchemist Atelier</div>
+      </div>
+
+      <!-- Compass -->
+      <div id="compassWrap">
+        <canvas id="compassCanvas" width="200" height="200"></canvas>
+      </div>
+
+      <!-- Sofa before/after -->
+      <div id="sofaReveal">
+        <div id="sofaAfter">
+          <svg class="sofa-svg" viewBox="0 0 360 130" xmlns="http://www.w3.org/2000/svg">
+            <!-- After: velvet blue sofa -->
+            <rect x="20" y="50" width="320" height="60" rx="12" fill="#1a2a4a"/>
+            <rect x="20" y="50" width="320" height="60" rx="12" fill="url(#velvetGrad)"/>
+            <!-- Cushions after -->
+            <rect x="30" y="55" width="145" height="48" rx="8" fill="#1e3055"/>
+            <rect x="185" y="55" width="145" height="48" rx="8" fill="#1e3055"/>
+            <!-- Pillow highlights -->
+            <ellipse cx="103" cy="75" rx="40" ry="10" fill="rgba(100,150,255,0.12)"/>
+            <ellipse cx="257" cy="75" rx="40" ry="10" fill="rgba(100,150,255,0.12)"/>
+            <!-- Armrests after -->
+            <rect x="10"  y="45" width="28" height="70" rx="10" fill="#172240"/>
+            <rect x="322" y="45" width="28" height="70" rx="10" fill="#172240"/>
+            <!-- Legs after -->
+            <rect x="40"  y="108" width="8" height="18" rx="2" fill="#0d1525"/>
+            <rect x="100" y="108" width="8" height="18" rx="2" fill="#0d1525"/>
+            <rect x="215" y="108" width="8" height="18" rx="2" fill="#0d1525"/>
+            <rect x="275" y="108" width="8" height="18" rx="2" fill="#0d1525"/>
+            <!-- After label -->
+            <text x="295" y="25" font-family="Georgia" font-size="8" fill="rgba(100,150,255,0.7)" letter-spacing="2">ПІСЛЯ</text>
+            <defs>
+              <linearGradient id="velvetGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="rgba(80,120,220,0.15)"/>
+                <stop offset="100%" stop-color="rgba(0,0,0,0.3)"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div id="sofaBefore">
+          <svg class="sofa-svg" viewBox="0 0 360 130" xmlns="http://www.w3.org/2000/svg">
+            <!-- Before: old brown sofa -->
+            <rect x="20" y="50" width="320" height="60" rx="12" fill="#3d2810"/>
+            <!-- Cushions before -->
+            <rect x="30" y="55" width="145" height="48" rx="8" fill="#4a3015"/>
+            <rect x="185" y="55" width="145" height="48" rx="8" fill="#4a3015"/>
+            <!-- Worn texture lines -->
+            <line x1="50" y1="60" x2="80" y2="100" stroke="rgba(0,0,0,0.15)" stroke-width="1"/>
+            <line x1="80" y1="60" x2="110" y2="100" stroke="rgba(0,0,0,0.15)" stroke-width="1"/>
+            <line x1="210" y1="60" x2="240" y2="100" stroke="rgba(0,0,0,0.15)" stroke-width="1"/>
+            <!-- Armrests before -->
+            <rect x="10"  y="45" width="28" height="70" rx="10" fill="#2e1e08"/>
+            <rect x="322" y="45" width="28" height="70" rx="10" fill="#2e1e08"/>
+            <!-- Legs before -->
+            <rect x="40"  y="108" width="8" height="18" rx="2" fill="#1a0e04"/>
+            <rect x="100" y="108" width="8" height="18" rx="2" fill="#1a0e04"/>
+            <rect x="215" y="108" width="8" height="18" rx="2" fill="#1a0e04"/>
+            <rect x="275" y="108" width="8" height="18" rx="2" fill="#1a0e04"/>
+            <!-- Before label -->
+            <text x="15" y="25" font-family="Georgia" font-size="8" fill="rgba(201,169,110,0.7)" letter-spacing="2">ДО</text>
+          </svg>
+        </div>
+        <div id="sofaDivider"></div>
+        <div id="beforeLabel">ДО</div>
+        <div id="afterLabel">ПІСЛЯ</div>
+      </div>
+
+      <!-- Text -->
+      <div id="textBlock">
+        <p id="tagline">
+          <b>Не вгадуйте — візуалізуйте.</b><br>
+          Приміряйте будь-яку тканину на ваші меблі<br>
+          за допомогою AI — миттєво.
+        </p>
+      </div>
+
+      <!-- CTA -->
+      <div id="ctaWrap">
+        <button id="ctaBtn">✦ ВІДЧИНИ БРАМУ В СВІТ МАГІЇ ✦</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- URL -->
+  <div id="urlTag">MAGICUM.UA</div>
+
+  <!-- Intro flash -->
+  <div id="introFlash"></div>
+</div>
+
+<script>
+// ─── COMPASS DRAW ───
+const cc = document.getElementById('compassCanvas');
+const ctx = cc.getContext('2d');
+const CX = 100, CY = 100, R = 90;
+
+let compassAngle = 0;
+let innerAngle = 0;
+
+function drawCompass(t) {
+  ctx.clearRect(0,0,200,200);
+
+  // Outer glow
+  const glow = ctx.createRadialGradient(CX,CY,60,CX,CY,R);
+  glow.addColorStop(0,'rgba(255,216,74,0.0)');
+  glow.addColorStop(0.7,'rgba(201,169,110,0.05)');
+  glow.addColorStop(1,'rgba(201,169,110,0.2)');
+  ctx.beginPath(); ctx.arc(CX,CY,R,0,Math.PI*2);
+  ctx.fillStyle = glow; ctx.fill();
+
+  // Outer ring
+  ctx.beginPath(); ctx.arc(CX,CY,R,0,Math.PI*2);
+  ctx.strokeStyle = 'rgba(201,169,110,0.8)'; ctx.lineWidth = 1.5; ctx.stroke();
+
+  // Roman numerals ring (rotating slowly)
+  ctx.save(); ctx.translate(CX,CY); ctx.rotate(compassAngle * 0.3);
+  const romans = ['XII','I','II','III','IV','V','VI','VII','VIII','IX','X','XI'];
+  ctx.font = '8px Georgia';
+  ctx.fillStyle = 'rgba(201,169,110,0.9)';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  romans.forEach((r,i) => {
+    const a = (i/12)*Math.PI*2 - Math.PI/2;
+    const rx = Math.cos(a)*72, ry = Math.sin(a)*72;
+    ctx.save(); ctx.translate(rx,ry); ctx.rotate(a+Math.PI/2);
+    ctx.fillText(r,0,0); ctx.restore();
+  });
+  // Tick marks
+  for(let i=0;i<60;i++) {
+    const a = (i/60)*Math.PI*2;
+    const r1 = i%5===0 ? 82 : 86;
+    ctx.beginPath();
+    ctx.moveTo(Math.cos(a)*r1, Math.sin(a)*r1);
+    ctx.lineTo(Math.cos(a)*88, Math.sin(a)*88);
+    ctx.strokeStyle = i%5===0 ? 'rgba(201,169,110,0.9)' : 'rgba(201,169,110,0.4)';
+    ctx.lineWidth = i%5===0 ? 1.2 : 0.6; ctx.stroke();
+  }
+  ctx.restore();
+
+  // Middle decorative ring
+  ctx.beginPath(); ctx.arc(CX,CY,55,0,Math.PI*2);
+  ctx.strokeStyle = 'rgba(201,169,110,0.4)'; ctx.lineWidth = 0.8; ctx.stroke();
+  ctx.beginPath(); ctx.arc(CX,CY,50,0,Math.PI*2);
+  ctx.strokeStyle = 'rgba(201,169,110,0.2)'; ctx.lineWidth = 0.5; ctx.stroke();
+
+  // Inner rotating ring (faster, opposite)
+  ctx.save(); ctx.translate(CX,CY); ctx.rotate(-innerAngle);
+  ctx.strokeStyle = 'rgba(201,169,110,0.5)'; ctx.lineWidth = 0.8;
+  for(let i=0;i<8;i++) {
+    const a = (i/8)*Math.PI*2;
+    ctx.beginPath();
+    ctx.moveTo(Math.cos(a)*40, Math.sin(a)*40);
+    ctx.lineTo(Math.cos(a)*50, Math.sin(a)*50);
+    ctx.stroke();
+  }
+  // Inner circle dashed
+  ctx.setLineDash([3,4]);
+  ctx.beginPath(); ctx.arc(0,0,40,0,Math.PI*2);
+  ctx.strokeStyle='rgba(201,169,110,0.35)'; ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.restore();
+
+  // 4-pointed star / compass rose
+  ctx.save(); ctx.translate(CX,CY); ctx.rotate(compassAngle);
+  const starPoints = [
+    [0,-42, 5,-5, 0,-30, -5,-5],   // N
+    [42,0,  5,-5, 30,0,  5,5],     // E
+    [0,42,  5,5,  0,30,  -5,5],    // S
+    [-42,0, -5,-5,-30,0, -5,5],    // W
+  ];
+  // 4 long points
+  [[0,-1],[1,0],[0,1],[-1,0]].forEach((dir,i) => {
+    const a = i*(Math.PI/2);
+    ctx.beginPath();
+    ctx.moveTo(0,0);
+    const lx = Math.cos(a)*42, ly = Math.sin(a)*42;
+    const w = 5;
+    ctx.moveTo(Math.cos(a-Math.PI/2)*w, Math.sin(a-Math.PI/2)*w);
+    ctx.lineTo(lx, ly);
+    ctx.lineTo(Math.cos(a+Math.PI/2)*w, Math.sin(a+Math.PI/2)*w);
+    ctx.closePath();
+    const gr = ctx.createLinearGradient(0,0,lx,ly);
+    gr.addColorStop(0,'rgba(255,216,74,0.9)');
+    gr.addColorStop(1,'rgba(201,169,110,0.3)');
+    ctx.fillStyle = gr; ctx.fill();
+  });
+  // 4 short diagonal points
+  for(let i=0;i<4;i++) {
+    const a = (i+0.5)*(Math.PI/2);
+    ctx.beginPath();
+    ctx.moveTo(Math.cos(a-Math.PI/2)*3, Math.sin(a-Math.PI/2)*3);
+    ctx.lineTo(Math.cos(a)*22, Math.sin(a)*22);
+    ctx.lineTo(Math.cos(a+Math.PI/2)*3, Math.sin(a+Math.PI/2)*3);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(201,169,110,0.6)'; ctx.fill();
+  }
+  ctx.restore();
+
+  // Center gem
+  ctx.save(); ctx.translate(CX,CY);
+  const gemGrad = ctx.createRadialGradient(0,0,0,0,0,10);
+  gemGrad.addColorStop(0,'rgba(255,240,180,1)');
+  gemGrad.addColorStop(0.4,'rgba(201,169,110,0.9)');
+  gemGrad.addColorStop(1,'rgba(120,80,20,0.6)');
+  ctx.beginPath(); ctx.arc(0,0,8,0,Math.PI*2);
+  ctx.fillStyle = gemGrad; ctx.fill();
+  ctx.strokeStyle='rgba(255,240,180,0.8)'; ctx.lineWidth=0.8; ctx.stroke();
+  // Inner spark
+  ctx.beginPath(); ctx.arc(-2,-2,2,0,Math.PI*2);
+  ctx.fillStyle='rgba(255,255,255,0.9)'; ctx.fill();
+  ctx.restore();
+
+  // Outer 4 decorative points
+  ctx.save(); ctx.translate(CX,CY); ctx.rotate(compassAngle * 0.5 + Math.PI/4);
+  for(let i=0;i<4;i++) {
+    const a = i*(Math.PI/2);
+    const px = Math.cos(a)*R, py = Math.sin(a)*R;
+    ctx.beginPath();
+    ctx.moveTo(Math.cos(a-Math.PI/2)*4+px*0.9, Math.sin(a-Math.PI/2)*4+py*0.9);
+    ctx.lineTo(px*1.1, py*1.1);
+    ctx.lineTo(Math.cos(a+Math.PI/2)*4+px*0.9, Math.sin(a+Math.PI/2)*4+py*0.9);
+    ctx.closePath();
+    ctx.fillStyle='rgba(201,169,110,0.8)'; ctx.fill();
+  }
+  ctx.restore();
+}
+
+// ─── PARTICLES ───
+const pc = document.getElementById('particles');
+const pctx = pc.getContext('2d');
+
+class Particle {
+  constructor() { this.reset(); }
+  reset() {
+    this.x = Math.random()*430;
+    this.y = Math.random()*760 + 760;
+    this.size = Math.random()*2 + 0.5;
+    this.speed = Math.random()*0.8 + 0.3;
+    this.opacity = Math.random()*0.8 + 0.2;
+    this.drift = (Math.random()-0.5)*0.4;
+    this.twinkle = Math.random()*Math.PI*2;
+    this.twinkleSpeed = Math.random()*0.05 + 0.02;
+    // gold hue variation
+    this.hue = Math.random()*30 + 35; // 35-65 degrees (gold range)
+  }
+  update() {
+    this.y -= this.speed;
+    this.x += this.drift;
+    this.twinkle += this.twinkleSpeed;
+    if (this.y < -10) this.reset();
+  }
+  draw() {
+    const a = this.opacity * (0.6 + 0.4*Math.sin(this.twinkle));
+    pctx.save();
+    pctx.globalAlpha = a;
+    // 4-pointed star
+    pctx.translate(this.x, this.y);
+    pctx.rotate(this.twinkle * 0.3);
+    const s = this.size;
+    pctx.beginPath();
+    pctx.moveTo(0,-s*2); pctx.lineTo(s*0.4,-s*0.4);
+    pctx.lineTo(s*2,0);  pctx.lineTo(s*0.4,s*0.4);
+    pctx.lineTo(0,s*2);  pctx.lineTo(-s*0.4,s*0.4);
+    pctx.lineTo(-s*2,0); pctx.lineTo(-s*0.4,-s*0.4);
+    pctx.closePath();
+    pctx.fillStyle = `hsl(${this.hue},80%,70%)`;
+    pctx.shadowBlur = 6; pctx.shadowColor = `hsl(${this.hue},80%,70%)`;
+    pctx.fill();
+    pctx.restore();
+  }
+}
+
+const particles = Array.from({length:60}, () => {
+  const p = new Particle();
+  p.y = Math.random() * 760; // start at random heights
+  return p;
+});
+
+// Burst particles for milestone effects
+class BurstParticle {
+  constructor(x,y) {
+    this.x=x; this.y=y;
+    const a = Math.random()*Math.PI*2;
+    const sp = Math.random()*4+2;
+    this.vx = Math.cos(a)*sp; this.vy = Math.sin(a)*sp;
+    this.life = 1; this.decay = Math.random()*0.03+0.02;
+    this.size = Math.random()*3+1;
+  }
+  update() {
+    this.x+=this.vx; this.y+=this.vy;
+    this.vy += 0.05;
+    this.life -= this.decay;
+  }
+  draw() {
+    pctx.save();
+    pctx.globalAlpha = this.life;
+    pctx.beginPath(); pctx.arc(this.x,this.y,this.size*this.life,0,Math.PI*2);
+    pctx.fillStyle=`hsl(45,90%,${60+this.life*30}%)`;
+    pctx.shadowBlur=8; pctx.shadowColor='rgba(255,200,50,0.8)';
+    pctx.fill(); pctx.restore();
+  }
+}
+let bursts = [];
+
+function spawnBurst(x,y,count=20) {
+  for(let i=0;i<count;i++) bursts.push(new BurstParticle(x,y));
+}
+
+// ─── ANIMATION LOOP ───
+let startTime = null;
+let phase = 0;
+
+// Sequence timing (ms)
+const SEQ = {
+  cardFadeIn:   300,
+  titleShow:    600,
+  compassShow:  1000,
+  sofaShow:     2500,
+  textShow:     5000,
+  ctaShow:      6000,
+  urlShow:      7000,
+  burst1:       2000,
+  burst2:       5500,
+  burst3:       7500,
+};
+
+const triggered = new Set();
+
+function tick(ts) {
+  if (!startTime) startTime = ts;
+  const elapsed = ts - startTime;
+
+  // Rotate compass
+  compassAngle = elapsed * 0.0003;
+  innerAngle   = elapsed * 0.0008;
+  drawCompass(elapsed);
+
+  // Particles
+  pctx.clearRect(0,0,430,760);
+  particles.forEach(p => { p.update(); p.draw(); });
+  bursts = bursts.filter(b => b.life > 0);
+  bursts.forEach(b => { b.update(); b.draw(); });
+
+  // Sequence triggers
+  if (elapsed > SEQ.cardFadeIn && !triggered.has('card')) {
+    triggered.add('card');
+    const card = document.getElementById('card');
+    card.style.transition = 'opacity 1s ease';
+    card.style.opacity = '1';
+  }
+  if (elapsed > SEQ.titleShow && !triggered.has('title')) {
+    triggered.add('title');
+    document.getElementById('titleWrap').classList.add('show');
+  }
+  if (elapsed > SEQ.compassShow && !triggered.has('compass')) {
+    triggered.add('compass');
+    document.getElementById('compassWrap').classList.add('show');
+  }
+  if (elapsed > SEQ.sofaShow && !triggered.has('sofa')) {
+    triggered.add('sofa');
+    document.getElementById('sofaReveal').classList.add('show');
+  }
+  if (elapsed > SEQ.textShow && !triggered.has('text')) {
+    triggered.add('text');
+    document.getElementById('textBlock').classList.add('show');
+  }
+  if (elapsed > SEQ.ctaShow && !triggered.has('cta')) {
+    triggered.add('cta');
+    document.getElementById('ctaWrap').classList.add('show');
+  }
+  if (elapsed > SEQ.urlShow && !triggered.has('url')) {
+    triggered.add('url');
+    document.getElementById('urlTag').classList.add('show');
+  }
+
+  // Burst effects
+  if (elapsed > SEQ.burst1 && !triggered.has('b1')) {
+    triggered.add('b1');
+    spawnBurst(215, 250, 30);
+  }
+  if (elapsed > SEQ.burst2 && !triggered.has('b2')) {
+    triggered.add('b2');
+    spawnBurst(215, 400, 25);
+  }
+  if (elapsed > SEQ.burst3 && !triggered.has('b3')) {
+    triggered.add('b3');
+    spawnBurst(215, 560, 20);
+  }
+
+  requestAnimationFrame(tick);
+}
+
+// Remove intro flash after animation
+setTimeout(() => {
+  const f = document.getElementById('introFlash');
+  if(f) f.remove();
+}, 900);
+
+requestAnimationFrame(tick);
+
+// 3D tilt on mouse/touch
+const scene = document.getElementById('scene');
+scene.addEventListener('mousemove', e => {
+  const r = scene.getBoundingClientRect();
+  const x = (e.clientX - r.left - r.width/2) / (r.width/2);
+  const y = (e.clientY - r.top - r.height/2) / (r.height/2);
+  document.getElementById('card').style.transform =
+    `translate(-50%,-50%) rotateY(${x*8}deg) rotateX(${-y*5}deg) translateZ(20px)`;
+});
+scene.addEventListener('mouseleave', () => {
+  document.getElementById('card').style.transform = '';
+});
+</script>
+</body>
+</html>
