@@ -722,15 +722,24 @@ async function runVisualize() {
   if (!fabricBase64)    { setStatus('⚠ Оберіть або завантажте тканину', 'var(--gold)'); return; }
 
   setBtnState(true);
-  setStatus('✦ Алхімія запущена...', 'var(--gold-light)');
+  setStatus('✦ Підготовка зображень...', 'var(--gold-light)');
 
   try {
+    const [sendFurniture, sendFabric] = await Promise.all([
+      compressImage(furnitureBase64, furnitureMime, 1024, 1024, 0.85),
+      compressImage(fabricBase64,    fabricMime,    1024, 1024, 0.85)
+    ]);
+
+    setStatus('✦ Алхімія запущена...', 'var(--gold-light)');
+
     const resp = await fetch('/.netlify/functions/ritual', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ furnitureBase64, furnitureMime, fabricBase64, fabricMime })
+      body: JSON.stringify({ furnitureBase64: sendFurniture, furnitureMime: 'image/jpeg', fabricBase64: sendFabric, fabricMime: 'image/jpeg' })
     });
-    const data = await resp.json();
+    let data;
+    try { data = await resp.json(); }
+    catch (e) { throw new Error('Сервер недоступний. Спробуйте пізніше.'); }
     if (!resp.ok || !data.success) throw new Error(data.error || 'Помилка сервера');
 
     lastB64  = data.imageBase64;

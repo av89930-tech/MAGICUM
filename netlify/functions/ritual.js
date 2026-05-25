@@ -11,7 +11,9 @@ async function callGemini(model, requestBody, apiKey) {
     `${GEMINI_BASE}/${model}:generateContent?key=${apiKey}`,
     { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestBody) }
   );
-  const data = await response.json();
+  let data;
+  try { data = await response.json(); }
+  catch (e) { data = { error: { message: `Non-JSON response from Gemini (${response.status})` } }; }
   return { ok: response.ok, status: response.status, data };
 }
 
