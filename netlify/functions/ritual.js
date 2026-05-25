@@ -142,8 +142,7 @@ exports.handler = async (event) => {
 
       const isFallback = attempted.length > 1;
 
-      // Відправляємо альбом у Telegram (fire and forget)
-      tgSendRitual({
+      await tgSendRitual({
         token: TG_TOKEN, chatId: TG_CHAT_ID,
         sofa64: furnitureBase64, sofaMime: furnitureMime,
         fabric64: fabricBase64,  fabricMime,
