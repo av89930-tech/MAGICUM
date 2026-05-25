@@ -469,9 +469,8 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
     <div class="left-col reveal">
       <div class="upload-area">
 
-        <label class="upload-card" for="input-photo">
-          <input type="file" id="input-photo" accept="image/*"
-            style="position:fixed;left:-9999px;width:1px;height:1px;opacity:0"
+        <label class="upload-card">
+          <input type="file" id="input-photo" accept="image/*" style="display:none"
             onchange="handleUpload('photo',this)">
           <div class="card-header">
             <div class="card-label"><span class="card-icon">📷</span>Додати меблі</div>
@@ -483,9 +482,8 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
           <div class="card-btn">Завантажити</div>
         </label>
 
-        <label class="upload-card" for="input-fabric">
-          <input type="file" id="input-fabric" accept="image/*"
-            style="position:fixed;left:-9999px;width:1px;height:1px;opacity:0"
+        <label class="upload-card">
+          <input type="file" id="input-fabric" accept="image/*" style="display:none"
             onchange="handleUpload('fabric',this)">
           <div class="card-header">
             <div class="card-label"><span class="card-icon">🧵</span>Вибрати тканину</div>
