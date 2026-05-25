@@ -1,12 +1,12 @@
 const { getStore } = require('@netlify/blobs');
 
-exports.handler = async (event) => {
+exports.handler = async (event, context) => {
   const params = event.queryStringParameters || {};
   const page = Math.max(1, parseInt(params.page || '1', 10));
   const limit = Math.min(24, Math.max(1, parseInt(params.limit || '12', 10)));
 
   try {
-    const store = getStore('magicum');
+    const store = getStore({ name: 'magicum', context });
     const indexRaw = await store.get('index:all');
     const index = indexRaw ? JSON.parse(indexRaw) : [];
 

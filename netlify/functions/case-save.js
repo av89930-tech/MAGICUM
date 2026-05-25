@@ -20,7 +20,7 @@ function isValidBase64(str) {
   return typeof str === 'string' && str.length > 0 && /^[A-Za-z0-9+/]+=*$/.test(str);
 }
 
-exports.handler = async (event) => {
+exports.handler = async (event, context) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: JSON.stringify({ success: false, error: 'Method not allowed' }) };
   }
@@ -30,7 +30,7 @@ exports.handler = async (event) => {
   const today = new Date().toISOString().slice(0, 10);
 
   try {
-    const store = getStore('magicum');
+    const store = getStore({ name: 'magicum', context });
 
     // Rate limit: max 10 saves per IP per day
     const rlKey = `ratelimit:${ip}:${today}`;

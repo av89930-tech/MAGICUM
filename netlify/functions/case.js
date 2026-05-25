@@ -14,7 +14,7 @@ function formatDate(iso) {
   return new Date(iso).toLocaleDateString('uk-UA', { year: 'numeric', month: 'long', day: 'numeric' });
 }
 
-exports.handler = async (event) => {
+exports.handler = async (event, context) => {
   const slug = (event.queryStringParameters || {}).slug || '';
 
   if (!slug || !/^[a-z0-9-]+$/.test(slug)) {
@@ -22,7 +22,7 @@ exports.handler = async (event) => {
   }
 
   try {
-    const store = getStore('magicum');
+    const store = getStore({ name: 'magicum', context });
     const raw = await store.get(`case:${slug}`);
 
     if (!raw) {
