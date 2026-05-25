@@ -469,7 +469,7 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
     <div class="left-col">
       <div class="upload-area">
 
-        <div class="upload-card" onclick="document.getElementById('input-photo').click()">
+        <label class="upload-card">
           <input type="file" id="input-photo" accept="image/*" style="display:none"
             onchange="handleUpload('photo',this)">
           <div class="card-header">
@@ -480,9 +480,9 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
             <img id="photo-img" src="demo-sofa.jpg" alt="Меблі">
           </div>
           <div class="card-btn">Завантажити</div>
-        </div>
+        </label>
 
-        <div class="upload-card" onclick="document.getElementById('input-fabric').click()">
+        <label class="upload-card">
           <input type="file" id="input-fabric" accept="image/*" style="display:none"
             onchange="handleUpload('fabric',this)">
           <div class="card-header">
@@ -493,7 +493,7 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
             <img id="fabric-img" src="demo-fabric.jpg" alt="Тканина">
           </div>
           <div class="card-btn">Завантажити своє</div>
-        </div>
+        </label>
 
       </div>
 
