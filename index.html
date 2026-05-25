@@ -470,7 +470,8 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
       <div class="upload-area">
 
         <label class="upload-card">
-          <input type="file" id="input-photo" accept="image/*" style="display:none"
+          <input type="file" id="input-photo" accept="image/*"
+            style="opacity:0;position:absolute;inset:0;width:100%;height:100%;cursor:pointer;z-index:5;"
             onchange="handleUpload('photo',this)">
           <div class="card-header">
             <div class="card-label"><span class="card-icon">📷</span>Додати меблі</div>
@@ -483,7 +484,8 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
         </label>
 
         <label class="upload-card">
-          <input type="file" id="input-fabric" accept="image/*" style="display:none"
+          <input type="file" id="input-fabric" accept="image/*"
+            style="opacity:0;position:absolute;inset:0;width:100%;height:100%;cursor:pointer;z-index:5;"
             onchange="handleUpload('fabric',this)">
           <div class="card-header">
             <div class="card-label"><span class="card-icon">🧵</span>Вибрати тканину</div>
@@ -641,7 +643,7 @@ const PROF_KEY = 'magicum_profile';
 const STORE = k => `mgc_${k}`;
 const VALID_KEYS = new Set(['MAGICUM-2026','BRAMA-ZOLOTA','ATELIE-PRO','MASTER-FABRIC','DIZAIN-STUDIO','RESTAVRATOR-UA']);
 
-let furnitureBase64 = null, furnitureMime = null;
+let furnitureBase64 = null, furnitureMime = null, furnitureDataUrl = null;
 let fabricBase64    = null, fabricMime    = null;
 let fabricName      = 'Оксамит';
 let lastB64 = null, lastMime = null, currentHistId = null;
@@ -729,11 +731,9 @@ function handleUpload(type, input) {
     const mime = file.type;
 
     if (type === 'photo') {
-      furnitureBase64 = b64; furnitureMime = mime;
+      furnitureBase64 = b64; furnitureMime = mime; furnitureDataUrl = full;
       const img = document.getElementById('photo-img');
       img.src = full; img.style.display = 'block';
-
-      document.getElementById('beforeImg').src = full;
     } else {
       fabricBase64 = b64; fabricMime = mime;
       fabricName   = file.name.replace(/\.[^/.]+$/, '') || 'тканина';
@@ -798,6 +798,7 @@ async function runVisualize() {
 
     afterImg.style.display  = 'block';
     beforeImg.style.display = 'block';
+    if (furnitureDataUrl) beforeImg.src = furnitureDataUrl;
 
     const container = document.getElementById('sliderContainer');
     container.classList.add('slider-active');
