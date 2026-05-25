@@ -471,7 +471,7 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
 
         <label class="upload-card">
           <input type="file" id="input-photo" accept="image/*"
-            style="opacity:0;position:absolute;inset:0;width:100%;height:100%;cursor:pointer;z-index:5;"
+            style="opacity:0.001;position:absolute;inset:0;width:100%;height:100%;cursor:pointer;z-index:5;"
             onchange="handleUpload('photo',this)">
           <div class="card-header">
             <div class="card-label"><span class="card-icon">📷</span>Додати меблі</div>
@@ -485,7 +485,7 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
 
         <label class="upload-card">
           <input type="file" id="input-fabric" accept="image/*"
-            style="opacity:0;position:absolute;inset:0;width:100%;height:100%;cursor:pointer;z-index:5;"
+            style="opacity:0.001;position:absolute;inset:0;width:100%;height:100%;cursor:pointer;z-index:5;"
             onchange="handleUpload('fabric',this)">
           <div class="card-header">
             <div class="card-label"><span class="card-icon">🧵</span>Вибрати тканину</div>
@@ -798,19 +798,27 @@ async function runVisualize() {
 
     afterImg.style.display  = 'block';
     beforeImg.style.display = 'block';
-    if (furnitureDataUrl) beforeImg.src = furnitureDataUrl;
 
     const container = document.getElementById('sliderContainer');
     container.classList.add('slider-active');
 
+    let beforeLoaded = false, afterLoaded = false;
     function showSlider() {
+      if (!beforeLoaded || !afterLoaded) return;
       const bw = beforeImg.naturalWidth, bh = beforeImg.naturalHeight;
       if (bw && bh) container.style.aspectRatio = `${bw} / ${bh}`;
       initSlider(container);
     }
-    afterImg.onload = showSlider;
+    beforeImg.onload = () => { beforeLoaded = true; showSlider(); };
+    afterImg.onload  = () => { afterLoaded  = true; showSlider(); };
+    if (furnitureDataUrl) {
+      beforeImg.src = furnitureDataUrl;
+      if (beforeImg.complete) { beforeLoaded = true; }
+    } else {
+      beforeLoaded = true;
+    }
     afterImg.src = resultUrl;
-    if (afterImg.complete) showSlider();
+    if (afterImg.complete) { afterLoaded = true; showSlider(); }
 
     document.getElementById('saveArea').style.display = 'block';
     document.getElementById('saveStatus').innerHTML = '';

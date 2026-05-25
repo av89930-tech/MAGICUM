@@ -86,7 +86,7 @@ exports.handler = async (event) => {
       return { statusCode: 500, body: JSON.stringify({ success: false, error: 'Server misconfiguration: missing API key' }) };
     }
 
-    const prompt = `Ти — майстер цифрової переоббивки меблів. Завдання: замінити оббивку меблів з першого зображення на тканину, колір і текстуру з другого зображення. Збережи форму, каркас, ніжки, складки, тіні та оточення. Нова оббивка має точно відповідати кольору та візерунку другого зображення. Фотореалістичний результат без артефактів. Поверни тільки зображення.`;
+    const prompt = `You are a professional furniture reupholstery visualizer. Task: take the FIRST image (sofa/furniture) and reupholster it using the fabric texture and color from the SECOND image. Rules: 1) Keep EXACTLY the same camera angle, composition, perspective, zoom level, and background as the first image. 2) Keep the furniture shape, frame, legs, cushion forms, shadows and room environment identical. 3) Replace ONLY the upholstery/fabric surface with the texture and color pattern from the second image. 4) The result must look photorealistic. Output only the resulting image.`;
 
     const requestBody = {
       contents: [{ parts: [
@@ -94,7 +94,7 @@ exports.handler = async (event) => {
         { inline_data: { mime_type: furnitureMime, data: furnitureBase64 } },
         { inline_data: { mime_type: fabricMime,    data: fabricBase64    } }
       ]}],
-      generationConfig: { temperature: 0.7, responseModalities: ['IMAGE', 'TEXT'], candidateCount: 1 },
+      generationConfig: { temperature: 0.4, responseModalities: ['IMAGE', 'TEXT'], candidateCount: 1 },
       safetySettings: [
         { category: 'HARM_CATEGORY_HARASSMENT',        threshold: 'BLOCK_NONE' },
         { category: 'HARM_CATEGORY_HATE_SPEECH',       threshold: 'BLOCK_NONE' },
