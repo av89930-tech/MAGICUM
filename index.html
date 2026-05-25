@@ -752,9 +752,6 @@ async function runVisualize() {
     afterImg.style.display  = 'block';
     beforeImg.style.display = 'block';
 
-    const container = document.getElementById('sliderContainer');
-    container.classList.add('slider-active');
-
     // aspect ratio from afterImg (AI result) so it shows without cropping
     afterImg.src = resultUrl;
     if (furnitureDataUrl) beforeImg.src = furnitureDataUrl;
