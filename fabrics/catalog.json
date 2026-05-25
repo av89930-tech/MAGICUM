@@ -1,0 +1,948 @@
+{
+  "dealers": [
+    {
+      "id": "mag1",
+      "name": "Mag1",
+      "categories": [
+        {
+          "id": "velour",
+          "name": "Велюр",
+          "icon": "🪡",
+          "fabrics": [
+            {
+              "id": "genesis",
+              "name": "Genesis",
+              "colors": [
+                { "code": "01", "name": "Ivory",       "hex": "#F5F0E8" },
+                { "code": "02", "name": "Beige",        "hex": "#D4B896" },
+                { "code": "03", "name": "Caramel",      "hex": "#C4874F" },
+                { "code": "04", "name": "Terracotta",   "hex": "#C4622D" },
+                { "code": "05", "name": "Olive",        "hex": "#7A8C52" },
+                { "code": "06", "name": "Forest",       "hex": "#2D5A3D" },
+                { "code": "07", "name": "Navy",         "hex": "#1B2E5C" },
+                { "code": "08", "name": "Graphite",     "hex": "#4A4A4A" },
+                { "code": "09", "name": "Anthracite",   "hex": "#2A2A2A" },
+                { "code": "10", "name": "Chocolate",    "hex": "#5C3317" }
+              ]
+            },
+            {
+              "id": "velvet-pro",
+              "name": "Velvet Pro",
+              "colors": [
+                { "code": "VP-01", "name": "Snow",      "hex": "#FAFAFA" },
+                { "code": "VP-02", "name": "Cream",     "hex": "#EDE0C4" },
+                { "code": "VP-03", "name": "Sand",      "hex": "#C8A97E" },
+                { "code": "VP-04", "name": "Blush",     "hex": "#D4A5A5" },
+                { "code": "VP-05", "name": "Mauve",     "hex": "#A07880" },
+                { "code": "VP-06", "name": "Lilac",     "hex": "#8B7BA8" },
+                { "code": "VP-07", "name": "Teal",      "hex": "#3D7A7A" },
+                { "code": "VP-08", "name": "Slate",     "hex": "#5A6878" },
+                { "code": "VP-09", "name": "Charcoal",  "hex": "#363636" },
+                { "code": "VP-10", "name": "Midnight",  "hex": "#1A1A2E" }
+              ]
+            },
+            {
+              "id": "luxe-velvet",
+              "name": "Luxe Velvet",
+              "colors": [
+                { "code": "LV-01", "name": "Pearl",     "hex": "#F0EAD6" },
+                { "code": "LV-02", "name": "Champagne", "hex": "#E8D5A3" },
+                { "code": "LV-03", "name": "Gold",      "hex": "#C9A84C" },
+                { "code": "LV-04", "name": "Copper",    "hex": "#B87333" },
+                { "code": "LV-05", "name": "Rose Gold", "hex": "#B76E79" },
+                { "code": "LV-06", "name": "Burgundy",  "hex": "#7C2D3E" },
+                { "code": "LV-07", "name": "Cobalt",    "hex": "#1B4F8A" },
+                { "code": "LV-08", "name": "Emerald",   "hex": "#1A5C45" },
+                { "code": "LV-09", "name": "Onyx",      "hex": "#1C1C1C" },
+                { "code": "LV-10", "name": "Silver",    "hex": "#A8A8A8" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "shenil",
+          "name": "Шеніл",
+          "icon": "🧶",
+          "fabrics": [
+            {
+              "id": "modena",
+              "name": "Modena",
+              "colors": [
+                { "code": "MD-01", "name": "Linen",     "hex": "#D8C9A3" },
+                { "code": "MD-02", "name": "Wheat",     "hex": "#C9A96E" },
+                { "code": "MD-03", "name": "Honey",     "hex": "#B8860B" },
+                { "code": "MD-04", "name": "Rust",      "hex": "#8B3A2A" },
+                { "code": "MD-05", "name": "Moss",      "hex": "#6B7C5C" },
+                { "code": "MD-06", "name": "Sage",      "hex": "#8FA882" },
+                { "code": "MD-07", "name": "Denim",     "hex": "#4A6A8A" },
+                { "code": "MD-08", "name": "Storm",     "hex": "#5C6E7A" },
+                { "code": "MD-09", "name": "Ash",       "hex": "#8C8C8C" },
+                { "code": "MD-10", "name": "Espresso",  "hex": "#3C1F14" }
+              ]
+            },
+            {
+              "id": "roma",
+              "name": "Roma",
+              "colors": [
+                { "code": "RM-01", "name": "Milk",      "hex": "#F2EFE4" },
+                { "code": "RM-02", "name": "Putty",     "hex": "#C8B89A" },
+                { "code": "RM-03", "name": "Apricot",   "hex": "#E8A87C" },
+                { "code": "RM-04", "name": "Cinnamon",  "hex": "#9A5C30" },
+                { "code": "RM-05", "name": "Plum",      "hex": "#5E2D5E" },
+                { "code": "RM-06", "name": "Indigo",    "hex": "#2D3070" },
+                { "code": "RM-07", "name": "Petrol",    "hex": "#1A4A5C" },
+                { "code": "RM-08", "name": "Khaki",     "hex": "#7A7A50" },
+                { "code": "RM-09", "name": "Taupe",     "hex": "#7A6A5C" },
+                { "code": "RM-10", "name": "Ebony",     "hex": "#262626" }
+              ]
+            },
+            {
+              "id": "dolce",
+              "name": "Dolce",
+              "colors": [
+                { "code": "DC-01", "name": "Vanilla",   "hex": "#F5E6C8" },
+                { "code": "DC-02", "name": "Nude",      "hex": "#DEC5A8" },
+                { "code": "DC-03", "name": "Peach",     "hex": "#FFAA80" },
+                { "code": "DC-04", "name": "Coral",     "hex": "#D4614A" },
+                { "code": "DC-05", "name": "Claret",    "hex": "#7A1C2E" },
+                { "code": "DC-06", "name": "Amethyst",  "hex": "#7B5EA7" },
+                { "code": "DC-07", "name": "Sky",       "hex": "#5B8DB8" },
+                { "code": "DC-08", "name": "Mint",      "hex": "#7ABFAF" },
+                { "code": "DC-09", "name": "Mocha",     "hex": "#6E4C3A" },
+                { "code": "DC-10", "name": "Jet",       "hex": "#1A1A1A" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "zamsha",
+          "name": "Замша",
+          "icon": "🫧",
+          "fabrics": [
+            {
+              "id": "suede-soft",
+              "name": "Suede Soft",
+              "colors": [
+                { "code": "SS-01", "name": "Ecru",       "hex": "#F0E6D0" },
+                { "code": "SS-02", "name": "Almond",     "hex": "#D9B99B" },
+                { "code": "SS-03", "name": "Cognac",     "hex": "#9B4A1A" },
+                { "code": "SS-04", "name": "Sienna",     "hex": "#A0522D" },
+                { "code": "SS-05", "name": "Cedar",      "hex": "#7B3F2A" },
+                { "code": "SS-06", "name": "Fern",       "hex": "#4E7C4E" },
+                { "code": "SS-07", "name": "Stone",      "hex": "#8A8070" },
+                { "code": "SS-08", "name": "Pewter",     "hex": "#6E7A80" },
+                { "code": "SS-09", "name": "Smoke",      "hex": "#5C5C5C" },
+                { "code": "SS-10", "name": "Noir",       "hex": "#1A1A1A" }
+              ]
+            },
+            {
+              "id": "nubuk",
+              "name": "Nubuk",
+              "colors": [
+                { "code": "NB-01", "name": "Natural",    "hex": "#E8D5B0" },
+                { "code": "NB-02", "name": "Toffee",     "hex": "#B87D4B" },
+                { "code": "NB-03", "name": "Mahogany",   "hex": "#7B2D3E" },
+                { "code": "NB-04", "name": "Chesnut",    "hex": "#6A3520" },
+                { "code": "NB-05", "name": "Hunter",     "hex": "#355E3B" },
+                { "code": "NB-06", "name": "Ocean",      "hex": "#1A5276" },
+                { "code": "NB-07", "name": "Dusk",       "hex": "#6B5B7B" },
+                { "code": "NB-08", "name": "Iron",       "hex": "#545454" },
+                { "code": "NB-09", "name": "Shadow",     "hex": "#3A3A3A" },
+                { "code": "NB-10", "name": "Obsidian",   "hex": "#1C1C1C" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "bokle",
+          "name": "Букле",
+          "icon": "🔘",
+          "fabrics": [
+            {
+              "id": "boucle-prime",
+              "name": "Boucle Prime",
+              "colors": [
+                { "code": "BP-01", "name": "Chalk",      "hex": "#F5F5F0" },
+                { "code": "BP-02", "name": "Oat",        "hex": "#E8DEC8" },
+                { "code": "BP-03", "name": "Biscuit",    "hex": "#D4C0A0" },
+                { "code": "BP-04", "name": "Pebble",     "hex": "#A89880" },
+                { "code": "BP-05", "name": "Warm Grey",  "hex": "#8C8078" },
+                { "code": "BP-06", "name": "Greige",     "hex": "#7A7060" },
+                { "code": "BP-07", "name": "Cool Grey",  "hex": "#808080" },
+                { "code": "BP-08", "name": "Slate",      "hex": "#606068" },
+                { "code": "BP-09", "name": "Charcoal",   "hex": "#404040" },
+                { "code": "BP-10", "name": "Black",      "hex": "#1A1A1A" }
+              ]
+            },
+            {
+              "id": "bouclette",
+              "name": "Bouclette",
+              "colors": [
+                { "code": "BT-01", "name": "Winter",     "hex": "#EFF0F0" },
+                { "code": "BT-02", "name": "Fog",        "hex": "#CDD3D8" },
+                { "code": "BT-03", "name": "Powder",     "hex": "#DBBFBF" },
+                { "code": "BT-04", "name": "Clay",       "hex": "#B89080" },
+                { "code": "BT-05", "name": "Cappuccino", "hex": "#A07850" },
+                { "code": "BT-06", "name": "Walnut",     "hex": "#6B4423" },
+                { "code": "BT-07", "name": "Ink",        "hex": "#2A3550" },
+                { "code": "BT-08", "name": "Bottle",     "hex": "#2A4A30" },
+                { "code": "BT-09", "name": "Mink",       "hex": "#7A6A5A" },
+                { "code": "BT-10", "name": "Graphite",   "hex": "#3C3C3C" }
+              ]
+            },
+            {
+              "id": "natural-boucle",
+              "name": "Natural Boucle",
+              "colors": [
+                { "code": "NL-01", "name": "Raw",        "hex": "#F0EAD8" },
+                { "code": "NL-02", "name": "Flax",       "hex": "#DDD0A8" },
+                { "code": "NL-03", "name": "Hazel",      "hex": "#C0A478" },
+                { "code": "NL-04", "name": "Reed",       "hex": "#A08858" },
+                { "code": "NL-05", "name": "Bark",       "hex": "#7A5C3C" },
+                { "code": "NL-06", "name": "Clay",       "hex": "#9C6A4A" },
+                { "code": "NL-07", "name": "Driftwood",  "hex": "#8A7868" },
+                { "code": "NL-08", "name": "Peat",       "hex": "#504030" },
+                { "code": "NL-09", "name": "Charred",    "hex": "#302820" },
+                { "code": "NL-10", "name": "Ebony",      "hex": "#201818" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "rogozhka",
+          "name": "Рогожка",
+          "icon": "🔲",
+          "fabrics": [
+            {
+              "id": "basket",
+              "name": "Basket Weave",
+              "colors": [
+                { "code": "BW-01", "name": "Linen",     "hex": "#D8C8A8" },
+                { "code": "BW-02", "name": "Sand",      "hex": "#C0A870" },
+                { "code": "BW-03", "name": "Straw",     "hex": "#B89840" },
+                { "code": "BW-04", "name": "Tan",       "hex": "#A07840" },
+                { "code": "BW-05", "name": "Adobe",     "hex": "#9C6040" },
+                { "code": "BW-06", "name": "Olive",     "hex": "#6C6C40" },
+                { "code": "BW-07", "name": "Slate",     "hex": "#607080" },
+                { "code": "BW-08", "name": "Storm",     "hex": "#485868" },
+                { "code": "BW-09", "name": "Graphite",  "hex": "#484848" },
+                { "code": "BW-10", "name": "Onyx",      "hex": "#202020" }
+              ]
+            },
+            {
+              "id": "jute-look",
+              "name": "Jute Look",
+              "colors": [
+                { "code": "JL-01", "name": "Natural",   "hex": "#D0B888" },
+                { "code": "JL-02", "name": "Amber",     "hex": "#B89040" },
+                { "code": "JL-03", "name": "Spice",     "hex": "#A06030" },
+                { "code": "JL-04", "name": "Earth",     "hex": "#785030" },
+                { "code": "JL-05", "name": "Khaki",     "hex": "#787860" },
+                { "code": "JL-06", "name": "Fern",      "hex": "#507050" },
+                { "code": "JL-07", "name": "Smoke",     "hex": "#686878" },
+                { "code": "JL-08", "name": "Lead",      "hex": "#505060" },
+                { "code": "JL-09", "name": "Ash",       "hex": "#686868" },
+                { "code": "JL-10", "name": "Carbon",    "hex": "#282828" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ecoshkira",
+          "name": "Екошкіра",
+          "icon": "🦬",
+          "fabrics": [
+            {
+              "id": "eco-urban",
+              "name": "Eco Urban",
+              "colors": [
+                { "code": "EU-01", "name": "White",     "hex": "#F8F8F8" },
+                { "code": "EU-02", "name": "Cream",     "hex": "#F0E8D0" },
+                { "code": "EU-03", "name": "Camel",     "hex": "#C8A060" },
+                { "code": "EU-04", "name": "Tan",       "hex": "#A87840" },
+                { "code": "EU-05", "name": "Cognac",    "hex": "#8C5020" },
+                { "code": "EU-06", "name": "Brown",     "hex": "#603820" },
+                { "code": "EU-07", "name": "Greige",    "hex": "#808070" },
+                { "code": "EU-08", "name": "Dark Grey", "hex": "#484848" },
+                { "code": "EU-09", "name": "Black",     "hex": "#181818" },
+                { "code": "EU-10", "name": "Navy",      "hex": "#182038" }
+              ]
+            },
+            {
+              "id": "eco-lux",
+              "name": "Eco Lux",
+              "colors": [
+                { "code": "EL-01", "name": "Ivory",     "hex": "#F5EDD5" },
+                { "code": "EL-02", "name": "Wheat",     "hex": "#E0C898" },
+                { "code": "EL-03", "name": "Mustard",   "hex": "#C8A020" },
+                { "code": "EL-04", "name": "Rust",      "hex": "#A04020" },
+                { "code": "EL-05", "name": "Bordeaux",  "hex": "#702030" },
+                { "code": "EL-06", "name": "Plum",      "hex": "#502060" },
+                { "code": "EL-07", "name": "Petrol",    "hex": "#184858" },
+                { "code": "EL-08", "name": "Bottle",    "hex": "#183830" },
+                { "code": "EL-09", "name": "Graphite",  "hex": "#383838" },
+                { "code": "EL-10", "name": "Black",     "hex": "#101010" }
+              ]
+            },
+            {
+              "id": "soft-touch",
+              "name": "Soft Touch",
+              "colors": [
+                { "code": "ST-01", "name": "Alabaster", "hex": "#F2EDE0" },
+                { "code": "ST-02", "name": "Buff",      "hex": "#DAC090" },
+                { "code": "ST-03", "name": "Toffee",    "hex": "#B88040" },
+                { "code": "ST-04", "name": "Auburn",    "hex": "#9A3820" },
+                { "code": "ST-05", "name": "Wine",      "hex": "#682030" },
+                { "code": "ST-06", "name": "Grape",     "hex": "#482858" },
+                { "code": "ST-07", "name": "Teal",      "hex": "#1E5858" },
+                { "code": "ST-08", "name": "Slate",     "hex": "#485868" },
+                { "code": "ST-09", "name": "Iron",      "hex": "#383838" },
+                { "code": "ST-10", "name": "Pitch",     "hex": "#101010" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mag2",
+      "name": "Mag2",
+      "categories": [
+        {
+          "id": "velour",
+          "name": "Велюр",
+          "icon": "🪡",
+          "fabrics": [
+            {
+              "id": "prestige",
+              "name": "Prestige",
+              "colors": [
+                { "code": "PR-01", "name": "Blanc",     "hex": "#F8F5F0" },
+                { "code": "PR-02", "name": "Ivory",     "hex": "#EDE0C4" },
+                { "code": "PR-03", "name": "Straw",     "hex": "#D4B86A" },
+                { "code": "PR-04", "name": "Amber",     "hex": "#C49A3C" },
+                { "code": "PR-05", "name": "Terracot",  "hex": "#C46A40" },
+                { "code": "PR-06", "name": "Brick",     "hex": "#A0422A" },
+                { "code": "PR-07", "name": "Cherry",    "hex": "#7C2033" },
+                { "code": "PR-08", "name": "Violet",    "hex": "#5C3080" },
+                { "code": "PR-09", "name": "Teal",      "hex": "#2A6060" },
+                { "code": "PR-10", "name": "Black",     "hex": "#1C1C1C" }
+              ]
+            },
+            {
+              "id": "cashmere-touch",
+              "name": "Cashmere Touch",
+              "colors": [
+                { "code": "CT-01", "name": "Snow",      "hex": "#FAF8F5" },
+                { "code": "CT-02", "name": "Cream",     "hex": "#F0E2C0" },
+                { "code": "CT-03", "name": "Blush",     "hex": "#E8C0B0" },
+                { "code": "CT-04", "name": "Rose",      "hex": "#D09090" },
+                { "code": "CT-05", "name": "Dusty",     "hex": "#A87878" },
+                { "code": "CT-06", "name": "Mauve",     "hex": "#907080" },
+                { "code": "CT-07", "name": "Slate",     "hex": "#607080" },
+                { "code": "CT-08", "name": "Steel",     "hex": "#485868" },
+                { "code": "CT-09", "name": "Carbon",    "hex": "#303030" },
+                { "code": "CT-10", "name": "Jet",       "hex": "#181818" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "shenil",
+          "name": "Шеніл",
+          "icon": "🧶",
+          "fabrics": [
+            {
+              "id": "florence",
+              "name": "Florence",
+              "colors": [
+                { "code": "FL-01", "name": "Milk",      "hex": "#F5F0E5" },
+                { "code": "FL-02", "name": "Gold",      "hex": "#D4A844" },
+                { "code": "FL-03", "name": "Bronze",    "hex": "#A0742C" },
+                { "code": "FL-04", "name": "Copper",    "hex": "#B87033" },
+                { "code": "FL-05", "name": "Brick",     "hex": "#8C4030" },
+                { "code": "FL-06", "name": "Forest",    "hex": "#305430" },
+                { "code": "FL-07", "name": "Ocean",     "hex": "#285070" },
+                { "code": "FL-08", "name": "Navy",      "hex": "#202860" },
+                { "code": "FL-09", "name": "Plum",      "hex": "#4C2050" },
+                { "code": "FL-10", "name": "Onyx",      "hex": "#1C1C1C" }
+              ]
+            },
+            {
+              "id": "venezia",
+              "name": "Venezia",
+              "colors": [
+                { "code": "VN-01", "name": "Bianco",    "hex": "#F8F5EF" },
+                { "code": "VN-02", "name": "Sabbia",    "hex": "#E0C898" },
+                { "code": "VN-03", "name": "Miele",     "hex": "#C89840" },
+                { "code": "VN-04", "name": "Arancio",   "hex": "#C06820" },
+                { "code": "VN-05", "name": "Rosso",     "hex": "#A02020" },
+                { "code": "VN-06", "name": "Verde",     "hex": "#306030" },
+                { "code": "VN-07", "name": "Azzurro",   "hex": "#207090" },
+                { "code": "VN-08", "name": "Blu",       "hex": "#1C2C60" },
+                { "code": "VN-09", "name": "Grigio",    "hex": "#606060" },
+                { "code": "VN-10", "name": "Nero",      "hex": "#141414" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "zamsha",
+          "name": "Замша",
+          "icon": "🫧",
+          "fabrics": [
+            {
+              "id": "zamsh-elite",
+              "name": "Elite Suede",
+              "colors": [
+                { "code": "ES-01", "name": "Nude",      "hex": "#E8D0B0" },
+                { "code": "ES-02", "name": "Camel",     "hex": "#C09060" },
+                { "code": "ES-03", "name": "Saddle",    "hex": "#9A6030" },
+                { "code": "ES-04", "name": "Chestnut",  "hex": "#7A4020" },
+                { "code": "ES-05", "name": "Mocha",     "hex": "#604030" },
+                { "code": "ES-06", "name": "Sage",      "hex": "#788060" },
+                { "code": "ES-07", "name": "Slate",     "hex": "#607070" },
+                { "code": "ES-08", "name": "Grey",      "hex": "#707070" },
+                { "code": "ES-09", "name": "Anthracite","hex": "#303030" },
+                { "code": "ES-10", "name": "Black",     "hex": "#181818" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "bokle",
+          "name": "Букле",
+          "icon": "🔘",
+          "fabrics": [
+            {
+              "id": "cloud",
+              "name": "Cloud Boucle",
+              "colors": [
+                { "code": "CB-01", "name": "White",     "hex": "#F7F7F5" },
+                { "code": "CB-02", "name": "Cream",     "hex": "#EEE5D0" },
+                { "code": "CB-03", "name": "Oat",       "hex": "#DDD0B0" },
+                { "code": "CB-04", "name": "Latte",     "hex": "#C0A880" },
+                { "code": "CB-05", "name": "Mink",      "hex": "#907860" },
+                { "code": "CB-06", "name": "Taupe",     "hex": "#786858" },
+                { "code": "CB-07", "name": "Grey",      "hex": "#888888" },
+                { "code": "CB-08", "name": "Smoke",     "hex": "#585858" },
+                { "code": "CB-09", "name": "Lead",      "hex": "#383838" },
+                { "code": "CB-10", "name": "Black",     "hex": "#181818" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "rogozhka",
+          "name": "Рогожка",
+          "icon": "🔲",
+          "fabrics": [
+            {
+              "id": "grid-plus",
+              "name": "Grid Plus",
+              "colors": [
+                { "code": "GP-01", "name": "Light",     "hex": "#D8D0C0" },
+                { "code": "GP-02", "name": "Beige",     "hex": "#C0B090" },
+                { "code": "GP-03", "name": "Stone",     "hex": "#A09078" },
+                { "code": "GP-04", "name": "Olive",     "hex": "#787848" },
+                { "code": "GP-05", "name": "Khaki",     "hex": "#686850" },
+                { "code": "GP-06", "name": "Slate",     "hex": "#606878" },
+                { "code": "GP-07", "name": "Grey",      "hex": "#686868" },
+                { "code": "GP-08", "name": "Dark",      "hex": "#404040" },
+                { "code": "GP-09", "name": "Charcoal",  "hex": "#303030" },
+                { "code": "GP-10", "name": "Black",     "hex": "#181818" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ecoshkira",
+          "name": "Екошкіра",
+          "icon": "🦬",
+          "fabrics": [
+            {
+              "id": "city-eco",
+              "name": "City Eco",
+              "colors": [
+                { "code": "CE-01", "name": "White",     "hex": "#F5F5F5" },
+                { "code": "CE-02", "name": "Beige",     "hex": "#E0C8A0" },
+                { "code": "CE-03", "name": "Sand",      "hex": "#C0A070" },
+                { "code": "CE-04", "name": "Tan",       "hex": "#A07840" },
+                { "code": "CE-05", "name": "Brown",     "hex": "#784820" },
+                { "code": "CE-06", "name": "Walnut",    "hex": "#583020" },
+                { "code": "CE-07", "name": "Graphite",  "hex": "#505050" },
+                { "code": "CE-08", "name": "Charcoal",  "hex": "#303030" },
+                { "code": "CE-09", "name": "Black",     "hex": "#181818" },
+                { "code": "CE-10", "name": "Navy",      "hex": "#1A2040" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mag3",
+      "name": "Mag3",
+      "categories": [
+        {
+          "id": "velour",
+          "name": "Велюр",
+          "icon": "🪡",
+          "fabrics": [
+            {
+              "id": "alfa",
+              "name": "Alfa Velvet",
+              "colors": [
+                { "code": "AV-01", "name": "Latte",     "hex": "#E8D5B0" },
+                { "code": "AV-02", "name": "Caramel",   "hex": "#C89858" },
+                { "code": "AV-03", "name": "Ginger",    "hex": "#B87030" },
+                { "code": "AV-04", "name": "Paprika",   "hex": "#B84020" },
+                { "code": "AV-05", "name": "Wine",      "hex": "#882030" },
+                { "code": "AV-06", "name": "Sage",      "hex": "#688060" },
+                { "code": "AV-07", "name": "Teal",      "hex": "#306870" },
+                { "code": "AV-08", "name": "Cobalt",    "hex": "#204880" },
+                { "code": "AV-09", "name": "Denim",     "hex": "#485878" },
+                { "code": "AV-10", "name": "Charcoal",  "hex": "#2C2C2C" }
+              ]
+            },
+            {
+              "id": "velour-king",
+              "name": "Velour King",
+              "colors": [
+                { "code": "VK-01", "name": "Ivory",     "hex": "#F0E8D5" },
+                { "code": "VK-02", "name": "Wheat",     "hex": "#D8C090" },
+                { "code": "VK-03", "name": "Honey",     "hex": "#C09038" },
+                { "code": "VK-04", "name": "Apricot",   "hex": "#D09060" },
+                { "code": "VK-05", "name": "Salmon",    "hex": "#C08070" },
+                { "code": "VK-06", "name": "Dusty Pink","hex": "#C09090" },
+                { "code": "VK-07", "name": "Lavender",  "hex": "#9080A8" },
+                { "code": "VK-08", "name": "Slate",     "hex": "#607080" },
+                { "code": "VK-09", "name": "Smoke",     "hex": "#585858" },
+                { "code": "VK-10", "name": "Black",     "hex": "#1C1C1C" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "shenil",
+          "name": "Шеніл",
+          "icon": "🧶",
+          "fabrics": [
+            {
+              "id": "aurora",
+              "name": "Aurora",
+              "colors": [
+                { "code": "AU-01", "name": "Pearl",     "hex": "#F0EAE0" },
+                { "code": "AU-02", "name": "Champagne", "hex": "#E0C898" },
+                { "code": "AU-03", "name": "Marigold",  "hex": "#D0A030" },
+                { "code": "AU-04", "name": "Persimmon", "hex": "#C05828" },
+                { "code": "AU-05", "name": "Bordeaux",  "hex": "#802030" },
+                { "code": "AU-06", "name": "Mulberry",  "hex": "#702060" },
+                { "code": "AU-07", "name": "Midnight",  "hex": "#1C2448" },
+                { "code": "AU-08", "name": "Spruce",    "hex": "#284838" },
+                { "code": "AU-09", "name": "Storm",     "hex": "#485868" },
+                { "code": "AU-10", "name": "Onyx",      "hex": "#1A1A1A" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "zamsha",
+          "name": "Замша",
+          "icon": "🫧",
+          "fabrics": [
+            {
+              "id": "velura",
+              "name": "Velura",
+              "colors": [
+                { "code": "VU-01", "name": "Sand",      "hex": "#D8C8A0" },
+                { "code": "VU-02", "name": "Camel",     "hex": "#C0A070" },
+                { "code": "VU-03", "name": "Tan",       "hex": "#A07848" },
+                { "code": "VU-04", "name": "Brown",     "hex": "#785030" },
+                { "code": "VU-05", "name": "Choco",     "hex": "#603828" },
+                { "code": "VU-06", "name": "Olive",     "hex": "#706840" },
+                { "code": "VU-07", "name": "Grey",      "hex": "#787878" },
+                { "code": "VU-08", "name": "Graphite",  "hex": "#484848" },
+                { "code": "VU-09", "name": "Dark",      "hex": "#282828" },
+                { "code": "VU-10", "name": "Black",     "hex": "#181818" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "bokle",
+          "name": "Букле",
+          "icon": "🔘",
+          "fabrics": [
+            {
+              "id": "merino",
+              "name": "Merino Boucle",
+              "colors": [
+                { "code": "MB-01", "name": "Ice",       "hex": "#F0F0F0" },
+                { "code": "MB-02", "name": "Shell",     "hex": "#EAE0D0" },
+                { "code": "MB-03", "name": "Almond",    "hex": "#D8C098" },
+                { "code": "MB-04", "name": "Camel",     "hex": "#C09870" },
+                { "code": "MB-05", "name": "Cinnamon",  "hex": "#A07040" },
+                { "code": "MB-06", "name": "Nutmeg",    "hex": "#806040" },
+                { "code": "MB-07", "name": "Mushroom",  "hex": "#906858" },
+                { "code": "MB-08", "name": "Iron",      "hex": "#585858" },
+                { "code": "MB-09", "name": "Slate",     "hex": "#404048" },
+                { "code": "MB-10", "name": "Black",     "hex": "#181818" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "rogozhka",
+          "name": "Рогожка",
+          "icon": "🔲",
+          "fabrics": [
+            {
+              "id": "urban",
+              "name": "Urban Weave",
+              "colors": [
+                { "code": "UW-01", "name": "Cream",     "hex": "#E8DCC8" },
+                { "code": "UW-02", "name": "Flax",      "hex": "#C8B888" },
+                { "code": "UW-03", "name": "Wheat",     "hex": "#B09060" },
+                { "code": "UW-04", "name": "Sage",      "hex": "#787860" },
+                { "code": "UW-05", "name": "Slate",     "hex": "#686878" },
+                { "code": "UW-06", "name": "Storm",     "hex": "#505060" },
+                { "code": "UW-07", "name": "Ash",       "hex": "#707070" },
+                { "code": "UW-08", "name": "Dark",      "hex": "#404040" },
+                { "code": "UW-09", "name": "Charcoal",  "hex": "#282828" },
+                { "code": "UW-10", "name": "Black",     "hex": "#181818" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ecoshkira",
+          "name": "Екошкіра",
+          "icon": "🦬",
+          "fabrics": [
+            {
+              "id": "moda-eco",
+              "name": "Moda Eco",
+              "colors": [
+                { "code": "ME-01", "name": "Ivory",     "hex": "#F0EAD8" },
+                { "code": "ME-02", "name": "Latte",     "hex": "#D8B880" },
+                { "code": "ME-03", "name": "Caramel",   "hex": "#B88040" },
+                { "code": "ME-04", "name": "Terracot",  "hex": "#A05830" },
+                { "code": "ME-05", "name": "Mocca",     "hex": "#683820" },
+                { "code": "ME-06", "name": "Wine",      "hex": "#702038" },
+                { "code": "ME-07", "name": "Navy",      "hex": "#202858" },
+                { "code": "ME-08", "name": "Petrol",    "hex": "#185060" },
+                { "code": "ME-09", "name": "Anthracite","hex": "#282828" },
+                { "code": "ME-10", "name": "Black",     "hex": "#101010" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mag4",
+      "name": "Mag4",
+      "categories": [
+        {
+          "id": "velour",
+          "name": "Велюр",
+          "icon": "🪡",
+          "fabrics": [
+            {
+              "id": "optima",
+              "name": "Optima",
+              "colors": [
+                { "code": "OP-01", "name": "Blanc",     "hex": "#F5F0E8" },
+                { "code": "OP-02", "name": "Vanilla",   "hex": "#E8D8A8" },
+                { "code": "OP-03", "name": "Peach",     "hex": "#E0A880" },
+                { "code": "OP-04", "name": "Brick",     "hex": "#B05830" },
+                { "code": "OP-05", "name": "Ruby",      "hex": "#A02030" },
+                { "code": "OP-06", "name": "Grape",     "hex": "#603870" },
+                { "code": "OP-07", "name": "Peacock",   "hex": "#206870" },
+                { "code": "OP-08", "name": "Sapphire",  "hex": "#184880" },
+                { "code": "OP-09", "name": "Iron",      "hex": "#484848" },
+                { "code": "OP-10", "name": "Black",     "hex": "#181818" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "shenil",
+          "name": "Шеніл",
+          "icon": "🧶",
+          "fabrics": [
+            {
+              "id": "boston",
+              "name": "Boston",
+              "colors": [
+                { "code": "BN-01", "name": "Linen",     "hex": "#DDD0B0" },
+                { "code": "BN-02", "name": "Gold",      "hex": "#C8A040" },
+                { "code": "BN-03", "name": "Pumpkin",   "hex": "#C07030" },
+                { "code": "BN-04", "name": "Rust",      "hex": "#A04020" },
+                { "code": "BN-05", "name": "Maroon",    "hex": "#781830" },
+                { "code": "BN-06", "name": "Bottle",    "hex": "#285030" },
+                { "code": "BN-07", "name": "Cyan",      "hex": "#207080" },
+                { "code": "BN-08", "name": "Denim",     "hex": "#384870" },
+                { "code": "BN-09", "name": "Smoke",     "hex": "#585858" },
+                { "code": "BN-10", "name": "Black",     "hex": "#141414" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "zamsha",
+          "name": "Замша",
+          "icon": "🫧",
+          "fabrics": [
+            {
+              "id": "imperial",
+              "name": "Imperial Suede",
+              "colors": [
+                { "code": "IS-01", "name": "Cream",     "hex": "#EEE0C0" },
+                { "code": "IS-02", "name": "Sand",      "hex": "#D0B888" },
+                { "code": "IS-03", "name": "Gold",      "hex": "#B89040" },
+                { "code": "IS-04", "name": "Tobacco",   "hex": "#906020" },
+                { "code": "IS-05", "name": "Mahog",     "hex": "#703020" },
+                { "code": "IS-06", "name": "Dark Oak",  "hex": "#503020" },
+                { "code": "IS-07", "name": "Olive",     "hex": "#686840" },
+                { "code": "IS-08", "name": "Warm Grey", "hex": "#787068" },
+                { "code": "IS-09", "name": "Charcoal",  "hex": "#383838" },
+                { "code": "IS-10", "name": "Black",     "hex": "#141414" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "bokle",
+          "name": "Букле",
+          "icon": "🔘",
+          "fabrics": [
+            {
+              "id": "nordic",
+              "name": "Nordic Boucle",
+              "colors": [
+                { "code": "ND-01", "name": "Frost",     "hex": "#EEF0F0" },
+                { "code": "ND-02", "name": "Birch",     "hex": "#E0D8C8" },
+                { "code": "ND-03", "name": "Linen",     "hex": "#D0C0A0" },
+                { "code": "ND-04", "name": "Drift",     "hex": "#B8A888" },
+                { "code": "ND-05", "name": "Stone",     "hex": "#909088" },
+                { "code": "ND-06", "name": "Pebble",    "hex": "#787870" },
+                { "code": "ND-07", "name": "Slate",     "hex": "#606068" },
+                { "code": "ND-08", "name": "Iron",      "hex": "#484848" },
+                { "code": "ND-09", "name": "Raven",     "hex": "#282828" },
+                { "code": "ND-10", "name": "Black",     "hex": "#101010" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "rogozhka",
+          "name": "Рогожка",
+          "icon": "🔲",
+          "fabrics": [
+            {
+              "id": "loft",
+              "name": "Loft Weave",
+              "colors": [
+                { "code": "LW-01", "name": "Natural",   "hex": "#D8CFBA" },
+                { "code": "LW-02", "name": "Biscuit",   "hex": "#C0AD88" },
+                { "code": "LW-03", "name": "Cinnamon",  "hex": "#9A7840" },
+                { "code": "LW-04", "name": "Bark",      "hex": "#806040" },
+                { "code": "LW-05", "name": "Olive",     "hex": "#707050" },
+                { "code": "LW-06", "name": "Sage",      "hex": "#788068" },
+                { "code": "LW-07", "name": "Clay",      "hex": "#908070" },
+                { "code": "LW-08", "name": "Ash",       "hex": "#707070" },
+                { "code": "LW-09", "name": "Charcoal",  "hex": "#404040" },
+                { "code": "LW-10", "name": "Black",     "hex": "#181818" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ecoshkira",
+          "name": "Екошкіра",
+          "icon": "🦬",
+          "fabrics": [
+            {
+              "id": "natura-eco",
+              "name": "Natura Eco",
+              "colors": [
+                { "code": "NE-01", "name": "White",     "hex": "#F5F5F2" },
+                { "code": "NE-02", "name": "Ecru",      "hex": "#E8DCC0" },
+                { "code": "NE-03", "name": "Camel",     "hex": "#C0A068" },
+                { "code": "NE-04", "name": "Hazel",     "hex": "#9A7040" },
+                { "code": "NE-05", "name": "Walnut",    "hex": "#704820" },
+                { "code": "NE-06", "name": "Espresso",  "hex": "#403020" },
+                { "code": "NE-07", "name": "Stone",     "hex": "#808080" },
+                { "code": "NE-08", "name": "Charcoal",  "hex": "#404040" },
+                { "code": "NE-09", "name": "Black",     "hex": "#181818" },
+                { "code": "NE-10", "name": "Navy",      "hex": "#1A2038" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mag5",
+      "name": "Mag5",
+      "categories": [
+        {
+          "id": "velour",
+          "name": "Велюр",
+          "icon": "🪡",
+          "fabrics": [
+            {
+              "id": "diamond",
+              "name": "Diamond Velvet",
+              "colors": [
+                { "code": "DV-01", "name": "Pearl",     "hex": "#F2EDE0" },
+                { "code": "DV-02", "name": "Gold",      "hex": "#D4A844" },
+                { "code": "DV-03", "name": "Amber",     "hex": "#C49030" },
+                { "code": "DV-04", "name": "Sienna",    "hex": "#B06030" },
+                { "code": "DV-05", "name": "Bordeaux",  "hex": "#8A1830" },
+                { "code": "DV-06", "name": "Amethyst",  "hex": "#6C3C90" },
+                { "code": "DV-07", "name": "Sapphire",  "hex": "#1C3878" },
+                { "code": "DV-08", "name": "Emerald",   "hex": "#1C5838" },
+                { "code": "DV-09", "name": "Silver",    "hex": "#909090" },
+                { "code": "DV-10", "name": "Black",     "hex": "#141414" }
+              ]
+            },
+            {
+              "id": "super-velvet",
+              "name": "Super Velvet",
+              "colors": [
+                { "code": "SV-01", "name": "Ecru",      "hex": "#EEE8D8" },
+                { "code": "SV-02", "name": "Butter",    "hex": "#E8D898" },
+                { "code": "SV-03", "name": "Peach",     "hex": "#E8B888" },
+                { "code": "SV-04", "name": "Blush",     "hex": "#D898A0" },
+                { "code": "SV-05", "name": "Rose",      "hex": "#C07080" },
+                { "code": "SV-06", "name": "Fuchsia",   "hex": "#A03860" },
+                { "code": "SV-07", "name": "Violet",    "hex": "#604898" },
+                { "code": "SV-08", "name": "Petrol",    "hex": "#184858" },
+                { "code": "SV-09", "name": "Graphite",  "hex": "#383838" },
+                { "code": "SV-10", "name": "Black",     "hex": "#101010" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "shenil",
+          "name": "Шеніл",
+          "icon": "🧶",
+          "fabrics": [
+            {
+              "id": "royal",
+              "name": "Royal Chenille",
+              "colors": [
+                { "code": "RC-01", "name": "Cream",     "hex": "#F0E8D0" },
+                { "code": "RC-02", "name": "Champagne", "hex": "#E0C890" },
+                { "code": "RC-03", "name": "Gold",      "hex": "#C8A030" },
+                { "code": "RC-04", "name": "Cognac",    "hex": "#9A6020" },
+                { "code": "RC-05", "name": "Claret",    "hex": "#782030" },
+                { "code": "RC-06", "name": "Violet",    "hex": "#502870" },
+                { "code": "RC-07", "name": "Ink",       "hex": "#202850" },
+                { "code": "RC-08", "name": "Teal",      "hex": "#205850" },
+                { "code": "RC-09", "name": "Pewter",    "hex": "#686868" },
+                { "code": "RC-10", "name": "Jet",       "hex": "#141414" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "zamsha",
+          "name": "Замша",
+          "icon": "🫧",
+          "fabrics": [
+            {
+              "id": "premium-suede",
+              "name": "Premium Suede",
+              "colors": [
+                { "code": "PS-01", "name": "Natural",   "hex": "#E8D8B8" },
+                { "code": "PS-02", "name": "Latte",     "hex": "#C8A870" },
+                { "code": "PS-03", "name": "Bronze",    "hex": "#A07838" },
+                { "code": "PS-04", "name": "Walnut",    "hex": "#785028" },
+                { "code": "PS-05", "name": "Espresso",  "hex": "#482818" },
+                { "code": "PS-06", "name": "Forest",    "hex": "#285030" },
+                { "code": "PS-07", "name": "Steel",     "hex": "#506070" },
+                { "code": "PS-08", "name": "Graphite",  "hex": "#404040" },
+                { "code": "PS-09", "name": "Charcoal",  "hex": "#282828" },
+                { "code": "PS-10", "name": "Black",     "hex": "#181818" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "bokle",
+          "name": "Букле",
+          "icon": "🔘",
+          "fabrics": [
+            {
+              "id": "premium-boucle",
+              "name": "Premium Boucle",
+              "colors": [
+                { "code": "PB-01", "name": "Snow",      "hex": "#F5F5F5" },
+                { "code": "PB-02", "name": "Oat",       "hex": "#E8DCC8" },
+                { "code": "PB-03", "name": "Almond",    "hex": "#D8C0A0" },
+                { "code": "PB-04", "name": "Camel",     "hex": "#C09870" },
+                { "code": "PB-05", "name": "Brown",     "hex": "#907050" },
+                { "code": "PB-06", "name": "Mink",      "hex": "#806858" },
+                { "code": "PB-07", "name": "Greige",    "hex": "#808070" },
+                { "code": "PB-08", "name": "Steel",     "hex": "#606070" },
+                { "code": "PB-09", "name": "Dark",      "hex": "#383838" },
+                { "code": "PB-10", "name": "Black",     "hex": "#181818" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "rogozhka",
+          "name": "Рогожка",
+          "icon": "🔲",
+          "fabrics": [
+            {
+              "id": "matrix",
+              "name": "Matrix Weave",
+              "colors": [
+                { "code": "MW-01", "name": "White",     "hex": "#F0F0E8" },
+                { "code": "MW-02", "name": "Sand",      "hex": "#D8CCA0" },
+                { "code": "MW-03", "name": "Stone",     "hex": "#B8A880" },
+                { "code": "MW-04", "name": "Khaki",     "hex": "#888060" },
+                { "code": "MW-05", "name": "Sage",      "hex": "#787860" },
+                { "code": "MW-06", "name": "Olive",     "hex": "#686850" },
+                { "code": "MW-07", "name": "Slate",     "hex": "#606068" },
+                { "code": "MW-08", "name": "Lead",      "hex": "#484850" },
+                { "code": "MW-09", "name": "Ash",       "hex": "#585858" },
+                { "code": "MW-10", "name": "Black",     "hex": "#181818" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "ecoshkira",
+          "name": "Екошкіра",
+          "icon": "🦬",
+          "fabrics": [
+            {
+              "id": "vip-eco",
+              "name": "VIP Eco",
+              "colors": [
+                { "code": "VE-01", "name": "White",     "hex": "#F8F8F8" },
+                { "code": "VE-02", "name": "Cream",     "hex": "#EEE0C0" },
+                { "code": "VE-03", "name": "Gold",      "hex": "#C8A040" },
+                { "code": "VE-04", "name": "Cognac",    "hex": "#A07030" },
+                { "code": "VE-05", "name": "Choco",     "hex": "#704020" },
+                { "code": "VE-06", "name": "Bordeaux",  "hex": "#702030" },
+                { "code": "VE-07", "name": "Night",     "hex": "#101828" },
+                { "code": "VE-08", "name": "Graphite",  "hex": "#383838" },
+                { "code": "VE-09", "name": "Black",     "hex": "#181818" },
+                { "code": "VE-10", "name": "Silver",    "hex": "#909090" }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
