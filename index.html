@@ -208,12 +208,15 @@ nav {
   width: 100%; aspect-ratio: 1;
   background: var(--bg-panel); border: 1px dashed rgba(201,168,76,0.2);
   overflow: hidden; display: flex; align-items: center; justify-content: center;
+  background-size: cover; background-position: center;
 }
 .card-preview img { width: 100%; height: 100%; object-fit: contain; background: var(--bg-panel); display: block; }
 .card-preview-empty {
   font-size: 10px; color: var(--text-muted); letter-spacing: 2px;
   text-align: center; padding: 12px;
 }
+#photo-preview  { background-image: url('/_w/demo-sofa.jpg'); }
+#fabric-preview { background-image: url('/_w/demo-fabric.jpg'); }
 .card-btn {
   width: 100%; padding: 9px;
   background: transparent; border: 1px solid var(--border);
@@ -2398,6 +2401,23 @@ if (typeof netlifyIdentity !== 'undefined') {
   netlifyIdentity.init();
 }
 document.addEventListener('DOMContentLoaded', updateUsageHint);
+
+// Demo images — показуємо приклад до першої реальної візуалізації
+document.addEventListener('DOMContentLoaded', () => {
+  const afterImg   = document.getElementById('afterImg');
+  const beforeImg  = document.getElementById('beforeImg');
+  const resultWrap = document.getElementById('resultWrap');
+  const beforeWrap = document.getElementById('beforeImgWrap');
+  const sliderLine = document.getElementById('sliderLine');
+  const sliderRng  = document.getElementById('sliderRange');
+
+  afterImg.src  = '/_w/demo-after.jpg';
+  beforeImg.src = '/_w/demo-before.jpg';
+  beforeWrap.style.width = '50%';
+  if (sliderLine) sliderLine.style.left = '50%';
+  if (sliderRng)  sliderRng.value = '50';
+  resultWrap.style.display = 'block';
+});
 
 // ── Calculator ──
 function calcTotal() {
