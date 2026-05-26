@@ -1456,6 +1456,40 @@ function fitToOriginalSize(resultDataUrl, originalDataUrl) {
   });
 }
 
+function applySecureWatermark(dataUrl) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => {
+      const c   = document.createElement('canvas');
+      c.width   = img.naturalWidth;
+      c.height  = img.naturalHeight;
+      const ctx = c.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+
+      const sz   = Math.max(12, Math.round(c.width * 0.028));
+      const stepX = sz * 9;
+      const stepY = sz * 5;
+      const diag  = Math.hypot(c.width, c.height);
+
+      ctx.save();
+      ctx.globalAlpha   = 0.14;
+      ctx.fillStyle     = '#ffffff';
+      ctx.font          = `${sz}px sans-serif`;
+      ctx.textAlign     = 'center';
+      ctx.textBaseline  = 'middle';
+      ctx.translate(c.width / 2, c.height / 2);
+      ctx.rotate(-Math.PI / 6);
+      for (let y = -diag; y < diag; y += stepY)
+        for (let x = -diag; x < diag; x += stepX)
+          ctx.fillText('✦ MAGICUM', x, y);
+      ctx.restore();
+
+      resolve(c.toDataURL('image/jpeg', 0.88));
+    };
+    img.src = dataUrl;
+  });
+}
+
 // ── Compress ──
 function compressImage(base64, mime, maxW = 800, maxH = 600, quality = 0.8) {
   return new Promise(resolve => {
@@ -1526,8 +1560,9 @@ async function runVisualize() {
     const beforeImg = document.getElementById('beforeImg');
 
     // Resize result to exactly match original photo dimensions
-    const fittedUrl = furnitureDataUrl ? await fitToOriginalSize(resultUrl, furnitureDataUrl) : resultUrl;
-    afterImg.src = fittedUrl;
+    const fittedUrl     = furnitureDataUrl ? await fitToOriginalSize(resultUrl, furnitureDataUrl) : resultUrl;
+    const watermarkedUrl = await applySecureWatermark(fittedUrl);
+    afterImg.src = watermarkedUrl;
     if (furnitureDataUrl) beforeImg.src = furnitureDataUrl;
     document.getElementById('sliderRange').value = 50;
     document.getElementById('beforeImgWrap').style.width = '50%';
