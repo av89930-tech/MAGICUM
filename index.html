@@ -401,14 +401,20 @@ nav.hide-nav { opacity: 0; pointer-events: none; transform: translateY(-100%); }
   border: 1px solid var(--border); border-radius: 2px; overflow: hidden;
 }
 .example-imgs {
-  display: flex; height: 130px;
+  display: flex; height: 130px; position: relative;
 }
-.example-before, .example-after {
-  flex: 1; display: flex; align-items: center; justify-content: center;
+.example-imgs img {
+  width: 50%; height: 130px; object-fit: cover; display: block;
+}
+.example-imgs img:first-child { border-right: 2px solid var(--bg-dark); }
+.example-img-label {
+  position: absolute; bottom: 6px;
   font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+  padding: 2px 6px; background: rgba(0,0,0,0.65); border-radius: 1px;
+  pointer-events: none;
 }
-.example-before { background: #1a1a1a; color: var(--text-muted); border-right: 1px solid var(--border); }
-.example-after  { color: var(--gold); }
+.example-img-label.lbl-before { left: 6px;  color: var(--text-muted); }
+.example-img-label.lbl-after  { right: 6px; color: var(--gold); }
 .example-meta {
   padding: 10px 12px;
 }
@@ -896,45 +902,40 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
 
     <div class="example-card">
       <div class="example-imgs">
-        <div class="example-before" style="background:linear-gradient(160deg,#2a2420,#1a1610)">ДО</div>
-        <div class="example-after"  style="background:linear-gradient(160deg,#1a2a1a,#0e1a0e)">ПІСЛЯ</div>
+        <img src="/examples/case1-before.png" alt="До">
+        <img src="/examples/case1-after.png"  alt="Після">
+        <span class="example-img-label lbl-before">ДО</span>
+        <span class="example-img-label lbl-after">ПІСЛЯ</span>
+      </div>
+      <div class="example-meta">
+        <div class="example-tag">Модульний диван</div>
+        <div class="example-desc">Бордовий велюр → теракотовий велюр</div>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <div class="example-imgs">
+        <img src="/examples/case2-before.png" alt="До">
+        <img src="/examples/case2-after.png"  alt="Після">
+        <span class="example-img-label lbl-before">ДО</span>
+        <span class="example-img-label lbl-after">ПІСЛЯ</span>
       </div>
       <div class="example-meta">
         <div class="example-tag">Кутовий диван</div>
-        <div class="example-desc">Бежевий текстиль → оливковий велюр. Київ</div>
+        <div class="example-desc">Темно-коричнева тканина → гірчичний жаккард</div>
       </div>
     </div>
 
     <div class="example-card">
       <div class="example-imgs">
-        <div class="example-before" style="background:linear-gradient(160deg,#22202a,#18161e)">ДО</div>
-        <div class="example-after"  style="background:linear-gradient(160deg,#2a1a10,#1e120a)">ПІСЛЯ</div>
+        <img src="/examples/case3-before.jpg" alt="До">
+        <img src="/examples/case3-after.jpg"  alt="Після">
+        <span class="example-img-label lbl-before">ДО</span>
+        <span class="example-img-label lbl-after">ПІСЛЯ</span>
       </div>
       <div class="example-meta">
-        <div class="example-tag">М'яке крісло</div>
-        <div class="example-desc">Сіра тканина → коньячна шкіра. Львів</div>
-      </div>
-    </div>
-
-    <div class="example-card">
-      <div class="example-imgs">
-        <div class="example-before" style="background:linear-gradient(160deg,#201a1a,#161010)">ДО</div>
-        <div class="example-after"  style="background:linear-gradient(160deg,#10182a,#0a101e)">ПІСЛЯ</div>
-      </div>
-      <div class="example-meta">
-        <div class="example-tag">Прямий диван</div>
-        <div class="example-desc">Коричнева еко-шкіра → синій жаккард. Одеса</div>
-      </div>
-    </div>
-
-    <div class="example-card">
-      <div class="example-imgs">
-        <div class="example-before" style="background:linear-gradient(160deg,#1e1e1e,#141414)">ДО</div>
-        <div class="example-after"  style="background:linear-gradient(160deg,#2a1020,#1e0a16)">ПІСЛЯ</div>
-      </div>
-      <div class="example-meta">
-        <div class="example-tag">Банкетка</div>
-        <div class="example-desc">Зношений плюш → бордовий вельвет. Харків</div>
+        <div class="example-tag">Кутовий диван</div>
+        <div class="example-desc">Сірий велюр → смарагдовий велюр</div>
       </div>
     </div>
 
