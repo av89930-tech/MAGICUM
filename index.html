@@ -377,6 +377,73 @@ nav.hide-nav { opacity: 0; pointer-events: none; transform: translateY(-100%); }
 .save-status { margin-top: 14px; }
 
 
+/* ── SOCIAL PROOF ── */
+.sp-section {
+  padding: 48px 6vw 40px;
+  border-top: 1px solid var(--border);
+}
+.sp-eyebrow {
+  text-align: center; font-size: 10px; letter-spacing: 4px;
+  color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px;
+}
+.sp-title {
+  font-family: 'Cormorant Garamond', serif; font-size: 24px;
+  color: var(--gold-light); text-align: center; letter-spacing: 3px;
+  margin-bottom: 24px;
+}
+.examples-scroll {
+  display: flex; gap: 14px; overflow-x: auto; padding-bottom: 8px;
+  scrollbar-width: none;
+}
+.examples-scroll::-webkit-scrollbar { display: none; }
+.example-card {
+  flex: 0 0 260px; background: var(--bg-card);
+  border: 1px solid var(--border); border-radius: 2px; overflow: hidden;
+}
+.example-imgs {
+  display: flex; height: 130px;
+}
+.example-before, .example-after {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+}
+.example-before { background: #1a1a1a; color: var(--text-muted); border-right: 1px solid var(--border); }
+.example-after  { color: var(--gold); }
+.example-meta {
+  padding: 10px 12px;
+}
+.example-tag {
+  display: inline-block; font-size: 9px; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--gold); background: rgba(201,168,76,0.1);
+  padding: 2px 8px; margin-bottom: 6px; border-radius: 1px;
+}
+.example-desc { font-size: 11px; color: var(--text-muted); line-height: 1.5; }
+.reviews-grid {
+  display: flex; flex-direction: column; gap: 14px;
+}
+.review-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 2px; padding: 18px 16px;
+}
+.review-stars { color: var(--gold); font-size: 12px; letter-spacing: 2px; margin-bottom: 10px; }
+.review-text {
+  font-size: 13px; line-height: 1.7; color: #c8bfae;
+  font-style: italic; margin-bottom: 12px;
+}
+.review-author {
+  display: flex; align-items: center; gap: 10px;
+}
+.review-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cormorant Garamond', serif; font-size: 14px; color: var(--bg-dark);
+  flex-shrink: 0;
+}
+.review-name { font-size: 11px; color: var(--text-primary); letter-spacing: 1px; }
+.review-city { font-size: 10px; color: var(--text-muted); }
+.sp-divider { margin: 40px 0 32px; border: none; border-top: 1px solid var(--border); }
+
 /* ── FOOTER ── */
 footer {
   border-top: 1px solid var(--border); padding: 24px 6vw;
@@ -821,8 +888,121 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
 
 </main>
 
+<section class="sp-section">
+  <p class="sp-eyebrow">✦ ПЕРЕКОНАЙТЕСЬ САМІ ✦</p>
+
+  <h2 class="sp-title">Приклади робіт</h2>
+  <div class="examples-scroll">
+
+    <div class="example-card">
+      <div class="example-imgs">
+        <div class="example-before" style="background:linear-gradient(160deg,#2a2420,#1a1610)">ДО</div>
+        <div class="example-after"  style="background:linear-gradient(160deg,#1a2a1a,#0e1a0e)">ПІСЛЯ</div>
+      </div>
+      <div class="example-meta">
+        <div class="example-tag">Кутовий диван</div>
+        <div class="example-desc">Бежевий текстиль → оливковий велюр. Київ</div>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <div class="example-imgs">
+        <div class="example-before" style="background:linear-gradient(160deg,#22202a,#18161e)">ДО</div>
+        <div class="example-after"  style="background:linear-gradient(160deg,#2a1a10,#1e120a)">ПІСЛЯ</div>
+      </div>
+      <div class="example-meta">
+        <div class="example-tag">М'яке крісло</div>
+        <div class="example-desc">Сіра тканина → коньячна шкіра. Львів</div>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <div class="example-imgs">
+        <div class="example-before" style="background:linear-gradient(160deg,#201a1a,#161010)">ДО</div>
+        <div class="example-after"  style="background:linear-gradient(160deg,#10182a,#0a101e)">ПІСЛЯ</div>
+      </div>
+      <div class="example-meta">
+        <div class="example-tag">Прямий диван</div>
+        <div class="example-desc">Коричнева еко-шкіра → синій жаккард. Одеса</div>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <div class="example-imgs">
+        <div class="example-before" style="background:linear-gradient(160deg,#1e1e1e,#141414)">ДО</div>
+        <div class="example-after"  style="background:linear-gradient(160deg,#2a1020,#1e0a16)">ПІСЛЯ</div>
+      </div>
+      <div class="example-meta">
+        <div class="example-tag">Банкетка</div>
+        <div class="example-desc">Зношений плюш → бордовий вельвет. Харків</div>
+      </div>
+    </div>
+
+  </div>
+
+  <hr class="sp-divider">
+
+  <h2 class="sp-title">Відгуки клієнтів</h2>
+  <div class="reviews-grid">
+
+    <div class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">«Показала клієнту три варіанти тканини прямо на його дивані — він одразу вибрав і підписав договір. Раніше такі презентації займали тиждень листування.»</p>
+      <div class="review-author">
+        <div class="review-avatar">О</div>
+        <div>
+          <div class="review-name">Оксана Мельник</div>
+          <div class="review-city">Майстер з переобивки · Київ</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">«Завантажив фото старого крісла та зразок шкіри — за 20 секунд отримав фото як воно виглядатиме. Дружина одразу погодилась. Магія!»</p>
+      <div class="review-author">
+        <div class="review-avatar">Д</div>
+        <div>
+          <div class="review-name">Дмитро Савченко</div>
+          <div class="review-city">Приватний клієнт · Дніпро</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="review-stars">★★★★☆</div>
+      <p class="review-text">«Використовую як додаток до каталогу тканин у шоурумі. Клієнти бачать результат на СВОЇХ меблях, а не на абстрактному дивані — конверсія зросла помітно.»</p>
+      <div class="review-author">
+        <div class="review-avatar">В</div>
+        <div>
+          <div class="review-name">Вікторія Коваль</div>
+          <div class="review-city">Власниця меблевого ательє · Львів</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">«Зручно, що не треба реєструватись. Надіслав посилання замовнику, він сам завантажив фото і тканину — повернувся з підтвердженням кольору. Економить мій час.»</p>
+      <div class="review-author">
+        <div class="review-avatar">І</div>
+        <div>
+          <div class="review-name">Іван Петренко</div>
+          <div class="review-city">Дизайнер інтер'єрів · Одеса</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
 <footer>
   <p>Зв'язок з консерваторією: <span><a href="mailto:av89930@gmail.com">Надіслати ворона (Email)</a></span></p>
+  <p>
+    <a href="/privacy.html">Конфіденційність</a>
+    &nbsp;·&nbsp;
+    <a href="/terms.html">Умови використання</a>
+  </p>
   <p>© 2026 <span>MAGICUM™</span>. A brand born of magic. M M X X V I</p>
 </footer>
 
