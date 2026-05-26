@@ -295,11 +295,9 @@ nav {
 .slider-container {
   position: relative; width: 100%; overflow: hidden;
   border: 1px solid var(--border);
-  aspect-ratio: 4/3;
 }
 .slider-container #afterImg {
-  position: absolute; top: 0; left: 0;
-  display: block; width: 100%; height: 100%; object-fit: cover;
+  display: block; width: 100%; height: auto;
 }
 .img-overlay {
   position: absolute; top: 0; left: 0;
@@ -307,7 +305,7 @@ nav {
 }
 .img-overlay #beforeImg {
   position: absolute; top: 0; left: 0;
-  width: 100%; height: 100%; max-width: none; object-fit: cover;
+  max-width: none; object-fit: cover;
 }
 .slider-input {
   position: absolute; inset: 0; width: 100%; height: 100%;
@@ -2263,11 +2261,24 @@ function wizardSelectColor(hex, code, colorName, fabricNameStr) {
   const beforeWrap = document.getElementById('beforeImgWrap');
   const line       = document.getElementById('sliderLine');
 
+  function syncImgWidth() {
+    const container = document.querySelector('.slider-container');
+    const bi = document.getElementById('beforeImg');
+    if (!container || !bi) return;
+    const w = container.offsetWidth, h = container.offsetHeight;
+    if (!w || !h) return;
+    bi.style.width  = w + 'px';
+    bi.style.height = h + 'px';
+  }
+
   range.addEventListener('input', e => {
     const v = e.target.value + '%';
     beforeWrap.style.width = v;
     line.style.left = v;
   });
+
+  document.getElementById('afterImg').addEventListener('load', () => requestAnimationFrame(syncImgWidth));
+  window.addEventListener('resize', syncImgWidth);
 })();
 
 // ── i18n ──
