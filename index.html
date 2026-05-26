@@ -1068,5 +1068,122 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(o => o.classList.remove('open'));
 });
 </script>
+
+<!-- MODAL: B2B WIDGET -->
+<div class="modal-overlay" id="modalB2B" onclick="if(event.target===this)closeModal('modalB2B')">
+  <div class="modal-box" style="max-width:560px;max-height:90vh;overflow-y:auto;padding:32px 24px">
+    <button class="modal-close" onclick="closeModal('modalB2B')">✕</button>
+
+    <!-- HERO -->
+    <div class="b2b-hero">
+      <p class="b2b-tagline">✦ MAGICUM FOR BUSINESS ✦</p>
+      <h2 class="b2b-headline">Дайте клієнтам приміряти<br>тканину прямо у вашому магазині</h2>
+      <p class="b2b-sub">Один рядок коду — і на кожній картці товару з'являється кнопка AI-візуалізації. Клієнт бачить свій диван у новій тканині за 20 секунд.</p>
+    </div>
+
+    <!-- DEMO -->
+    <div class="b2b-widget-demo">
+      <div class="b2b-demo-card">
+        <div class="b2b-demo-img" style="background-image:url('/_w/result.webp')"></div>
+        <div class="b2b-demo-card-label">Картка товару</div>
+        <button class="btn-activate">◆ Активувати магію</button>
+      </div>
+      <div style="font-size:18px;color:var(--gold);flex-shrink:0;align-self:center">→</div>
+      <div class="b2b-demo-card" style="border-color:rgba(201,168,76,0.5);display:flex;flex-direction:column">
+        <div class="b2b-demo-img" style="background-image:url('/_w/eye.webp');flex-shrink:0"></div>
+        <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:8px 4px;font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400;color:var(--gold-light);line-height:1.25;text-align:center;letter-spacing:1px">Народження дива за 30 секунд</div>
+      </div>
+    </div>
+
+    <!-- SCRIPT -->
+    <div class="b2b-section-title">Підключення одним рядком</div>
+    <div class="b2b-code-block">&lt;script src="https://magicum.netlify.app/widget.js" data-key="YOUR_KEY"&gt;&lt;/script&gt;</div>
+    <p style="font-size:11px;color:var(--text-muted);margin-top:-8px">Вставте у &lt;head&gt; вашого сайту. Кнопка з'явиться автоматично на всіх елементах з атрибутом <code style="background:rgba(201,168,76,0.1);padding:1px 5px">data-magicum</code>.</p>
+
+    <!-- HOW IT WORKS -->
+    <div class="b2b-section-title">Як це працює</div>
+    <div class="b2b-steps">
+      <div class="b2b-step">
+        <div class="b2b-step-num">1</div>
+        <div class="b2b-step-text"><strong style="color:var(--text-primary)">Ви підключаєте віджет</strong> — вставляєте один рядок скрипту на свій сайт і отримуєте унікальний ключ доступу.</div>
+      </div>
+      <div class="b2b-step">
+        <div class="b2b-step-num">2</div>
+        <div class="b2b-step-text"><strong style="color:var(--text-primary)">Кнопка з'являється на товарах</strong> — на кожній картці дивана або крісла покупець бачить «Приміряти тканину».</div>
+      </div>
+      <div class="b2b-step">
+        <div class="b2b-step-num">3</div>
+        <div class="b2b-step-text"><strong style="color:var(--text-primary)">Клієнт завантажує тканину</strong> — і за 20 секунд бачить свій диван у новому матеріалі. Більше сумнівів — менше повернень.</div>
+      </div>
+    </div>
+
+    <!-- PRICING -->
+    <div class="b2b-section-title">Тарифи</div>
+    <div class="b2b-plans">
+      <div class="b2b-plan">
+        <div>
+          <div class="b2b-plan-name">Старт</div>
+          <div class="b2b-plan-features">500 візуалізацій / міс<br>1 сайт · Email-підтримка</div>
+        </div>
+        <div class="b2b-plan-price">$99<span>/ міс</span></div>
+      </div>
+      <div class="b2b-plan popular">
+        <div>
+          <div class="b2b-plan-name">Бізнес</div>
+          <div class="b2b-plan-badge">✦ Найпопулярніший</div>
+          <div class="b2b-plan-features">2 000 візуалізацій / міс<br>3 сайти · Аналітика · Пріоритет</div>
+        </div>
+        <div class="b2b-plan-price">$199<span>/ міс</span></div>
+      </div>
+      <div class="b2b-plan">
+        <div>
+          <div class="b2b-plan-name">Преміум</div>
+          <div class="b2b-plan-features">Необмежено<br>Будь-яка к-сть сайтів · White-label</div>
+        </div>
+        <div class="b2b-plan-price">$299<span>/ міс</span></div>
+      </div>
+    </div>
+
+    <!-- REVIEWS -->
+    <div class="b2b-section-title">Відгуки партнерів</div>
+    <div class="b2b-reviews">
+      <div class="b2b-review">
+        <p class="b2b-review-text">«Після підключення MAGICUM час вибору тканини скоротився вдвічі. Клієнти більше не просять "принесіть ще зразки" — вони бачать результат одразу.»</p>
+        <div class="b2b-review-author">Марина Ковальська · Меблевий шоурум FORMA, Київ</div>
+      </div>
+      <div class="b2b-review">
+        <p class="b2b-review-text">«Впровадили на сайт за 10 хвилин. Конверсія в замовлення зросла на 23% вже за перший місяць — людям потрібна впевненість перед покупкою.»</p>
+        <div class="b2b-review-author">Олег Петренко · Інтернет-магазин DivanUA, Харків</div>
+      </div>
+      <div class="b2b-review">
+        <p class="b2b-review-text">«Клієнти самі надсилають скріншоти результатів друзям. Це найкраще сарафанне радіо яке ми мали.»</p>
+        <div class="b2b-review-author">Вікторія Шевченко · Студія перетяжки REBORN, Львів</div>
+      </div>
+    </div>
+
+    <!-- FORM -->
+    <div class="b2b-section-title">Підключитись</div>
+    <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px">Заповніть форму — ми надішлемо ключ і інструкцію протягом 24 годин.</p>
+    <form class="b2b-form" name="b2b-connect" netlify netlify-honeypot="bot-field" onsubmit="handleB2BForm(event)">
+      <input type="hidden" name="form-name" value="b2b-connect">
+      <input type="text"  name="company"  placeholder="Назва магазину / компанії" required>
+      <input type="url"   name="website"  placeholder="Адреса сайту (https://...)" required>
+      <input type="text"  name="contact"  placeholder="Ваше ім'я" required>
+      <input type="email" name="email"    placeholder="Email для зв'язку" required>
+      <input type="text"  name="telegram" placeholder="Telegram @username (необов'язково)">
+      <select name="plan">
+        <option value="">Оберіть тариф</option>
+        <option value="start">Старт — $99/міс</option>
+        <option value="business">Бізнес — $199/міс</option>
+        <option value="premium">Преміум — $299/міс</option>
+      </select>
+      <button type="submit" class="b2b-submit">✦ Отримати доступ</button>
+    </form>
+    <div id="b2bFormStatus" style="text-align:center;font-size:12px;color:var(--gold);min-height:20px;margin-top:8px"></div>
+
+  </div>
+</div>
+
+
 </body>
 </html>
