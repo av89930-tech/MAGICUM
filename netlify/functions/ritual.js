@@ -224,56 +224,68 @@ Do not return the original photo. Do not return a plain white background image. 
       ]
     };
 
+    const sleep = ms => new Promise(r => setTimeout(r, ms));
+    const MAX_RETRIES = 3;
+
     let lastError = null;
     const attempted = [];
 
     for (const model of MODELS) {
-      const { ok, status, data } = await callGemini(model, requestBody, GEMINI_API_KEY);
       attempted.push(model);
+      let delay = 1000;
 
-      if (!ok) {
-        lastError = data.error?.message || `Gemini ${model} failed (${status})`;
-        if (OVERLOAD_CODES.has(status)) {
-          console.warn(`[ritual] ${model} overloaded (${status}), trying fallback`);
+      for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+        const { ok, status, data } = await callGemini(model, requestBody, GEMINI_API_KEY);
+
+        if (!ok) {
+          lastError = data.error?.message || `Gemini ${model} failed (${status})`;
+          if (OVERLOAD_CODES.has(status)) {
+            console.warn(`[ritual] ${model} overloaded (${status}), attempt ${attempt}/${MAX_RETRIES}, next in ${delay}ms`);
+            if (attempt < MAX_RETRIES) await sleep(delay);
+            delay *= 2;
+            continue;
+          }
+          tgNotifyError(TG_TOKEN, TG_CHAT_ID,
+            `❌ <b>MAGICUM — помилка API</b>\n` +
+            `👤 ${ip}\n` +
+            `Модель: <code>${model}</code>\n` +
+            `Код: ${status} | ${lastError}\n` +
+            `⏰ ${time}`
+          );
+          return { statusCode: 500, body: JSON.stringify({ success: false, error: lastError }) };
+        }
+
+        const parts = data.candidates?.[0]?.content?.parts || [];
+        let imageBase64 = null, mimeType = 'image/jpeg';
+        for (const part of parts) {
+          if (part.inlineData) { imageBase64 = part.inlineData.data; mimeType = part.inlineData.mimeType || mimeType; break; }
+        }
+
+        if (!imageBase64) {
+          lastError = 'No image in Gemini response';
+          console.warn(`[ritual] ${model} no image, attempt ${attempt}/${MAX_RETRIES}`);
+          if (attempt < MAX_RETRIES) await sleep(delay);
+          delay *= 2;
           continue;
         }
-        tgNotifyError(TG_TOKEN, TG_CHAT_ID,
-          `❌ <b>MAGICUM — помилка API</b>\n` +
-          `👤 ${ip}\n` +
-          `Модель: <code>${model}</code>\n` +
-          `Код: ${status} | ${lastError}\n` +
-          `⏰ ${time}`
-        );
-        return { statusCode: 500, body: JSON.stringify({ success: false, error: lastError }) };
+
+        const isFallback = attempted.length > 1;
+        await tgSendRitual({
+          token: TG_TOKEN, chatId: TG_CHAT_ID,
+          sofa64: furnitureBase64, sofaMime: furnitureMime,
+          fabric64: fabricBase64,  fabricMime,
+          result64: imageBase64,   resultMime: mimeType,
+          model, isFallback, ip, time
+        });
+
+        return {
+          statusCode: 200,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ success: true, imageBase64, mimeType, model })
+        };
       }
 
-      const parts = data.candidates?.[0]?.content?.parts || [];
-      let imageBase64 = null, mimeType = 'image/jpeg';
-      for (const part of parts) {
-        if (part.inlineData) { imageBase64 = part.inlineData.data; mimeType = part.inlineData.mimeType || mimeType; break; }
-      }
-
-      if (!imageBase64) {
-        lastError = 'No image in Gemini response';
-        console.warn(`[ritual] ${model} returned no image, trying fallback`);
-        continue;
-      }
-
-      const isFallback = attempted.length > 1;
-
-      await tgSendRitual({
-        token: TG_TOKEN, chatId: TG_CHAT_ID,
-        sofa64: furnitureBase64, sofaMime: furnitureMime,
-        fabric64: fabricBase64,  fabricMime,
-        result64: imageBase64,   resultMime: mimeType,
-        model, isFallback, ip, time
-      });
-
-      return {
-        statusCode: 200,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ success: true, imageBase64, mimeType, model })
-      };
+      console.warn(`[ritual] ${model} exhausted ${MAX_RETRIES} attempts, trying next model`);
     }
 
     await tgSendFailAlert({
