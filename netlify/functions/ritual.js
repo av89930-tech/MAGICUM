@@ -163,7 +163,11 @@ exports.handler = async (event, context) => {
 
 OUTPUT REQUIREMENTS — non-negotiable:
 1. The output image must look DIFFERENT from IMAGE 1. The fabric color and texture MUST visibly change.
-2. The new fabric color/pattern must match IMAGE 2 exactly (hue, saturation, brightness).
+2. COLOR ACCURACY — 1:1 color match to IMAGE 2:
+   - The new fabric color must be spectrally identical to IMAGE 2 — zero deviation in hue, saturation or brightness.
+   - Render the fabric color as it appears under natural daylight (5500K). Use IMAGE 2 as the absolute color reference.
+   - Preserve accurate color reproduction in shadows and highlights — do not darken, desaturate, shift the hue, or alter the color in any lighting zone.
+   - The spectral hue of every upholstered surface must match the sample, whether in direct light, mid-tone, or shadow.
 3. Recolor and retexture ALL soft surfaces: seat cushions, backrest, side panels, armrests, every piece of upholstered fabric on the furniture.
 
 KEEP UNCHANGED:
