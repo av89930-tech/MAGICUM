@@ -2,3 +2,6 @@ node_modules/
 .env
 .env.local
 .netlify/
+_keys_*.txt
+_keys_*.csv
+_keys_*.json
