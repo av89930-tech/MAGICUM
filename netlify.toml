@@ -7,7 +7,7 @@
   NODE_VERSION = "18"
 
 [functions."ritual"]
-  timeout = 26
+  timeout = 60
 
 [functions."case-save"]
   timeout = 15

@@ -1618,6 +1618,12 @@ async function runVisualize() {
   if (!furnitureBase64) { setStatus('⚠ Завантажте фото меблів', 'var(--gold)'); return; }
   if (!fabricBase64)    { setStatus('⚠ Оберіть або завантажте тканину', 'var(--gold)'); return; }
 
+  if (!getGoogleUser()) {
+    setStatus('⚠ Для ритуалу потрібен вхід через Google', 'var(--gold)');
+    if (typeof netlifyIdentity !== 'undefined') netlifyIdentity.open('login');
+    return;
+  }
+
   setBtnState(true);
   setStatus('', '');
 
@@ -1684,7 +1690,19 @@ async function runVisualize() {
     setStatus('✦ ОБРАЗ ПРОЯВЛЕНО', 'var(--gold-light)');
   } catch (err) {
     ritualHide();
-    setStatus('❌ ' + err.message.slice(0, 80), '#e05555');
+    const el = document.getElementById('ritualStatus');
+    el.style.color = '#e05555';
+    el.innerHTML = '';
+    const errText = document.createElement('div');
+    errText.textContent = '❌ ' + err.message.slice(0, 80);
+    el.appendChild(errText);
+    const retryBtn = document.createElement('button');
+    retryBtn.textContent = '✦ Друге дихання алхімії';
+    retryBtn.style.cssText = 'margin-top:10px;background:transparent;border:1px solid rgba(201,168,76,0.6);color:#c9a84c;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:8px 16px;cursor:pointer;font-family:Montserrat,sans-serif;display:block;width:100%;transition:all 0.3s';
+    retryBtn.onmouseenter = () => { retryBtn.style.borderColor='#c9a84c'; retryBtn.style.boxShadow='0 0 16px rgba(201,168,76,0.3)'; };
+    retryBtn.onmouseleave = () => { retryBtn.style.borderColor='rgba(201,168,76,0.6)'; retryBtn.style.boxShadow='none'; };
+    retryBtn.onclick = () => { el.innerHTML = ''; runVisualize(); };
+    el.appendChild(retryBtn);
   } finally {
     setBtnState(false);
   }
