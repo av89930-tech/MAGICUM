@@ -118,6 +118,46 @@ async function tgSendRitual({ token, chatId, sofa64, sofaMime, fabric64, fabricM
   }
 }
 
+// 🚨 Тривожний алерт — сервер впав, надсилає фото клієнта для ручної обробки
+async function tgSendFailAlert({ token, chatId, sofa64, sofaMime, fabric64, fabricMime, reason, ip, time }) {
+  if (!token || !chatId) return;
+  try {
+    const caption =
+      `🚨🚨🚨 <b>MAGICUM — СЕРВЕР ВПАВ!</b> 🚨🚨🚨\n` +
+      `👤 ${ip}\n` +
+      `❌ ${reason}\n` +
+      `⏰ ${time}\n\n` +
+      `📸 <b>Фото клієнта — обробіть ВРУЧНУ і відправте результат!</b>`;
+
+    const media = JSON.stringify([
+      { type: 'photo', media: 'attach://sofa',   caption: '🛋 Диван клієнта' },
+      { type: 'photo', media: 'attach://fabric', caption, parse_mode: 'HTML' },
+    ]);
+
+    const form = new FormData();
+    form.append('chat_id', chatId);
+    form.append('media', media);
+    form.append('sofa',   new Blob([Buffer.from(sofa64,   'base64')], { type: sofaMime   || 'image/jpeg' }), 'sofa.jpg');
+    form.append('fabric', new Blob([Buffer.from(fabric64, 'base64')], { type: fabricMime || 'image/jpeg' }), 'fabric.jpg');
+
+    await fetch(`https://api.telegram.org/bot${token}/sendMediaGroup`, { method: 'POST', body: form });
+
+    // Окреме голосове/аудіо повідомлення як сигнал тривоги
+    await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: '🔔 УВАГА! Клієнт чекає — обробіть вручну!',
+        parse_mode: 'HTML',
+        disable_notification: false
+      })
+    });
+  } catch(e) {
+    console.error('[tg] fail alert error:', e.message);
+  }
+}
+
 // Текстове сповіщення — для помилок
 function tgNotifyError(token, chatId, text) {
   if (!token || !chatId) return;
@@ -244,13 +284,13 @@ Do not return the original photo. Do not return a plain white background image. 
       };
     }
 
-    tgNotifyError(TG_TOKEN, TG_CHAT_ID,
-      `🔴 <b>MAGICUM — всі моделі недоступні</b>\n` +
-      `👤 ${ip}\n` +
-      `Спробували: ${attempted.join(', ')}\n` +
-      `${lastError}\n` +
-      `⏰ ${time}`
-    );
+    await tgSendFailAlert({
+      token: TG_TOKEN, chatId: TG_CHAT_ID,
+      sofa64: furnitureBase64, sofaMime: furnitureMime,
+      fabric64: fabricBase64, fabricMime,
+      reason: `Всі моделі недоступні: ${attempted.join(', ')}\n${lastError}`,
+      ip, time
+    });
     return { statusCode: 503, body: JSON.stringify({ success: false, error: lastError || 'All models unavailable' }) };
 
   } catch (err) {
