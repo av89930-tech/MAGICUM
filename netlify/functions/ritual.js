@@ -20,28 +20,45 @@ function usageStore(context) {
   return getStore(opts);
 }
 
+const FREE_GOOGLE_LIMIT = 10;
+
 async function checkAndConsumeKey(key, context) {
-  const registry = getRegistry();
-  // If KEY_REGISTRY not set in Netlify env — open access (setup mode)
+  const registry    = getRegistry();
+  const netlifyUser = context.clientContext?.user;
+
+  // ── Tier 1: no KEY_REGISTRY configured → open access ──
   if (!registry) return { ok: true };
 
-  // Registry is active — key is required
-  if (!key) return { ok: false, error: 'Ключ не передано. Відкрийте Кабінет Майстра та введіть ключ.' };
+  // ── Tier 2: Master key ──
+  if (key) {
+    const entry = registry[key.trim().toUpperCase()];
+    if (!entry) return { ok: false, error: 'Ключ недійсний' };
+    if (entry.limit === null) return { ok: true, unlimited: true }; // Ключ Одіна
+    const store   = usageStore(context);
+    const blobKey = 'key_' + key.trim().toUpperCase();
+    const usedRaw = await store.get(blobKey).catch(() => null);
+    const used    = usedRaw ? parseInt(usedRaw, 10) : 0;
+    if (used >= entry.limit) return { ok: false, error: `Ліміт вичерпано (${entry.limit}/${entry.limit})` };
+    await store.set(blobKey, String(used + 1));
+    return { ok: true, remaining: entry.limit - used - 1 };
+  }
 
-  const entry = registry[key.trim().toUpperCase()];
-  if (!entry) return { ok: false, error: 'Ключ недійсний' };
+  // ── Tier 3: Google / Netlify Identity ──
+  if (netlifyUser?.email) {
+    const store   = usageStore(context);
+    const blobKey = 'google_' + netlifyUser.email.toLowerCase().replace(/[^a-z0-9]/g, '_');
+    const usedRaw = await store.get(blobKey).catch(() => null);
+    const used    = usedRaw ? parseInt(usedRaw, 10) : 0;
+    if (used >= FREE_GOOGLE_LIMIT) {
+      return { ok: false, error: `Вичерпано ${FREE_GOOGLE_LIMIT} безкоштовних візуалізацій. Отримайте Майстер-ключ.` };
+    }
+    await store.set(blobKey, String(used + 1));
+    return { ok: true, remaining: FREE_GOOGLE_LIMIT - used - 1, tier: 'google' };
+  }
 
-  if (entry.limit === null) return { ok: true, unlimited: true }; // Ключ Одіна
-
-  const store   = usageStore(context);
-  const blobKey = 'key_' + key.trim().toUpperCase();
-  const usedRaw = await store.get(blobKey).catch(() => null);
-  const used    = usedRaw ? parseInt(usedRaw, 10) : 0;
-
-  if (used >= entry.limit) return { ok: false, error: `Ліміт вичерпано (${entry.limit}/${entry.limit})` };
-
-  await store.set(blobKey, String(used + 1));
-  return { ok: true, remaining: entry.limit - used - 1 };
+  // ── Tier 4: Anonymous — frontend handles 3-use limit via localStorage ──
+  // Server allows through; client already tracks and warns
+  return { ok: true, tier: 'anon' };
 }
 
 const OVERLOAD_CODES = new Set([429, 500, 503, 529]);

@@ -17,6 +17,7 @@
 {"@context":"https://schema.org","@type":"WebApplication","name":"MAGICUM","url":"https://magicum.netlify.app","description":"AI-visualization of furniture reupholstery. Upload a sofa photo and fabric sample — get a photorealistic result in seconds.","applicationCategory":"DesignApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"UAH"},"creator":{"@type":"Organization","name":"MAGICUM Digital Alchemist Atelier"}}
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -66,6 +67,16 @@ nav.hide-nav { opacity: 0; pointer-events: none; transform: translateY(-100%); }
   cursor: pointer; transition: all 0.3s;
 }
 .nav-lang:hover { background: var(--gold); color: var(--bg-dark); }
+.nav-google {
+  font-size: 10px; letter-spacing: 1px; color: var(--text-muted);
+  border: 1px solid var(--border); padding: 6px 12px;
+  cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 6px;
+  background: transparent;
+  font-family: 'Montserrat', sans-serif;
+}
+.nav-google:hover { border-color: var(--gold); color: var(--gold); }
+.nav-google.signed-in { color: var(--gold); border-color: rgba(201,168,76,0.5); }
+.nav-google svg { width:14px; height:14px; flex-shrink:0; }
 
 .btn-shop {
   font-family: 'Cormorant Garamond', serif;
@@ -639,8 +650,19 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
 <!-- NAV -->
 <nav>
   <button class="btn-shop" onclick="openShop()">✦ Магічне сховище<br>Майстра-Алхіміка</button>
-  <div class="nav-lang" id="navUserBadge" style="display:none;" onclick="openCabinet()"></div>
-  <div class="nav-lang" id="navLang" onclick="toggleLang()" style="cursor:pointer" title="Switch language">UA</div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <button class="nav-google" id="googleAuthBtn" onclick="handleGoogleAuth()">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+      </svg>
+      <span id="googleAuthLabel">Google</span>
+    </button>
+    <div class="nav-lang" id="navUserBadge" style="display:none;" onclick="openCabinet()"></div>
+    <div class="nav-lang" id="navLang" onclick="toggleLang()" style="cursor:pointer" title="Switch language">UA</div>
+  </div>
 </nav>
 
 <main>
@@ -712,6 +734,7 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
         <button class="btn-visualize" id="generateBtn" onclick="runVisualize()">
           <span>✦</span><span id="btnText">ПРОЯВИТИ ОБРАЗ</span>
         </button>
+        <div id="usageHint" style="display:none;font-size:10px;letter-spacing:2px;text-align:center;margin-top:8px;color:var(--text-muted);"></div>
         <div id="ritualStatus"></div>
       </div>
     </div>
@@ -1128,16 +1151,22 @@ async function runVisualize() {
 
     ritualShow(furnitureDataUrl, _ritualFabricColor);
 
-    const _key = sessionStorage.getItem(STORE('key')) || '';
+    const _key   = sessionStorage.getItem(STORE('key')) || '';
+    const _token = (typeof netlifyIdentity !== 'undefined' && netlifyIdentity.currentUser()?.token?.access_token) || '';
+    const _headers = { 'Content-Type': 'application/json' };
+    if (_token) _headers['Authorization'] = 'Bearer ' + _token;
     const resp = await fetch('/.netlify/functions/ritual', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: _headers,
       body: JSON.stringify({ furnitureBase64: sendFurniture, furnitureMime: 'image/jpeg', fabricBase64: sendFabric, fabricMime: 'image/jpeg', key: _key })
     });
     let data;
     try { data = await resp.json(); }
     catch (e) { throw new Error('Сервер недоступний. Спробуйте пізніше.'); }
     if (!resp.ok || !data.success) throw new Error(data.error || 'Помилка сервера');
+    // Update anon counter if no key and no Google
+    if (!_key && !getGoogleUser()) consumeAnonUse();
+    updateUsageHint();
 
     lastB64  = data.imageBase64;
     lastMime = data.mimeType || 'image/jpeg';
@@ -1737,6 +1766,82 @@ function toggleLang() {
   applyLang();
 }
 document.addEventListener('DOMContentLoaded', applyLang);
+
+// ── Netlify Identity / Google Auth ──
+const FREE_ANON_LIMIT   = 3;
+const FREE_GOOGLE_LIMIT = 10;
+const ANON_USES_KEY     = 'mgc_anon_uses';
+
+function getAnonUsesLeft() {
+  const used = parseInt(localStorage.getItem(ANON_USES_KEY) || '0', 10);
+  return Math.max(0, FREE_ANON_LIMIT - used);
+}
+function consumeAnonUse() {
+  const used = parseInt(localStorage.getItem(ANON_USES_KEY) || '0', 10);
+  localStorage.setItem(ANON_USES_KEY, String(used + 1));
+}
+
+function getGoogleUser() {
+  if (typeof netlifyIdentity === 'undefined') return null;
+  return netlifyIdentity.currentUser();
+}
+
+function updateGoogleBtn(user) {
+  const btn   = document.getElementById('googleAuthBtn');
+  const label = document.getElementById('googleAuthLabel');
+  if (!btn) return;
+  if (user) {
+    const name = user.user_metadata?.full_name || user.email.split('@')[0];
+    label.textContent = name.split(' ')[0]; // first name only
+    btn.classList.add('signed-in');
+    btn.title = 'Вийти (' + user.email + ')';
+  } else {
+    label.textContent = 'Google';
+    btn.classList.remove('signed-in');
+    btn.title = 'Увійти через Google';
+  }
+}
+
+function handleGoogleAuth() {
+  if (typeof netlifyIdentity === 'undefined') {
+    alert('Netlify Identity не завантажено. Перевірте підключення.');
+    return;
+  }
+  const user = netlifyIdentity.currentUser();
+  if (user) {
+    if (confirm('Вийти з акаунту ' + user.email + '?')) netlifyIdentity.logout();
+  } else {
+    netlifyIdentity.open('login');
+  }
+}
+
+// Show usage hint below visualize button
+function updateUsageHint() {
+  const hint = document.getElementById('usageHint');
+  if (!hint) return;
+  const masterKey = sessionStorage.getItem(STORE('key'));
+  if (masterKey) { hint.style.display = 'none'; return; }
+  const googleUser = getGoogleUser();
+  if (googleUser) {
+    hint.textContent = '✦ Google-акаунт · до ' + FREE_GOOGLE_LIMIT + ' безкоштовних візуалізацій';
+    hint.style.display = 'block';
+  } else {
+    const left = getAnonUsesLeft();
+    hint.textContent = left > 0
+      ? `✦ Залишилось безкоштовних спроб: ${left} з ${FREE_ANON_LIMIT}`
+      : '✦ Безкоштовні спроби вичерпано — увійдіть через Google або отримайте ключ';
+    hint.style.display = 'block';
+    hint.style.color   = left === 0 ? '#e05555' : 'var(--text-muted)';
+  }
+}
+
+if (typeof netlifyIdentity !== 'undefined') {
+  netlifyIdentity.on('init',  user => { updateGoogleBtn(user); updateUsageHint(); });
+  netlifyIdentity.on('login', user => { updateGoogleBtn(user); updateUsageHint(); netlifyIdentity.close(); });
+  netlifyIdentity.on('logout', ()  => { updateGoogleBtn(null); updateUsageHint(); });
+  netlifyIdentity.init();
+}
+document.addEventListener('DOMContentLoaded', updateUsageHint);
 
 // ── Calculator ──
 function calcTotal() {
