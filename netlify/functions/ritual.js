@@ -151,14 +151,27 @@ exports.handler = async (event, context) => {
       return { statusCode: 500, body: JSON.stringify({ success: false, error: 'Server misconfiguration: missing API key' }) };
     }
 
-    const prompt = `You are a professional furniture reupholstery visualizer. Your ONLY job is to change the fabric/upholstery of the furniture — nothing else.
+    const prompt = `This is a TEXTURE REPLACEMENT task — like applying a material swap in 3D software (Blender/3ds Max). You are NOT generating a new image. You are editing the existing photo.
 
-ABSOLUTE RULES — violating any of these makes the result wrong:
-1) SHAPE IS SACRED: The furniture shape, silhouette, dimensions, and proportions must be PIXEL-PERFECT identical to the first image. Do NOT change the shape, size, number of sections, number of cushions, armrest style, leg style, or any structural element. If the input is a corner sofa — output must be a corner sofa with the exact same corner configuration. If it has 3 seat cushions — output has 3 seat cushions. Zero tolerance for shape changes.
-2) SAME FRAME: Camera angle, perspective, zoom level, composition, background, lighting direction, and shadows must be IDENTICAL to the first image.
-3) ONLY FABRIC CHANGES: Replace ALL soft upholstered surfaces (seats, backs, side panels, armrests, outer walls) with the pattern and color from the second image. Hard parts (legs, frame, metal trims) stay exactly the same.
-4) COLOR EXACT MATCH: The fabric color in the output must exactly match the second image — same hue, same saturation. Do not darken or mute it.
-5) ONE IMAGE OUTPUT: Output only the reupholstered furniture. No swatches, no labels, no comparisons.`;
+INPUT 1 = source photo of furniture. This is your canvas. Do not change anything about it except the fabric surface.
+INPUT 2 = fabric texture sample. Extract the color, pattern and texture from this sample.
+
+WHAT TO DO:
+- Keep INPUT 1 exactly as-is: same camera angle, same zoom, same crop, same background, same lighting, same shadows, same furniture shape, same silhouette, same dimensions, same number of cushions, same armrests, same legs, same everything.
+- Replace ONLY the soft upholstered surfaces (seat cushions, backrest, side panels, armrests, outer fabric walls) with the material from INPUT 2.
+- Hard non-fabric parts (metal legs, wooden frame, plastic trim) stay unchanged.
+
+WHAT NOT TO DO:
+- Do NOT zoom in or out.
+- Do NOT change the shape or silhouette of the furniture even slightly.
+- Do NOT add or remove cushions, sections, or structural elements.
+- Do NOT change the background or room environment.
+- Do NOT crop differently than INPUT 1.
+- Do NOT create a new composition — only edit the existing one.
+
+COLOR: The fabric color in the output must be identical to INPUT 2. Do not darken, desaturate or alter the hue.
+
+OUTPUT: One single photorealistic image — a copy of INPUT 1 with only the fabric surface texture swapped.`;
 
     const requestBody = {
       contents: [{ parts: [
