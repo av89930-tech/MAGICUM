@@ -1336,6 +1336,14 @@ window.addEventListener('DOMContentLoaded', () => {
 
   updateNavBadge();
 
+  // Відновлення логотипа печатки з IndexedDB
+  _idbGet('seal_logo').then(file => {
+    if (!file) return;
+    if (_sealLogoUrl) URL.revokeObjectURL(_sealLogoUrl);
+    _sealLogoUrl = URL.createObjectURL(file);
+    activateSealFull();
+  }).catch(() => {});
+
   // Автовідкриття кабінету при ?cabinet=open
   if (new URLSearchParams(location.search).get('cabinet') === 'open') {
     history.replaceState({}, '', '/');
@@ -1712,6 +1720,45 @@ function renderLitopys() {
 // Печатка
 function getSealKey() { return STORE('seal_' + (sessionStorage.getItem(STORE('key')) || 'guest')); }
 
+// ── escapeHTML — захист від XSS при рендерингу через innerHTML ──
+function escapeHTML(str) {
+  if (!str) return '';
+  return String(str).replace(/[&<>'"]/g, t =>
+    ({ '&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;' }[t]));
+}
+
+// ── IndexedDB — зберігання логотипа (уникаємо localStorage 5MB ліміту) ──
+const _IDB_NAME = 'MagicumStorage', _IDB_STORE = 'assets';
+function _idbOpen() {
+  return new Promise((res, rej) => {
+    const r = indexedDB.open(_IDB_NAME, 1);
+    r.onupgradeneeded = e => {
+      if (!e.target.result.objectStoreNames.contains(_IDB_STORE))
+        e.target.result.createObjectStore(_IDB_STORE);
+    };
+    r.onsuccess = e => res(e.target.result);
+    r.onerror   = e => rej(e.target.error);
+  });
+}
+async function _idbSet(key, val) {
+  const db = await _idbOpen();
+  return new Promise((res, rej) => {
+    const tx = db.transaction(_IDB_STORE, 'readwrite');
+    tx.objectStore(_IDB_STORE).put(val, key);
+    tx.oncomplete = res; tx.onerror = e => rej(e.target.error);
+  });
+}
+async function _idbGet(key) {
+  const db = await _idbOpen();
+  return new Promise((res, rej) => {
+    const tx = db.transaction(_IDB_STORE, 'readonly');
+    const r  = tx.objectStore(_IDB_STORE).get(key);
+    r.onsuccess = () => res(r.result);
+    r.onerror   = e => rej(e.target.error);
+  });
+}
+let _sealLogoUrl = null; // кешований object URL логотипа
+
 function getSealLogoKey()   { return STORE('seal_logo_' + (sessionStorage.getItem(STORE('key')) || 'guest')); }
 function getSealOpacityKey(){ return STORE('seal_op_'   + (sessionStorage.getItem(STORE('key')) || 'guest')); }
 function getSealPosKey()    { return STORE('seal_pos_'  + (sessionStorage.getItem(STORE('key')) || 'guest')); }
@@ -1740,16 +1787,16 @@ function setSealPos(pos) {
   activateSealFull();
 }
 
-function onSealLogoChange(input) {
+async function onSealLogoChange(input) {
   const file = input.files[0];
   if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    localStorage.setItem(getSealLogoKey(), ev.target.result);
-    updateSealPreview();
-    activateSealFull();
-  };
-  reader.readAsDataURL(file);
+  try {
+    await _idbSet('seal_logo', file);
+    if (_sealLogoUrl) URL.revokeObjectURL(_sealLogoUrl);
+    _sealLogoUrl = URL.createObjectURL(file);
+  } catch(e) { console.error('idb save logo:', e); }
+  updateSealPreview();
+  activateSealFull();
 }
 
 function saveSeal() {
@@ -1767,23 +1814,32 @@ function activateSeal(text) { activateSealFull(); }
 function activateSealFull() {
   const wm      = document.getElementById('resultWatermark');
   const text    = localStorage.getItem(getSealKey()) || '';
-  const logo    = localStorage.getItem(getSealLogoKey()) || '';
   const opacity = (localStorage.getItem(getSealOpacityKey()) || '55') / 100;
   const pos     = localStorage.getItem(getSealPosKey()) || 'br';
 
-  if (!text && !logo) { wm.style.display = 'none'; return; }
+  if (!text && !_sealLogoUrl) { wm.style.display = 'none'; return; }
 
-  wm.className = 'wm-' + pos;
-  wm.id = 'resultWatermark';
+  wm.className      = 'wm-' + pos;
+  wm.id             = 'resultWatermark';
   wm.style.opacity  = opacity;
   wm.style.display  = 'block';
+  wm.innerHTML      = '';
 
-  if (logo) {
-    wm.innerHTML = `<img src="${logo}" alt="seal">`;
-    if (text) wm.innerHTML += `<div style="font-size:11px;letter-spacing:2px;margin-top:3px;">${text}</div>`;
-  } else {
-    wm.textContent = text;
-    wm.style.color = `rgba(201,168,76,${opacity})`;
+  if (_sealLogoUrl) {
+    const img = document.createElement('img');
+    img.src = _sealLogoUrl; img.alt = 'seal';
+    wm.appendChild(img);
+  }
+  if (text) {
+    if (_sealLogoUrl) {
+      const div = document.createElement('div');
+      div.style.cssText = 'font-size:11px;letter-spacing:2px;margin-top:3px;';
+      div.textContent = text;
+      wm.appendChild(div);
+    } else {
+      wm.textContent    = text;
+      wm.style.color    = `rgba(201,168,76,${opacity})`;
+    }
   }
 }
 
@@ -1946,17 +2002,17 @@ function wizardRender() {
   const fabric   = _wiz.fabric   ? category?.fabrics.find(f => f.id === _wiz.fabric)      : null;
 
   const parts = ['Каталог'];
-  if (dealer)   parts.push(dealer.name);
-  if (category) parts.push(category.name);
-  if (fabric)   parts.push(fabric.name);
+  if (dealer)   parts.push(escapeHTML(dealer.name));
+  if (category) parts.push(escapeHTML(category.name));
+  if (fabric)   parts.push(escapeHTML(fabric.name));
   crumbs.innerHTML = parts.slice(0, -1).join(' › ') + (parts.length > 1 ? ' › <span>' + parts[parts.length-1] + '</span>' : '');
 
   if (_wiz.step === 1) {
     body.innerHTML = `<div class="wizard-section-title">Оберіть дилера</div>
       <div class="dealer-grid">
         ${_catalogData.dealers.map(d => `
-          <button class="dealer-btn" onclick="wizardSelectDealer('${d.id}')">
-            ${d.name}
+          <button class="dealer-btn" onclick="wizardSelectDealer('${escapeHTML(d.id)}')">
+            ${escapeHTML(d.name)}
             <small>${d.categories.length} категорій</small>
           </button>`).join('')}
       </div>`;
@@ -1966,21 +2022,21 @@ function wizardRender() {
     body.innerHTML = `<div class="wizard-section-title">Тип тканини</div>
       <div class="cat-grid">
         ${dealer.categories.map(c => `
-          <button class="cat-btn" onclick="wizardSelectCategory('${c.id}')">
-            <span class="cat-icon">${c.icon}</span>${c.name}
+          <button class="cat-btn" onclick="wizardSelectCategory('${escapeHTML(c.id)}')">
+            <span class="cat-icon">${escapeHTML(c.icon)}</span>${escapeHTML(c.name)}
           </button>`).join('')}
       </div>`;
   }
 
   else if (_wiz.step === 3) {
-    body.innerHTML = `<div class="wizard-section-title">${category.name} · ${dealer.name}</div>
+    body.innerHTML = `<div class="wizard-section-title">${escapeHTML(category.name)} · ${escapeHTML(dealer.name)}</div>
       <div class="fabric-list">
         ${category.fabrics.map(f => {
           const dots = f.colors.slice(0,5).map(c =>
-            `<span class="fabric-btn-dot" style="background:${c.hex}"></span>`).join('');
-          return `<button class="fabric-btn" onclick="wizardSelectFabric('${f.id}')">
+            `<span class="fabric-btn-dot" style="background:${escapeHTML(c.hex)}"></span>`).join('');
+          return `<button class="fabric-btn" onclick="wizardSelectFabric('${escapeHTML(f.id)}')">
             <div class="fabric-btn-dots">${dots}</div>
-            <span>${f.name}</span>
+            <span>${escapeHTML(f.name)}</span>
             <span class="fabric-btn-count">${f.colors.length} кол.</span>
           </button>`;
         }).join('')}
@@ -1988,13 +2044,13 @@ function wizardRender() {
   }
 
   else if (_wiz.step === 4) {
-    body.innerHTML = `<div class="wizard-section-title">${fabric.name} · ${fabric.colors.length} кольорів</div>
+    body.innerHTML = `<div class="wizard-section-title">${escapeHTML(fabric.name)} · ${fabric.colors.length} кольорів</div>
       <div class="color-grid">
         ${fabric.colors.map(c => `
-          <div class="color-swatch" onclick="wizardSelectColor('${c.hex}','${c.code}','${c.name}','${fabric.name}')">
-            <div class="color-circle" style="background:${c.hex}"></div>
-            <div class="color-code">${c.code}</div>
-            <div class="color-name">${c.name}</div>
+          <div class="color-swatch" onclick="wizardSelectColor('${escapeHTML(c.hex)}','${escapeHTML(c.code)}','${escapeHTML(c.name)}','${escapeHTML(fabric.name)}')">
+            <div class="color-circle" style="background:${escapeHTML(c.hex)}"></div>
+            <div class="color-code">${escapeHTML(c.code)}</div>
+            <div class="color-name">${escapeHTML(c.name)}</div>
           </div>`).join('')}
       </div>`;
   }

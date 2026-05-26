@@ -21,8 +21,9 @@ function usageStore(context) {
 }
 
 const FREE_GOOGLE_LIMIT = 10;
+const FREE_ANON_LIMIT   = 3;
 
-async function checkAndConsumeKey(key, context) {
+async function checkAndConsumeKey(key, context, ip) {
   const registry    = getRegistry();
   const netlifyUser = context.clientContext?.user;
 
@@ -56,9 +57,16 @@ async function checkAndConsumeKey(key, context) {
     return { ok: true, remaining: FREE_GOOGLE_LIMIT - used - 1, tier: 'google' };
   }
 
-  // ── Tier 4: Anonymous — frontend handles 3-use limit via localStorage ──
-  // Server allows through; client already tracks and warns
-  return { ok: true, tier: 'anon' };
+  // ── Tier 4: Anonymous — IP-based server-side limit ──
+  const store    = usageStore(context);
+  const anonKey  = 'anon_' + (ip || 'unknown').replace(/[^a-z0-9]/gi, '_');
+  const usedRaw  = await store.get(anonKey).catch(() => null);
+  const used     = usedRaw ? parseInt(usedRaw, 10) : 0;
+  if (used >= FREE_ANON_LIMIT) {
+    return { ok: false, error: `Вичерпано ${FREE_ANON_LIMIT} безкоштовні спроби. Увійдіть через Google або отримайте ключ.` };
+  }
+  await store.set(anonKey, String(used + 1));
+  return { ok: true, remaining: FREE_ANON_LIMIT - used - 1, tier: 'anon' };
 }
 
 const OVERLOAD_CODES = new Set([429, 500, 503, 529]);
@@ -141,7 +149,7 @@ exports.handler = async (event, context) => {
     }
 
     // Key validation + usage tracking
-    const keyCheck = await checkAndConsumeKey(key, context);
+    const keyCheck = await checkAndConsumeKey(key, context, ip);
     if (!keyCheck.ok) {
       return { statusCode: 403, body: JSON.stringify({ success: false, error: keyCheck.error }) };
     }
