@@ -1,8 +1,45 @@
+const { getStore } = require('@netlify/blobs');
+
 const GEMINI_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
 const MODELS = [
   'gemini-2.5-flash-image',
   'gemini-3.1-flash-image-preview',
 ];
+
+function getRegistry() {
+  const raw = process.env.KEY_REGISTRY;
+  if (!raw) return null;
+  try { return JSON.parse(Buffer.from(raw, 'base64').toString('utf8')); }
+  catch(e) { return null; }
+}
+
+function usageStore(context) {
+  const opts = { name: 'key-usage', context };
+  if (process.env.NETLIFY_SITE_ID)     opts.siteID = process.env.NETLIFY_SITE_ID;
+  if (process.env.NETLIFY_BLOBS_TOKEN) opts.token  = process.env.NETLIFY_BLOBS_TOKEN;
+  return getStore(opts);
+}
+
+async function checkAndConsumeKey(key, context) {
+  if (!key) return { ok: false, error: 'Ключ не передано' };
+  const registry = getRegistry();
+  if (!registry) return { ok: true }; // KEY_REGISTRY not configured yet — allow (dev mode)
+
+  const entry = registry[key.trim().toUpperCase()];
+  if (!entry) return { ok: false, error: 'Ключ недійсний' };
+
+  if (entry.limit === null) return { ok: true, unlimited: true }; // Ключ Одіна
+
+  const store   = usageStore(context);
+  const blobKey = 'key_' + key.trim().toUpperCase();
+  const usedRaw = await store.get(blobKey).catch(() => null);
+  const used    = usedRaw ? parseInt(usedRaw, 10) : 0;
+
+  if (used >= entry.limit) return { ok: false, error: `Ліміт вичерпано (${entry.limit}/${entry.limit})` };
+
+  await store.set(blobKey, String(used + 1));
+  return { ok: true, remaining: entry.limit - used - 1 };
+}
 
 const OVERLOAD_CODES = new Set([429, 500, 503, 529]);
 
@@ -63,7 +100,7 @@ function tgNotifyError(token, chatId, text) {
   }).catch(() => {});
 }
 
-exports.handler = async (event) => {
+exports.handler = async (event, context) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: JSON.stringify({ success: false, error: 'Method not allowed' }) };
   }
@@ -77,10 +114,16 @@ exports.handler = async (event) => {
   const time = new Date().toLocaleString('uk-UA', { timeZone: 'Europe/Kyiv' });
 
   try {
-    const { furnitureBase64, furnitureMime, fabricBase64, fabricMime } = JSON.parse(event.body || '{}');
+    const { furnitureBase64, furnitureMime, fabricBase64, fabricMime, key } = JSON.parse(event.body || '{}');
 
     if (!furnitureBase64 || !fabricBase64) {
       return { statusCode: 400, body: JSON.stringify({ success: false, error: 'Missing images' }) };
+    }
+
+    // Key validation + usage tracking
+    const keyCheck = await checkAndConsumeKey(key, context);
+    if (!keyCheck.ok) {
+      return { statusCode: 403, body: JSON.stringify({ success: false, error: keyCheck.error }) };
     }
 
     const GEMINI_API_KEY = process.env.GEMINI_API_KEY;

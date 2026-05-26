@@ -892,6 +892,7 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
     <button class="modal-close" onclick="logout()">✦ ВИХІД</button>
     <div class="modal-eyebrow">✦ Кабінет Майстра ✦</div>
     <h2 class="modal-title" id="cabinetUserName"></h2>
+    <div id="keyRemainingBadge" style="text-align:center;font-size:10px;letter-spacing:2px;color:var(--text-muted);margin-bottom:8px;display:none;"></div>
     <div class="cabinet-tabs">
       <button class="cab-tab active" onclick="switchTab('litopys')" data-i18n="tab_litopys">📜 Літопис Чарів</button>
       <button class="cab-tab" onclick="switchTab('atlas')" data-i18n="tab_atlas">🗺 Атлас Бажань</button>
@@ -1127,10 +1128,11 @@ async function runVisualize() {
 
     ritualShow(furnitureDataUrl, _ritualFabricColor);
 
+    const _key = sessionStorage.getItem(STORE('key')) || '';
     const resp = await fetch('/.netlify/functions/ritual', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ furnitureBase64: sendFurniture, furnitureMime: 'image/jpeg', fabricBase64: sendFabric, fabricMime: 'image/jpeg' })
+      body: JSON.stringify({ furnitureBase64: sendFurniture, furnitureMime: 'image/jpeg', fabricBase64: sendFabric, fabricMime: 'image/jpeg', key: _key })
     });
     let data;
     try { data = await resp.json(); }
@@ -1256,8 +1258,10 @@ async function verifyGateKey() {
     const res  = await fetch('/verify-key', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ key }) });
     const data = await res.json();
     if (!data.valid) { err.textContent = t('err_bad_key'); return; }
-    sessionStorage.setItem(STORE('user'), 'Майстер ' + key.split('-')[0]);
+    const name = data.name || ('Майстер ' + key.split('-')[0]);
+    sessionStorage.setItem(STORE('user'), name);
     sessionStorage.setItem(STORE('key'),  key);
+    sessionStorage.setItem(STORE('remaining'), data.remaining === null ? '∞' : String(data.remaining ?? ''));
     closeModal('modalShop');
     updateNavBadge();
     setTimeout(openCabinet, 200);
@@ -1287,6 +1291,13 @@ function updateNavBadge() {
 function openCabinet() {
   if (!isLoggedIn()) { openShop(); return; }
   document.getElementById('cabinetUserName').textContent = getUser();
+  const rem = sessionStorage.getItem(STORE('remaining'));
+  const badge = document.getElementById('keyRemainingBadge');
+  if (rem !== null && rem !== '') {
+    badge.textContent = rem === '∞' ? '✦ КЛЮЧ ОДІНА · БЕЗЛІМІТ ✦' : `✦ ЗАЛИШИЛОСЬ ВІЗУАЛІЗАЦІЙ: ${rem} ✦`;
+    badge.style.color = rem === '∞' ? 'var(--gold)' : (parseInt(rem) <= 5 ? '#e05555' : 'var(--text-muted)');
+    badge.style.display = 'block';
+  } else { badge.style.display = 'none'; }
   switchTab('litopys'); renderLitopys(); loadSeal();
   openModal('modalCabinet');
 }
