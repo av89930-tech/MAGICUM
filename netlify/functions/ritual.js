@@ -2,8 +2,8 @@ const { getStore } = require('@netlify/blobs');
 
 const GEMINI_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
 const MODELS = [
-  'gemini-2.0-flash-preview-image-generation',
-  'gemini-2.0-flash-exp',
+  'gemini-2.5-flash-image',
+  'gemini-3.1-flash-image-preview',
 ];
 
 function getRegistry() {
@@ -61,7 +61,7 @@ async function checkAndConsumeKey(key, context) {
   return { ok: true, tier: 'anon' };
 }
 
-const OVERLOAD_CODES = new Set([429, 503, 529]);
+const OVERLOAD_CODES = new Set([429, 500, 503, 529]);
 
 async function callGemini(model, requestBody, apiKey) {
   const response = await fetch(
