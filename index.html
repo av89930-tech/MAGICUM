@@ -13,6 +13,10 @@
 <title>MAGICUM: AI візуалізація переобивки меблів</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✨</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"MAGICUM","url":"https://magicum.netlify.app","description":"AI-visualization of furniture reupholstery. Upload a sofa photo and fabric sample — get a photorealistic result in seconds.","applicationCategory":"DesignApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"UAH"},"creator":{"@type":"Organization","name":"MAGICUM Digital Alchemist Atelier"}}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -304,12 +308,30 @@ nav.hide-nav { opacity: 0; pointer-events: none; transform: translateY(-100%); }
 .slider-label-after  { right: 10px; color: var(--gold); }
 
 #resultWatermark {
-  position: absolute; bottom: 10px; right: 12px;
+  position: absolute;
   font-family: 'Cormorant Garamond', serif;
   font-size: 13px; letter-spacing: 3px; text-transform: uppercase;
   color: rgba(201,168,76,0.55); pointer-events: none; z-index: 6;
   text-shadow: 0 1px 4px rgba(0,0,0,0.8); display: none;
+  bottom: 10px; right: 12px;
+  max-width: 180px; word-break: break-word;
 }
+#resultWatermark img { max-width: 120px; max-height: 60px; object-fit: contain; display: block; }
+#resultWatermark.wm-tl { top:10px; left:12px; bottom:auto; right:auto; }
+#resultWatermark.wm-tr { top:10px; right:12px; bottom:auto; left:auto; }
+#resultWatermark.wm-bl { bottom:10px; left:12px; top:auto; right:auto; }
+#resultWatermark.wm-br { bottom:10px; right:12px; top:auto; left:auto; }
+.seal-opts { display:flex; gap:8px; flex-wrap:wrap; margin:8px 0; }
+.seal-pos-btn { flex:1; min-width:60px; background:var(--bg-panel); border:1px solid var(--border); color:var(--text-muted); font-size:10px; letter-spacing:1px; padding:6px 4px; cursor:pointer; text-align:center; transition:.25s; }
+.seal-pos-btn.active { border-color:var(--gold); color:var(--gold); }
+.seal-opacity-row { display:flex; align-items:center; gap:10px; margin:8px 0; }
+.seal-opacity-row label { font-size:10px; color:var(--text-muted); white-space:nowrap; min-width:64px; }
+.seal-opacity-row input[type=range] { flex:1; accent-color:var(--gold); }
+.calc-row { display:flex; flex-direction:column; gap:4px; margin-bottom:12px; }
+.calc-row label { font-size:10px; color:var(--text-muted); letter-spacing:1px; }
+.calc-result-box { background:var(--bg-dark); border:1px solid var(--gold); padding:14px 16px; text-align:center; margin-top:4px; }
+.calc-result-box .calc-total { font-size:22px; color:var(--gold); font-family:'Cormorant Garamond',serif; letter-spacing:2px; }
+.calc-result-box .calc-label { font-size:10px; color:var(--text-muted); letter-spacing:2px; margin-top:4px; }
 
 /* ── SAVE AREA ── */
 .save-area {
@@ -618,7 +640,7 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
 <nav>
   <button class="btn-shop" onclick="openShop()">✦ Магічне сховище<br>Майстра-Алхіміка</button>
   <div class="nav-lang" id="navUserBadge" style="display:none;" onclick="openCabinet()"></div>
-  <div class="nav-lang" id="navLang">UA</div>
+  <div class="nav-lang" id="navLang" onclick="toggleLang()" style="cursor:pointer" title="Switch language">UA</div>
 </nav>
 
 <main>
@@ -860,7 +882,7 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
     <p class="modal-subtitle">Введіть <strong>ключ Брами</strong>, щоб отримати доступ до особистого кабінету Майстра-Алхіміка.</p>
     <input type="text" id="gateKeyInput" class="modal-input" placeholder="Введіть ключ (напр. MAGICUM-2026)">
     <div id="shopError" class="modal-error"></div>
-    <button class="modal-btn" onclick="verifyGateKey()">✦ ВІДКРИТИ БРАМУ</button>
+    <button class="modal-btn" id="gateKeyBtn" onclick="verifyGateKey()" data-i18n="gate_open">✦ ВІДКРИТИ БРАМУ</button>
   </div>
 </div>
 
@@ -871,9 +893,10 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
     <div class="modal-eyebrow">✦ Кабінет Майстра ✦</div>
     <h2 class="modal-title" id="cabinetUserName"></h2>
     <div class="cabinet-tabs">
-      <button class="cab-tab active" onclick="switchTab('litopys')">📜 Літопис Чарів</button>
-      <button class="cab-tab" onclick="switchTab('atlas')">🗺 Атлас Бажань</button>
-      <button class="cab-tab" onclick="switchTab('seal')">🔮 Печатка Творця</button>
+      <button class="cab-tab active" onclick="switchTab('litopys')" data-i18n="tab_litopys">📜 Літопис Чарів</button>
+      <button class="cab-tab" onclick="switchTab('atlas')" data-i18n="tab_atlas">🗺 Атлас Бажань</button>
+      <button class="cab-tab" onclick="switchTab('seal')" data-i18n="tab_seal">🔮 Печатка Творця</button>
+      <button class="cab-tab" onclick="switchTab('calc')" data-i18n="tab_calc">⚖ Кошторис</button>
     </div>
     <div class="cab-panel active" id="panel-litopys">
       <button class="modal-btn" onclick="saveCurrentVisualization()">ЗБЕРЕГТИ ПОТОЧНИЙ ОБРАЗ</button>
@@ -888,11 +911,51 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
       </div>
     </div>
     <div class="cab-panel" id="panel-seal">
-      <p style="font-size:11px;color:var(--text-muted);margin-bottom:12px;">Підпишіть свої творіння:</p>
+      <p style="font-size:11px;color:var(--text-muted);margin-bottom:10px;" data-i18n="seal_hint">Підпишіть свої творіння:</p>
       <div class="seal-preview"><div class="seal-preview-text" id="sealPreviewText">Ваша назва</div></div>
-      <input type="text" id="sealInput" class="modal-input" placeholder="Введіть назву/підпис" maxlength="40" oninput="updateSealPreview(this.value)">
-      <button class="modal-btn" onclick="saveSeal()">ЗАКРІПИТИ ПЕЧАТКУ</button>
+      <input type="text" id="sealInput" class="modal-input" placeholder="Введіть назву/підпис" maxlength="40" oninput="updateSealPreview(this.value)" style="margin-bottom:8px;">
+
+      <p style="font-size:10px;color:var(--text-muted);margin-bottom:6px;" data-i18n="seal_logo">Логотип компанії (PNG/SVG):</p>
+      <input type="file" id="sealLogoInput" accept="image/png,image/svg+xml,image/webp,image/jpeg" style="font-size:11px;color:var(--text-muted);margin-bottom:8px;width:100%;" onchange="onSealLogoChange(this)">
+
+      <div class="seal-opacity-row">
+        <label data-i18n="seal_opacity">Прозорість:</label>
+        <input type="range" id="sealOpacity" min="10" max="100" value="55" oninput="updateSealPreview()">
+        <span id="sealOpacityVal" style="font-size:10px;color:var(--gold);min-width:28px;">55%</span>
+      </div>
+
+      <p style="font-size:10px;color:var(--text-muted);margin-bottom:6px;" data-i18n="seal_position">Позиція:</p>
+      <div class="seal-opts">
+        <button class="seal-pos-btn" data-pos="tl" onclick="setSealPos('tl')">↖ Лів.верх</button>
+        <button class="seal-pos-btn" data-pos="tr" onclick="setSealPos('tr')">↗ Пр.верх</button>
+        <button class="seal-pos-btn active" data-pos="br" onclick="setSealPos('br')">↘ Пр.низ</button>
+        <button class="seal-pos-btn" data-pos="bl" onclick="setSealPos('bl')">↙ Лів.низ</button>
+      </div>
+
+      <button class="modal-btn" onclick="saveSeal()" data-i18n="seal_save">ЗАКРІПИТИ ПЕЧАТКУ</button>
+      <button class="modal-btn" onclick="downloadPDF()" style="margin-top:8px;background:transparent;border-color:var(--gold);color:var(--gold);" data-i18n="seal_pdf">⬇ ЗАВАНТАЖИТИ PDF ПРОПОЗИЦІЮ</button>
       <div id="sealStatus" style="text-align:center;font-size:10px;color:var(--gold);margin-top:8px;"></div>
+    </div>
+
+    <div class="cab-panel" id="panel-calc">
+      <p style="font-size:11px;color:var(--text-muted);margin-bottom:16px;text-align:center;" data-i18n="calc_hint">Розрахуйте вартість переобивки для клієнта</p>
+      <div class="calc-row">
+        <label data-i18n="calc_meters">Метраж тканини (м²)</label>
+        <input type="number" id="calcMeters" class="modal-input" placeholder="0.0" min="0" step="0.1" oninput="calcTotal()">
+      </div>
+      <div class="calc-row">
+        <label data-i18n="calc_price_m">Ціна тканини за м² (грн)</label>
+        <input type="number" id="calcPriceM" class="modal-input" placeholder="0" min="0" oninput="calcTotal()">
+      </div>
+      <div class="calc-row">
+        <label data-i18n="calc_labor">Вартість роботи (грн)</label>
+        <input type="number" id="calcLabor" class="modal-input" placeholder="0" min="0" oninput="calcTotal()">
+      </div>
+      <div class="calc-result-box">
+        <div class="calc-total" id="calcTotal">0 ₴</div>
+        <div class="calc-label" data-i18n="calc_total_label">ЗАГАЛЬНА ВАРТІСТЬ</div>
+      </div>
+      <button class="modal-btn" onclick="calcCopy()" style="margin-top:12px;" data-i18n="calc_copy">КОПІЮВАТИ КОШТОРИС</button>
     </div>
   </div>
 </div>
@@ -901,7 +964,7 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
 const HIST_KEY = 'magicum_history';
 const PROF_KEY = 'magicum_profile';
 const STORE = k => `mgc_${k}`;
-const VALID_KEYS = new Set(['MAGICUM-2026','BRAMA-ZOLOTA','ATELIE-PRO','MASTER-FABRIC','DIZAIN-STUDIO','RESTAVRATOR-UA']);
+// Keys verified server-side via /verify-key — not stored in frontend
 
 let furnitureBase64 = null, furnitureMime = null, furnitureDataUrl = null;
 let fabricBase64    = null, fabricMime    = null;
@@ -978,6 +1041,12 @@ function loadFabricFromUrl(url, name) {
 function handleUpload(type, input) {
   const file = input.files[0];
   if (!file) return;
+  const ALLOWED = new Set(['image/jpeg','image/png','image/webp','image/gif','image/heic','image/heif']);
+  if (!ALLOWED.has(file.type)) {
+    setStatus(t('err_filetype'), 'var(--gold)');
+    input.value = '';
+    return;
+  }
   const reader = new FileReader();
   reader.onload = ev => {
     const full = ev.target.result;
@@ -1023,7 +1092,8 @@ function compressImage(base64, mime, maxW = 800, maxH = 600, quality = 0.8) {
       canvas.width  = Math.round(img.width  * ratio);
       canvas.height = Math.round(img.height * ratio);
       canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-      resolve(canvas.toDataURL('image/jpeg', quality).split(',')[1]);
+      const fmt = canvas.toDataURL('image/webp', 0.01).startsWith('data:image/webp') ? 'image/webp' : 'image/jpeg';
+      resolve(canvas.toDataURL(fmt, quality).split(',')[1]);
     };
     img.onerror = () => resolve(base64);
     img.src = `data:${mime};base64,${base64}`;
@@ -1175,19 +1245,27 @@ function openShop() {
   setTimeout(() => document.getElementById('gateKeyInput').focus(), 300);
 }
 
-function verifyGateKey() {
+async function verifyGateKey() {
   const key = document.getElementById('gateKeyInput').value.trim().toUpperCase();
   const err = document.getElementById('shopError');
-  if (!key) { err.textContent = 'Введіть ключ'; return; }
-  if (!VALID_KEYS.has(key)) {
-    err.textContent = '✕ Ключ не знайдено в Книзі Брам';
-    return;
+  const btn = document.getElementById('gateKeyBtn');
+  if (!key) { err.textContent = t('err_no_key'); return; }
+  err.textContent = '⏳';
+  if (btn) btn.disabled = true;
+  try {
+    const res  = await fetch('/verify-key', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ key }) });
+    const data = await res.json();
+    if (!data.valid) { err.textContent = t('err_bad_key'); return; }
+    sessionStorage.setItem(STORE('user'), 'Майстер ' + key.split('-')[0]);
+    sessionStorage.setItem(STORE('key'),  key);
+    closeModal('modalShop');
+    updateNavBadge();
+    setTimeout(openCabinet, 200);
+  } catch(e) {
+    err.textContent = t('err_network');
+  } finally {
+    if (btn) btn.disabled = false;
   }
-  sessionStorage.setItem(STORE('user'), 'Майстер ' + key.split('-')[0]);
-  sessionStorage.setItem(STORE('key'),  key);
-  closeModal('modalShop');
-  updateNavBadge();
-  setTimeout(openCabinet, 200);
 }
 
 function updateNavBadge() {
@@ -1215,7 +1293,7 @@ function openCabinet() {
 
 function switchTab(name) {
   document.querySelectorAll('.cab-tab').forEach((t, i) =>
-    t.classList.toggle('active', ['litopys','atlas','seal'][i] === name)
+    t.classList.toggle('active', ['litopys','atlas','seal','calc'][i] === name)
   );
   document.querySelectorAll('.cab-panel').forEach(p => p.classList.remove('active'));
   document.getElementById('panel-' + name).classList.add('active');
@@ -1250,25 +1328,79 @@ function renderLitopys() {
 // Печатка
 function getSealKey() { return STORE('seal_' + (sessionStorage.getItem(STORE('key')) || 'guest')); }
 
+function getSealLogoKey()   { return STORE('seal_logo_' + (sessionStorage.getItem(STORE('key')) || 'guest')); }
+function getSealOpacityKey(){ return STORE('seal_op_'   + (sessionStorage.getItem(STORE('key')) || 'guest')); }
+function getSealPosKey()    { return STORE('seal_pos_'  + (sessionStorage.getItem(STORE('key')) || 'guest')); }
+
 function loadSeal() {
-  const seal = localStorage.getItem(getSealKey()) || '';
+  const seal    = localStorage.getItem(getSealKey()) || '';
+  const opacity = localStorage.getItem(getSealOpacityKey()) || '55';
+  const pos     = localStorage.getItem(getSealPosKey()) || 'br';
   document.getElementById('sealInput').value = seal;
-  updateSealPreview(seal);
+  document.getElementById('sealOpacity').value = opacity;
+  document.getElementById('sealOpacityVal').textContent = opacity + '%';
+  document.querySelectorAll('.seal-pos-btn').forEach(b => b.classList.toggle('active', b.dataset.pos === pos));
+  updateSealPreview();
 }
-function updateSealPreview(val) {
+
+function updateSealPreview() {
+  const val = document.getElementById('sealInput').value;
   document.getElementById('sealPreviewText').textContent = val || 'Ваша назва';
+  const op = document.getElementById('sealOpacity').value;
+  document.getElementById('sealOpacityVal').textContent = op + '%';
 }
+
+function setSealPos(pos) {
+  localStorage.setItem(getSealPosKey(), pos);
+  document.querySelectorAll('.seal-pos-btn').forEach(b => b.classList.toggle('active', b.dataset.pos === pos));
+  activateSealFull();
+}
+
+function onSealLogoChange(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    localStorage.setItem(getSealLogoKey(), ev.target.result);
+    updateSealPreview();
+    activateSealFull();
+  };
+  reader.readAsDataURL(file);
+}
+
 function saveSeal() {
   const val = document.getElementById('sealInput').value.trim();
+  const op  = document.getElementById('sealOpacity').value;
   localStorage.setItem(getSealKey(), val);
-  document.getElementById('sealStatus').textContent = val ? '✦ Печатку закріплено' : '✦ Печатку знято';
-  activateSeal(val);
+  localStorage.setItem(getSealOpacityKey(), op);
+  document.getElementById('sealStatus').textContent = val ? '✦ ' + t('seal_saved') : '✦ ' + t('seal_removed');
+  activateSealFull();
   setTimeout(() => document.getElementById('sealStatus').textContent = '', 2500);
 }
-function activateSeal(text) {
-  const wm = document.getElementById('resultWatermark');
-  wm.textContent   = text || '';
-  wm.style.display = text ? 'block' : 'none';
+
+function activateSeal(text) { activateSealFull(); }
+
+function activateSealFull() {
+  const wm      = document.getElementById('resultWatermark');
+  const text    = localStorage.getItem(getSealKey()) || '';
+  const logo    = localStorage.getItem(getSealLogoKey()) || '';
+  const opacity = (localStorage.getItem(getSealOpacityKey()) || '55') / 100;
+  const pos     = localStorage.getItem(getSealPosKey()) || 'br';
+
+  if (!text && !logo) { wm.style.display = 'none'; return; }
+
+  wm.className = 'wm-' + pos;
+  wm.id = 'resultWatermark';
+  wm.style.opacity  = opacity;
+  wm.style.display  = 'block';
+
+  if (logo) {
+    wm.innerHTML = `<img src="${logo}" alt="seal">`;
+    if (text) wm.innerHTML += `<div style="font-size:11px;letter-spacing:2px;margin-top:3px;">${text}</div>`;
+  } else {
+    wm.textContent = text;
+    wm.style.color = `rgba(201,168,76,${opacity})`;
+  }
 }
 
 // Logout
@@ -1542,6 +1674,186 @@ function wizardSelectColor(hex, code, colorName, fabricNameStr) {
   document.getElementById('afterImg').addEventListener('load', () => requestAnimationFrame(syncImgWidth));
   window.addEventListener('resize', syncImgWidth);
 })();
+
+// ── i18n ──
+const TRANSLATIONS = {
+  uk: {
+    tab_litopys: '📜 Літопис Чарів', tab_atlas: '🗺 Атлас Бажань',
+    tab_seal: '🔮 Печатка Творця', tab_calc: '⚖ Кошторис',
+    gate_open: '✦ ВІДКРИТИ БРАМУ',
+    seal_hint: 'Підпишіть свої творіння:', seal_logo: 'Логотип компанії (PNG/SVG):',
+    seal_opacity: 'Прозорість:', seal_position: 'Позиція:',
+    seal_save: 'ЗАКРІПИТИ ПЕЧАТКУ', seal_pdf: '⬇ ЗАВАНТАЖИТИ PDF ПРОПОЗИЦІЮ',
+    seal_saved: 'Печатку закріплено', seal_removed: 'Печатку знято',
+    calc_hint: 'Розрахуйте вартість переобивки для клієнта',
+    calc_meters: 'Метраж тканини (м²)', calc_price_m: 'Ціна тканини за м² (грн)',
+    calc_labor: 'Вартість роботи (грн)', calc_total_label: 'ЗАГАЛЬНА ВАРТІСТЬ',
+    calc_copy: 'КОПІЮВАТИ КОШТОРИС',
+    err_filetype: '⚠ Дозволені лише зображення (JPG, PNG, WebP)',
+    err_no_key: 'Введіть ключ', err_bad_key: '✕ Ключ не знайдено в Книзі Брам',
+    err_network: '✕ Помилка мережі, спробуйте ще',
+  },
+  en: {
+    tab_litopys: '📜 History', tab_atlas: '🗺 Atlas',
+    tab_seal: '🔮 Seal & Logo', tab_calc: '⚖ Estimate',
+    gate_open: '✦ OPEN THE GATE',
+    seal_hint: 'Sign your creations:', seal_logo: 'Company logo (PNG/SVG):',
+    seal_opacity: 'Opacity:', seal_position: 'Position:',
+    seal_save: 'APPLY SEAL', seal_pdf: '⬇ DOWNLOAD PDF PROPOSAL',
+    seal_saved: 'Seal applied', seal_removed: 'Seal removed',
+    calc_hint: 'Calculate reupholstery cost for your client',
+    calc_meters: 'Fabric area (m²)', calc_price_m: 'Fabric price per m² (UAH)',
+    calc_labor: 'Labor cost (UAH)', calc_total_label: 'TOTAL COST',
+    calc_copy: 'COPY ESTIMATE',
+    err_filetype: '⚠ Only images allowed (JPG, PNG, WebP)',
+    err_no_key: 'Enter key', err_bad_key: '✕ Key not found in the Book of Gates',
+    err_network: '✕ Network error, try again',
+  }
+};
+let _lang = localStorage.getItem('mgc_lang') || 'uk';
+function t(key) { return (TRANSLATIONS[_lang] || TRANSLATIONS.uk)[key] || key; }
+function applyLang() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.dataset.i18n;
+    const v = t(k);
+    if (v) el.textContent = v;
+  });
+  document.getElementById('navLang').textContent = _lang.toUpperCase();
+}
+function toggleLang() {
+  _lang = _lang === 'uk' ? 'en' : 'uk';
+  localStorage.setItem('mgc_lang', _lang);
+  applyLang();
+}
+document.addEventListener('DOMContentLoaded', applyLang);
+
+// ── Calculator ──
+function calcTotal() {
+  const m = parseFloat(document.getElementById('calcMeters').value)  || 0;
+  const p = parseFloat(document.getElementById('calcPriceM').value)  || 0;
+  const l = parseFloat(document.getElementById('calcLabor').value)   || 0;
+  const total = (m * p + l).toFixed(0);
+  document.getElementById('calcTotal').textContent = Number(total).toLocaleString('uk-UA') + ' ₴';
+}
+function calcCopy() {
+  const m = document.getElementById('calcMeters').value  || '0';
+  const p = document.getElementById('calcPriceM').value  || '0';
+  const l = document.getElementById('calcLabor').value   || '0';
+  const total = document.getElementById('calcTotal').textContent;
+  const text = `MAGICUM — Кошторис переобивки\nТканина: ${m} м² × ${p} грн = ${(m*p).toFixed(0)} грн\nРобота: ${l} грн\n────────────────\nРАЗОМ: ${total}`;
+  navigator.clipboard?.writeText(text);
+  document.getElementById('sealStatus') && (document.getElementById('sealStatus').textContent = '✦ Скопійовано');
+  setTimeout(() => { const el = document.getElementById('sealStatus'); if(el) el.textContent=''; }, 2000);
+}
+
+// ── PDF ──
+async function downloadPDF() {
+  if (typeof window.jspdf === 'undefined') { alert('PDF бібліотека не завантажилась — перевірте інтернет'); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+  const W = 210, H = 297;
+
+  // Background
+  doc.setFillColor(14, 14, 14);
+  doc.rect(0, 0, W, H, 'F');
+
+  // Header
+  doc.setTextColor(201, 168, 76);
+  doc.setFontSize(22);
+  doc.setFont('helvetica','bold');
+  doc.text('MAGICUM', W/2, 20, { align:'center' });
+  doc.setFontSize(9);
+  doc.setFont('helvetica','normal');
+  doc.setTextColor(138, 128, 112);
+  doc.text('DIGITAL ALCHEMIST ATELIER · AI-ВІЗУАЛІЗАЦІЯ ПЕРЕОБИВКИ', W/2, 27, { align:'center' });
+
+  // Divider
+  doc.setDrawColor(201, 168, 76);
+  doc.setLineWidth(0.3);
+  doc.line(20, 31, W-20, 31);
+
+  const user  = sessionStorage.getItem(STORE('user')) || 'Майстер MAGICUM';
+  const sealText = localStorage.getItem(getSealKey()) || '';
+  const now   = new Date().toLocaleDateString('uk-UA', {day:'numeric',month:'long',year:'numeric'});
+
+  doc.setTextColor(201, 168, 76);
+  doc.setFontSize(10);
+  doc.text(user, 20, 38);
+  doc.setTextColor(138,128,112);
+  doc.setFontSize(8);
+  doc.text(now, W-20, 38, { align:'right' });
+  if (sealText) doc.text(sealText, 20, 43);
+
+  let y = 50;
+
+  // Images
+  const afterImg  = document.getElementById('afterImg');
+  const beforeImg = document.getElementById('beforeImg');
+
+  async function addImg(el, label, x, imgY, imgW, imgH) {
+    if (!el || !el.src || el.src === window.location.href) return;
+    try {
+      const canvas = document.createElement('canvas');
+      const scale  = Math.min(imgW*3.78/el.naturalWidth, imgH*3.78/el.naturalHeight, 1);
+      canvas.width  = el.naturalWidth  * scale;
+      canvas.height = el.naturalHeight * scale;
+      canvas.getContext('2d').drawImage(el, 0, 0, canvas.width, canvas.height);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+      doc.setTextColor(201,168,76);
+      doc.setFontSize(8);
+      doc.text(label, x + imgW/2, imgY - 2, { align:'center' });
+      doc.addImage(dataUrl, 'JPEG', x, imgY, imgW, imgH);
+    } catch(e) {}
+  }
+
+  await addImg(beforeImg, 'ДО', 15,  y, 85, 65);
+  await addImg(afterImg,  'ПІСЛЯ', 110, y, 85, 65);
+  y += 72;
+
+  // Divider
+  doc.setDrawColor(201,168,76);
+  doc.line(20, y, W-20, y);
+  y += 8;
+
+  // Fabric info
+  doc.setTextColor(201,168,76);
+  doc.setFontSize(9);
+  doc.text('✦ ' + (fabricName || 'Тканина'), 20, y);
+  y += 7;
+
+  // Calculator block
+  const m = parseFloat(document.getElementById('calcMeters').value) || 0;
+  const p = parseFloat(document.getElementById('calcPriceM').value) || 0;
+  const l = parseFloat(document.getElementById('calcLabor').value)  || 0;
+  if (m || p || l) {
+    doc.setFillColor(22,22,22);
+    doc.rect(15, y, W-30, 38, 'F');
+    doc.setDrawColor(201,168,76);
+    doc.rect(15, y, W-30, 38);
+    doc.setTextColor(138,128,112);
+    doc.setFontSize(8);
+    doc.text(`Тканина: ${m} м² × ${p} грн`, 22, y+8);
+    doc.text(`Вартість тканини: ${(m*p).toFixed(0)} грн`, 22, y+15);
+    doc.text(`Вартість роботи: ${l} грн`, 22, y+22);
+    doc.setDrawColor(201,168,76);
+    doc.line(22, y+26, W-22, y+26);
+    doc.setTextColor(201,168,76);
+    doc.setFontSize(13);
+    doc.setFont('helvetica','bold');
+    doc.text(`РАЗОМ: ${(m*p+l).toLocaleString('uk-UA')} ₴`, W/2, y+34, { align:'center' });
+    doc.setFont('helvetica','normal');
+    y += 45;
+  }
+
+  // Footer
+  doc.setTextColor(138,128,112);
+  doc.setFontSize(7);
+  doc.text('Цей документ згенерований сервісом MAGICUM · magicum.netlify.app', W/2, H-15, { align:'center' });
+  doc.setDrawColor(201,168,76);
+  doc.line(20, H-20, W-20, H-20);
+
+  doc.save('MAGICUM-proposal.pdf');
+}
 </script>
 </body>
 </html>

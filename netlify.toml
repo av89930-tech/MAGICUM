@@ -45,3 +45,8 @@
   from = "/cabinet"
   to = "/?cabinet=open"
   status = 302
+
+[[redirects]]
+  from = "/verify-key"
+  to = "/.netlify/functions/verify-key"
+  status = 200
