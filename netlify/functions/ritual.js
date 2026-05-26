@@ -151,27 +151,19 @@ exports.handler = async (event, context) => {
       return { statusCode: 500, body: JSON.stringify({ success: false, error: 'Server misconfiguration: missing API key' }) };
     }
 
-    const prompt = `This is a TEXTURE REPLACEMENT task — like applying a material swap in 3D software (Blender/3ds Max). You are NOT generating a new image. You are editing the existing photo.
+    const prompt = `You are a photo editor. Your job: swap the upholstery fabric on the furniture in IMAGE 1, using the fabric from IMAGE 2.
 
-INPUT 1 = source photo of furniture. This is your canvas. Do not change anything about it except the fabric surface.
-INPUT 2 = fabric texture sample. Extract the color, pattern and texture from this sample.
+OUTPUT REQUIREMENTS — non-negotiable:
+1. The output image must look DIFFERENT from IMAGE 1. The fabric color and texture MUST visibly change.
+2. The new fabric color/pattern must match IMAGE 2 exactly (hue, saturation, brightness).
+3. Recolor and retexture ALL soft surfaces: seat cushions, backrest, side panels, armrests, every piece of upholstered fabric on the furniture.
 
-WHAT TO DO:
-- Keep INPUT 1 exactly as-is: same camera angle, same zoom, same crop, same background, same lighting, same shadows, same furniture shape, same silhouette, same dimensions, same number of cushions, same armrests, same legs, same everything.
-- Replace ONLY the soft upholstered surfaces (seat cushions, backrest, side panels, armrests, outer fabric walls) with the material from INPUT 2.
-- Hard non-fabric parts (metal legs, wooden frame, plastic trim) stay unchanged.
+KEEP UNCHANGED:
+- Camera angle, zoom, crop, background, room, lighting, shadows.
+- Furniture shape, silhouette, dimensions, number of cushions, legs, frame.
+- Non-fabric parts: wood, metal, plastic.
 
-WHAT NOT TO DO:
-- Do NOT zoom in or out.
-- Do NOT change the shape or silhouette of the furniture even slightly.
-- Do NOT add or remove cushions, sections, or structural elements.
-- Do NOT change the background or room environment.
-- Do NOT crop differently than INPUT 1.
-- Do NOT create a new composition — only edit the existing one.
-
-COLOR: The fabric color in the output must be identical to INPUT 2. Do not darken, desaturate or alter the hue.
-
-OUTPUT: One single photorealistic image — a copy of INPUT 1 with only the fabric surface texture swapped.`;
+Do not return the original photo. Do not return a plain white background image. Generate the edited photo with the new fabric applied.`;
 
     const requestBody = {
       contents: [{ parts: [
@@ -179,7 +171,7 @@ OUTPUT: One single photorealistic image — a copy of INPUT 1 with only the fabr
         { inline_data: { mime_type: furnitureMime, data: furnitureBase64 } },
         { inline_data: { mime_type: fabricMime,    data: fabricBase64    } }
       ]}],
-      generationConfig: { temperature: 0.4, responseModalities: ['IMAGE', 'TEXT'], candidateCount: 1 },
+      generationConfig: { temperature: 0.9, responseModalities: ['IMAGE', 'TEXT'], candidateCount: 1 },
       safetySettings: [
         { category: 'HARM_CATEGORY_HARASSMENT',        threshold: 'BLOCK_NONE' },
         { category: 'HARM_CATEGORY_HATE_SPEECH',       threshold: 'BLOCK_NONE' },

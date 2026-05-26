@@ -290,7 +290,7 @@ nav.hide-nav { opacity: 0; pointer-events: none; transform: translateY(-100%); }
 }
 .img-overlay #beforeImg {
   position: absolute; top: 0; left: 0;
-  height: 100%; max-width: none; object-fit: cover; object-position: top left;
+  max-width: none; object-fit: fill;
 }
 .slider-input {
   position: absolute; inset: 0; width: 100%; height: 100%;
@@ -1700,9 +1700,13 @@ function wizardSelectColor(hex, code, colorName, fabricNameStr) {
   const line       = document.getElementById('sliderLine');
 
   function syncImgWidth() {
-    const container = document.querySelector('.slider-container');
+    const ai = document.getElementById('afterImg');
     const bi = document.getElementById('beforeImg');
-    if (container && bi) bi.style.width = container.offsetWidth + 'px';
+    if (!ai || !bi) return;
+    const w = ai.offsetWidth, h = ai.offsetHeight;
+    if (!w || !h) return;
+    bi.style.width  = w + 'px';
+    bi.style.height = h + 'px';
   }
 
   range.addEventListener('input', e => {
