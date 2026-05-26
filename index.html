@@ -1519,13 +1519,6 @@ function handleUpload(type, input) {
       img.src = full; img.style.display = 'block';
       const em = document.getElementById('photo-empty');
       if (em) em.style.display = 'none';
-      // Pre-populate slider with original photo so container gets correct dimensions
-      document.getElementById('afterImg').src  = full;
-      document.getElementById('beforeImg').src = full;
-      document.getElementById('sliderRange').value = 50;
-      document.getElementById('beforeImgWrap').style.width = '50%';
-      document.getElementById('sliderLine').style.left = '50%';
-      document.getElementById('resultWrap').style.display = 'block';
     } else {
       fabricBase64 = b64; fabricMime = mime;
       fabricName   = file.name.replace(/\.[^/.]+$/, '') || 'тканина';
