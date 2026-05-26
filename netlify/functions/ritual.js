@@ -21,9 +21,12 @@ function usageStore(context) {
 }
 
 async function checkAndConsumeKey(key, context) {
-  if (!key) return { ok: false, error: 'Ключ не передано' };
   const registry = getRegistry();
-  if (!registry) return { ok: true }; // KEY_REGISTRY not configured yet — allow (dev mode)
+  // If KEY_REGISTRY not set in Netlify env — open access (setup mode)
+  if (!registry) return { ok: true };
+
+  // Registry is active — key is required
+  if (!key) return { ok: false, error: 'Ключ не передано. Відкрийте Кабінет Майстра та введіть ключ.' };
 
   const entry = registry[key.trim().toUpperCase()];
   if (!entry) return { ok: false, error: 'Ключ недійсний' };
