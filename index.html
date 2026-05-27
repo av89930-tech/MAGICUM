@@ -302,20 +302,6 @@ nav {
   object-fit: cover; object-position: center center;
 }
 
-#resultWatermark {
-  position: absolute;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 13px; letter-spacing: 3px; text-transform: uppercase;
-  color: rgba(201,168,76,0.55); pointer-events: none; z-index: 6;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.8); display: none;
-  bottom: 10px; right: 12px;
-  max-width: 180px; word-break: break-word;
-}
-#resultWatermark img { max-width: 120px; max-height: 60px; object-fit: contain; display: block; }
-#resultWatermark.wm-tl { top:10px; left:12px; bottom:auto; right:auto; }
-#resultWatermark.wm-tr { top:10px; right:12px; bottom:auto; left:auto; }
-#resultWatermark.wm-bl { bottom:10px; left:12px; top:auto; right:auto; }
-#resultWatermark.wm-br { bottom:10px; right:12px; top:auto; left:auto; }
 .seal-opts { display:flex; gap:8px; flex-wrap:wrap; margin:8px 0; }
 .seal-pos-btn { flex:1; min-width:60px; background:var(--bg-panel); border:1px solid var(--border); color:var(--text-muted); font-size:10px; letter-spacing:1px; padding:6px 4px; cursor:pointer; text-align:center; transition:.25s; }
 .seal-pos-btn.active { border-color:var(--gold); color:var(--gold); }
@@ -938,7 +924,6 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
     <div class="result-label after-label">✦ Образ проявлено</div>
     <div class="result-img-wrap">
       <img id="afterImg" alt="Після">
-      <div id="resultWatermark"></div>
     </div>
   </div>
 
@@ -1499,39 +1484,6 @@ function handleUpload(type, input) {
   reader.readAsDataURL(file);
 }
 
-function applySecureWatermark(dataUrl) {
-  return new Promise(resolve => {
-    const img = new Image();
-    img.onload = () => {
-      const c   = document.createElement('canvas');
-      c.width   = img.naturalWidth;
-      c.height  = img.naturalHeight;
-      const ctx = c.getContext('2d');
-      ctx.drawImage(img, 0, 0);
-
-      const sz   = Math.max(12, Math.round(c.width * 0.028));
-      const stepX = sz * 9;
-      const stepY = sz * 5;
-      const diag  = Math.hypot(c.width, c.height);
-
-      ctx.save();
-      ctx.globalAlpha   = 0.14;
-      ctx.fillStyle     = '#ffffff';
-      ctx.font          = `${sz}px sans-serif`;
-      ctx.textAlign     = 'center';
-      ctx.textBaseline  = 'middle';
-      ctx.translate(c.width / 2, c.height / 2);
-      ctx.rotate(-Math.PI / 6);
-      for (let y = -diag; y < diag; y += stepY)
-        for (let x = -diag; x < diag; x += stepX)
-          ctx.fillText('✦ MAGICUM', x, y);
-      ctx.restore();
-
-      resolve(c.toDataURL('image/jpeg', 0.88));
-    };
-    img.src = dataUrl;
-  });
-}
 
 // ── Compress ──
 function compressImage(base64, mime, maxW = 800, maxH = 600, quality = 0.8) {
@@ -1607,8 +1559,7 @@ async function runVisualize() {
     const resultUrl = `data:${lastMime};base64,${lastB64}`;
     const afterImg = document.getElementById('afterImg');
 
-    const watermarkedUrl = await applySecureWatermark(resultUrl);
-    afterImg.src = watermarkedUrl;
+    afterImg.src = resultUrl;
 
     const resultWrap = document.getElementById('resultWrap');
     resultWrap.style.display = 'block';
@@ -1897,39 +1848,8 @@ function saveSeal() {
   setTimeout(() => document.getElementById('sealStatus').textContent = '', 2500);
 }
 
-function activateSeal(text) { activateSealFull(); }
-
-function activateSealFull() {
-  const wm      = document.getElementById('resultWatermark');
-  const text    = localStorage.getItem(getSealKey()) || '';
-  const opacity = (localStorage.getItem(getSealOpacityKey()) || '55') / 100;
-  const pos     = localStorage.getItem(getSealPosKey()) || 'br';
-
-  if (!text && !_sealLogoUrl) { wm.style.display = 'none'; return; }
-
-  wm.className      = 'wm-' + pos;
-  wm.id             = 'resultWatermark';
-  wm.style.opacity  = opacity;
-  wm.style.display  = 'block';
-  wm.innerHTML      = '';
-
-  if (_sealLogoUrl) {
-    const img = document.createElement('img');
-    img.src = _sealLogoUrl; img.alt = 'seal';
-    wm.appendChild(img);
-  }
-  if (text) {
-    if (_sealLogoUrl) {
-      const div = document.createElement('div');
-      div.style.cssText = 'font-size:11px;letter-spacing:2px;margin-top:3px;';
-      div.textContent = text;
-      wm.appendChild(div);
-    } else {
-      wm.textContent    = text;
-      wm.style.color    = `rgba(201,168,76,${opacity})`;
-    }
-  }
-}
+function activateSeal(text) {}
+function activateSealFull() {}
 
 // Logout
 function logout() {
