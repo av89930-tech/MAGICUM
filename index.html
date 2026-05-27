@@ -1537,25 +1537,6 @@ function handleUpload(type, input) {
   reader.readAsDataURL(file);
 }
 
-// ── Fit result to original photo dimensions ──
-function fitToOriginalSize(resultDataUrl, originalDataUrl) {
-  return new Promise(resolve => {
-    const orig = new Image();
-    orig.onload = () => {
-      const res = new Image();
-      res.onload = () => {
-        const c = document.createElement('canvas');
-        c.width  = orig.naturalWidth;
-        c.height = orig.naturalHeight;
-        c.getContext('2d').drawImage(res, 0, 0, c.width, c.height);
-        resolve(c.toDataURL('image/jpeg', 0.92));
-      };
-      res.src = resultDataUrl;
-    };
-    orig.src = originalDataUrl;
-  });
-}
-
 function applySecureWatermark(dataUrl) {
   return new Promise(resolve => {
     const img = new Image();
@@ -1635,8 +1616,8 @@ async function runVisualize() {
 
   try {
     const [sendFurniture, sendFabric] = await Promise.all([
-      compressImage(furnitureBase64, furnitureMime, 1024, 1024, 0.85),
-      compressImage(fabricBase64,    fabricMime,    1024, 1024, 0.85)
+      compressImage(furnitureBase64, furnitureMime, 1024, 1024, 0.92),
+      compressImage(fabricBase64,    fabricMime,    1024, 1024, 0.92)
     ]);
 
     ritualShow(furnitureDataUrl, _ritualFabricColor);
