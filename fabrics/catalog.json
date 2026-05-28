@@ -1,0 +1,191 @@
+{
+  "dealers": [
+    {
+      "id": "oberon",
+      "name": "OBERON",
+      "categories": [
+        {
+          "id": "velvet",
+          "name": "Велюр",
+          "icon": "🪡",
+          "fabrics": [
+            {
+              "id": "velvet-prestige",
+              "name": "Prestige Velvet",
+              "colors": [
+                { "hex": "#1a1a2e", "code": "PV-001", "name": "Північ" },
+                { "hex": "#4a0e3f", "code": "PV-002", "name": "Сливовий" },
+                { "hex": "#7b2d8b", "code": "PV-003", "name": "Аметист" },
+                { "hex": "#1b4f72", "code": "PV-004", "name": "Індиго" },
+                { "hex": "#1e8449", "code": "PV-005", "name": "Смарагд" },
+                { "hex": "#922b21", "code": "PV-006", "name": "Бордо" },
+                { "hex": "#784212", "code": "PV-007", "name": "Шоколад" },
+                { "hex": "#2c3e50", "code": "PV-008", "name": "Графіт" }
+              ]
+            },
+            {
+              "id": "velvet-soft",
+              "name": "Soft Touch",
+              "colors": [
+                { "hex": "#d5a6bd", "code": "ST-001", "name": "Пудра" },
+                { "hex": "#a9cce3", "code": "ST-002", "name": "Небо" },
+                { "hex": "#a9dfbf", "code": "ST-003", "name": "М'ята" },
+                { "hex": "#f9e4b7", "code": "ST-004", "name": "Ваніль" },
+                { "hex": "#d7bde2", "code": "ST-005", "name": "Лаванда" },
+                { "hex": "#fadbd8", "code": "ST-006", "name": "Персик" },
+                { "hex": "#d5d8dc", "code": "ST-007", "name": "Срібло" },
+                { "hex": "#f0e6d3", "code": "ST-008", "name": "Крем" }
+              ]
+            },
+            {
+              "id": "velvet-royal",
+              "name": "Royal Velvet",
+              "colors": [
+                { "hex": "#0d0d0d", "code": "RV-001", "name": "Чорний" },
+                { "hex": "#ffffff", "code": "RV-002", "name": "Білий" },
+                { "hex": "#c9a84c", "code": "RV-003", "name": "Золото" },
+                { "hex": "#c0392b", "code": "RV-004", "name": "Рубін" },
+                { "hex": "#154360", "code": "RV-005", "name": "Королівський" },
+                { "hex": "#1d8348", "code": "RV-006", "name": "Хантер" },
+                { "hex": "#6e2fa1", "code": "RV-007", "name": "Пурпур" },
+                { "hex": "#7f6000", "code": "RV-008", "name": "Бронза" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "rogozka",
+          "name": "Рогожка",
+          "icon": "🧶",
+          "fabrics": [
+            {
+              "id": "rogozka-loft",
+              "name": "Loft Texture",
+              "colors": [
+                { "hex": "#b7b7b7", "code": "LT-001", "name": "Сірий" },
+                { "hex": "#8d8d8d", "code": "LT-002", "name": "Темно-сірий" },
+                { "hex": "#d4c5b0", "code": "LT-003", "name": "Бежевий" },
+                { "hex": "#a0856c", "code": "LT-004", "name": "Капучіно" },
+                { "hex": "#5d4037", "code": "LT-005", "name": "Коричневий" },
+                { "hex": "#3e3e3e", "code": "LT-006", "name": "Антрацит" },
+                { "hex": "#e8e0d5", "code": "LT-007", "name": "Льон" },
+                { "hex": "#c9b79c", "code": "LT-008", "name": "Пісок" }
+              ]
+            },
+            {
+              "id": "rogozka-urban",
+              "name": "Urban Mix",
+              "colors": [
+                { "hex": "#2e4057", "code": "UM-001", "name": "Денім" },
+                { "hex": "#4e6b52", "code": "UM-002", "name": "Хакі" },
+                { "hex": "#8b4513", "code": "UM-003", "name": "Теракота" },
+                { "hex": "#5c4a3a", "code": "UM-004", "name": "Вenge" },
+                { "hex": "#c0b49a", "code": "UM-005", "name": "Тауп" },
+                { "hex": "#e8dcc8", "code": "UM-006", "name": "Крем-брюле" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "eco-leather",
+          "name": "Екошкіра",
+          "icon": "✦",
+          "fabrics": [
+            {
+              "id": "eco-classic",
+              "name": "Classic Eco",
+              "colors": [
+                { "hex": "#0d0d0d", "code": "CE-001", "name": "Чорний" },
+                { "hex": "#3b2314", "code": "CE-002", "name": "Темний горіх" },
+                { "hex": "#7b4a2d", "code": "CE-003", "name": "Коньяк" },
+                { "hex": "#c8a882", "code": "CE-004", "name": "Карамель" },
+                { "hex": "#f5e6d3", "code": "CE-005", "name": "Слонова кістка" },
+                { "hex": "#8b0000", "code": "CE-006", "name": "Бордо" },
+                { "hex": "#2c3e50", "code": "CE-007", "name": "Темно-синій" },
+                { "hex": "#5d5d5d", "code": "CE-008", "name": "Сірий" }
+              ]
+            },
+            {
+              "id": "eco-matte",
+              "name": "Matte Soft",
+              "colors": [
+                { "hex": "#1c1c1c", "code": "MS-001", "name": "Матовий чорний" },
+                { "hex": "#4a3728", "code": "MS-002", "name": "Мокко" },
+                { "hex": "#b8860b", "code": "MS-003", "name": "Гірчиця" },
+                { "hex": "#2f4f4f", "code": "MS-004", "name": "Пляшковий" },
+                { "hex": "#8b7355", "code": "MS-005", "name": "Тауп" },
+                { "hex": "#cd853f", "code": "MS-006", "name": "Перу" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "boucle",
+          "name": "Букле",
+          "icon": "🌀",
+          "fabrics": [
+            {
+              "id": "boucle-nordic",
+              "name": "Nordic Boucle",
+              "colors": [
+                { "hex": "#f5f0e8", "code": "NB-001", "name": "Молоко" },
+                { "hex": "#e8e0d0", "code": "NB-002", "name": "Вівсянка" },
+                { "hex": "#d4c5aa", "code": "NB-003", "name": "Пшениця" },
+                { "hex": "#9e9287", "code": "NB-004", "name": "Теплий сірий" },
+                { "hex": "#6b5d52", "code": "NB-005", "name": "Кедр" },
+                { "hex": "#3d3530", "code": "NB-006", "name": "Еспресо" },
+                { "hex": "#c4b5a5", "code": "NB-007", "name": "Латте" },
+                { "hex": "#a8bba3", "code": "NB-008", "name": "Шавлія" }
+              ]
+            },
+            {
+              "id": "boucle-color",
+              "name": "Color Boucle",
+              "colors": [
+                { "hex": "#e8c5c5", "code": "CB-001", "name": "Пильна троянда" },
+                { "hex": "#c5d5e8", "code": "CB-002", "name": "Туманний синій" },
+                { "hex": "#c5e8d5", "code": "CB-003", "name": "Шавлія" },
+                { "hex": "#e8ddc5", "code": "CB-004", "name": "Пісок" },
+                { "hex": "#d5c5e8", "code": "CB-005", "name": "Сутінки" },
+                { "hex": "#e8e5c5", "code": "CB-006", "name": "Лимонний крем" }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "shenil",
+          "name": "Шеніл",
+          "icon": "🧵",
+          "fabrics": [
+            {
+              "id": "shenil-velour",
+              "name": "Velour Chenille",
+              "colors": [
+                { "hex": "#2c1810", "code": "VC-001", "name": "Темний шоколад" },
+                { "hex": "#6b3a2a", "code": "VC-002", "name": "Теракота" },
+                { "hex": "#8b6914", "code": "VC-003", "name": "Гірчиця" },
+                { "hex": "#2d5a3d", "code": "VC-004", "name": "Ліс" },
+                { "hex": "#1a3a5c", "code": "VC-005", "name": "Океан" },
+                { "hex": "#5c2d6b", "code": "VC-006", "name": "Фіолет" },
+                { "hex": "#7a7a7a", "code": "VC-007", "name": "Графіт" },
+                { "hex": "#c4a882", "code": "VC-008", "name": "Карамель" }
+              ]
+            },
+            {
+              "id": "shenil-stripe",
+              "name": "Stripe Chenille",
+              "colors": [
+                { "hex": "#8b4513", "code": "SC-001", "name": "Бронза" },
+                { "hex": "#4682b4", "code": "SC-002", "name": "Сталевий" },
+                { "hex": "#228b22", "code": "SC-003", "name": "Смарагд" },
+                { "hex": "#800020", "code": "SC-004", "name": "Бургунді" },
+                { "hex": "#2f4f4f", "code": "SC-005", "name": "Темний кіпарис" },
+                { "hex": "#d2691e", "code": "SC-006", "name": "Мідь" }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
