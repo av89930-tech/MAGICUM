@@ -285,56 +285,16 @@ nav {
 
 /* ── RESULT ── */
 .result-wrap { margin: 10px 0 0; }
-.result-label {
-  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
-  padding: 10px 4px; color: var(--text-muted);
-}
-.result-label.after-label { color: var(--gold-light); }
 
-/* ── SLIDER ── */
-.slider-container {
+/* ── RESULT IMAGE ── */
+.result-img-container {
   position: relative; width: 100%; overflow: hidden;
   border: 1px solid var(--border);
   aspect-ratio: 4/3;
 }
-.slider-container #afterImg {
-  position: absolute; top: 0; left: 0;
+.result-img-container #afterImg {
   display: block; width: 100%; height: 100%; object-fit: cover;
 }
-.img-overlay {
-  position: absolute; top: 0; left: 0;
-  width: 50%; height: 100%; overflow: hidden; pointer-events: none;
-}
-.img-overlay #beforeImg {
-  position: absolute; top: 0; left: 0;
-  width: min(100vw, 430px); height: 100%;
-  object-fit: cover; max-width: none;
-}
-.slider-input {
-  position: absolute; inset: 0; width: 100%; height: 100%;
-  background: transparent; opacity: 0; cursor: ew-resize;
-  z-index: 10; -webkit-appearance: none; margin: 0; touch-action: none;
-}
-.slider-line {
-  position: absolute; top: 0; left: 50%;
-  width: 2px; height: 100%; background: var(--gold);
-  z-index: 5; pointer-events: none;
-}
-.slider-button {
-  position: absolute; top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  width: 36px; height: 36px;
-  background: var(--bg-dark); border: 2px solid var(--gold); border-radius: 50%;
-  color: var(--gold); display: flex; align-items: center; justify-content: center;
-  font-size: 14px; box-shadow: 0 0 10px rgba(0,0,0,0.5);
-}
-.slider-label {
-  position: absolute; top: 10px; z-index: 6; pointer-events: none;
-  font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
-  padding: 3px 8px; background: rgba(0,0,0,0.6);
-}
-.slider-label-before { left: 10px; color: var(--text-muted); }
-.slider-label-after  { right: 10px; color: var(--gold); }
 
 #resultWatermark {
   position: absolute;
@@ -969,18 +929,8 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
 
   <!-- RESULT -->
   <div class="result-wrap" id="resultWrap" style="display:none">
-    <div class="result-label after-label">✦ Тягніть повзунок для порівняння</div>
-    <div class="slider-container">
-      <img id="afterImg" alt="Після">
-      <div class="img-overlay" id="beforeImgWrap">
-        <img id="beforeImg" alt="До">
-      </div>
-      <input type="range" min="0" max="100" value="50" class="slider-input" id="sliderRange">
-      <div class="slider-line" id="sliderLine">
-        <div class="slider-button">✦</div>
-      </div>
-      <div class="slider-label slider-label-before">ДО</div>
-      <div class="slider-label slider-label-after">ПІСЛЯ</div>
+    <div class="result-img-container">
+      <img id="afterImg" alt="Результат">
       <div id="resultWatermark"></div>
     </div>
   </div>
@@ -1674,16 +1624,10 @@ async function runVisualize() {
     lastMime = data.mimeType || 'image/jpeg';
 
     const resultUrl = `data:${lastMime};base64,${lastB64}`;
-    const afterImg  = document.getElementById('afterImg');
-    const beforeImg = document.getElementById('beforeImg');
+    const afterImg = document.getElementById('afterImg');
 
-    // Resize result to exactly match original photo dimensions
     const fittedUrl = furnitureDataUrl ? await fitToOriginalSize(resultUrl, furnitureDataUrl) : resultUrl;
     afterImg.src = fittedUrl;
-    if (furnitureDataUrl) beforeImg.src = furnitureDataUrl;
-    document.getElementById('sliderRange').value = 50;
-    document.getElementById('beforeImgWrap').style.width = '50%';
-    document.getElementById('sliderLine').style.left = '50%';
 
     const resultWrap = document.getElementById('resultWrap');
     resultWrap.style.display = 'block';
@@ -1861,12 +1805,11 @@ function switchTab(name) {
 function getLitopysKey() { return STORE('litopys_' + (sessionStorage.getItem(STORE('key')) || 'guest')); }
 
 function saveCurrentVisualization() {
-  const afterImg  = document.getElementById('afterImg');
-  const beforeImg = document.getElementById('beforeImg');
+  const afterImg = document.getElementById('afterImg');
   if (!afterImg || afterImg.style.display === 'none') { alert('Спочатку проявіть образ!'); return; }
   const entries = JSON.parse(localStorage.getItem(getLitopysKey()) || '[]');
   const now = new Date();
-  entries.unshift({ after: afterImg.src, before: beforeImg.src, date: now.toLocaleDateString('uk-UA'), time: now.toLocaleTimeString('uk-UA', { hour:'2-digit', minute:'2-digit' }) });
+  entries.unshift({ after: afterImg.src, date: now.toLocaleDateString('uk-UA'), time: now.toLocaleTimeString('uk-UA', { hour:'2-digit', minute:'2-digit' }) });
   if (entries.length > 30) entries.pop();
   localStorage.setItem(getLitopysKey(), JSON.stringify(entries));
   renderLitopys();
@@ -2320,18 +2263,6 @@ function wizardSelectColor(value, code, colorName, fabricNameStr, type, article)
   setStatus(`✦ ${fullName}`, 'var(--gold-light)');
 }
 
-// ── Slider ──
-(function() {
-  const range      = document.getElementById('sliderRange');
-  const beforeWrap = document.getElementById('beforeImgWrap');
-  const line       = document.getElementById('sliderLine');
-
-  range.addEventListener('input', e => {
-    const v = e.target.value + '%';
-    beforeWrap.style.width = v;
-    line.style.left = v;
-  });
-})();
 
 // ── i18n ──
 const TRANSLATIONS = {
@@ -2547,8 +2478,7 @@ async function downloadPDF() {
   let y = 50;
 
   // Images
-  const afterImg  = document.getElementById('afterImg');
-  const beforeImg = document.getElementById('beforeImg');
+  const afterImg = document.getElementById('afterImg');
 
   async function addImg(el, label, x, imgY, imgW, imgH) {
     if (!el || !el.src || el.src === window.location.href) return;
@@ -2566,9 +2496,8 @@ async function downloadPDF() {
     } catch(e) {}
   }
 
-  await addImg(beforeImg, 'ДО', 15,  y, 85, 65);
-  await addImg(afterImg,  'ПІСЛЯ', 110, y, 85, 65);
-  y += 72;
+  await addImg(afterImg, 'РЕЗУЛЬТАТ', 15, y, 180, 120);
+  y += 127;
 
   // Divider
   doc.setDrawColor(201,168,76);
