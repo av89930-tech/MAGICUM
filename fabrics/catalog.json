@@ -45,6 +45,8 @@
             {
               "id": "velvet-castel",
               "name": "Castel",
+              "preview": "fabrics/oberon/castel/castel-preview.webp",
+              "palette": "fabrics/oberon/castel/castel-palette.webp",
               "colors": [
                 { "image": "fabrics/oberon/castel/39983.webp", "code": "39983", "article": "03", "name": "Кремовий" },
                 { "image": "fabrics/oberon/castel/39984.webp", "code": "39984", "article": "04", "name": "Світло-бежевий" },
