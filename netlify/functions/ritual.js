@@ -3,8 +3,8 @@
 // ---------------------------------------------------------------------------
 
 const MODELS = [
+  'gemini-2.0-flash-preview-image-generation',
   'gemini-2.0-flash-exp',
-  'gemini-2.5-flash-preview-05-20'
 ];
 
 const PROMPT = `Ти — майстер цифрової переобивки меблів.
