@@ -107,7 +107,7 @@ nav {
 }
 .hero-bg {
   position: absolute; inset: 0; z-index: 0;
-  background: url('https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?q=80&w=2000') center/cover no-repeat;
+  background: url('hero-bg.jpg') center/cover no-repeat;
 }
 .hero-bg::after {
   content: ''; position: absolute; inset: 0;
@@ -222,8 +222,8 @@ nav {
   font-size: 10px; color: var(--text-muted); letter-spacing: 2px;
   text-align: center; padding: 12px;
 }
-#photo-preview  { background-image: url('https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600&q=80'); }
-#fabric-preview { background-image: url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80'); }
+#photo-preview  { background-image: url('/_w/demo-sofa.jpg'); }
+#fabric-preview { background-image: url('/_w/demo-fabric.jpg'); }
 .card-btn {
   width: 100%; padding: 9px;
   background: transparent; border: 1px solid var(--border);
@@ -291,17 +291,65 @@ nav {
 }
 .result-label.after-label { color: var(--gold-light); }
 
-/* ── RESULT IMAGE ── */
-.result-img-wrap {
-  position: relative; width: 100%;
+/* ── SLIDER ── */
+.slider-container {
+  position: relative; width: 100%; overflow: hidden;
   border: 1px solid var(--border);
-  aspect-ratio: 4/3; overflow: hidden;
+  aspect-ratio: 4/3;
 }
-#afterImg {
-  display: block; width: 100%; height: 100%;
-  object-fit: cover; object-position: center center;
+.slider-container #afterImg {
+  position: absolute; top: 0; left: 0;
+  display: block; width: 100%; height: 100%; object-fit: cover;
 }
+.img-overlay {
+  position: absolute; top: 0; left: 0;
+  width: 50%; height: 100%; overflow: hidden; pointer-events: none;
+}
+.img-overlay #beforeImg {
+  position: absolute; top: 0; left: 0;
+  width: min(100vw, 430px); height: 100%;
+  object-fit: cover; max-width: none;
+}
+.slider-input {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  background: transparent; opacity: 0; cursor: ew-resize;
+  z-index: 10; -webkit-appearance: none; margin: 0; touch-action: none;
+}
+.slider-line {
+  position: absolute; top: 0; left: 50%;
+  width: 2px; height: 100%; background: var(--gold);
+  z-index: 5; pointer-events: none;
+}
+.slider-button {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 36px; height: 36px;
+  background: var(--bg-dark); border: 2px solid var(--gold); border-radius: 50%;
+  color: var(--gold); display: flex; align-items: center; justify-content: center;
+  font-size: 14px; box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+.slider-label {
+  position: absolute; top: 10px; z-index: 6; pointer-events: none;
+  font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+  padding: 3px 8px; background: rgba(0,0,0,0.6);
+}
+.slider-label-before { left: 10px; color: var(--text-muted); }
+.slider-label-after  { right: 10px; color: var(--gold); }
 
+#resultWatermark {
+  position: absolute;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 13px; letter-spacing: 3px; text-transform: uppercase;
+  color: rgba(201,168,76,0.55); pointer-events: none; z-index: 6;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.8); display: none;
+  bottom: 10px; right: 12px;
+  max-width: 180px; word-break: break-word;
+}
+#resultWatermark img { max-width: 120px; max-height: 60px; object-fit: contain; display: block; }
+#resultWatermark.wm-tl { top:10px; left:12px; bottom:auto; right:auto; }
+#resultWatermark.wm-tr { top:10px; right:12px; bottom:auto; left:auto; }
+#resultWatermark.wm-bl { bottom:10px; left:12px; top:auto; right:auto; }
+#resultWatermark.wm-br { bottom:10px; right:12px; top:auto; left:auto; }
 .seal-opts { display:flex; gap:8px; flex-wrap:wrap; margin:8px 0; }
 .seal-pos-btn { flex:1; min-width:60px; background:var(--bg-panel); border:1px solid var(--border); color:var(--text-muted); font-size:10px; letter-spacing:1px; padding:6px 4px; cursor:pointer; text-align:center; transition:.25s; }
 .seal-pos-btn.active { border-color:var(--gold); color:var(--gold); }
@@ -921,9 +969,19 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
 
   <!-- RESULT -->
   <div class="result-wrap" id="resultWrap" style="display:none">
-    <div class="result-label after-label">✦ Образ проявлено</div>
-    <div class="result-img-wrap">
+    <div class="result-label after-label">✦ Тягніть повзунок для порівняння</div>
+    <div class="slider-container">
       <img id="afterImg" alt="Після">
+      <div class="img-overlay" id="beforeImgWrap">
+        <img id="beforeImg" alt="До">
+      </div>
+      <input type="range" min="0" max="100" value="50" class="slider-input" id="sliderRange">
+      <div class="slider-line" id="sliderLine">
+        <div class="slider-button">✦</div>
+      </div>
+      <div class="slider-label slider-label-before">ДО</div>
+      <div class="slider-label slider-label-after">ПІСЛЯ</div>
+      <div id="resultWatermark"></div>
     </div>
   </div>
 
@@ -963,40 +1021,40 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
 
     <div class="example-card">
       <div class="example-imgs">
-        <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=300&q=80" alt="До">
-        <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=300&q=80" alt="Після">
+        <img src="/examples/case1-before.png" alt="До">
+        <img src="/examples/case1-after.png"  alt="Після">
         <span class="example-img-label lbl-before">ДО</span>
         <span class="example-img-label lbl-after">ПІСЛЯ</span>
       </div>
       <div class="example-meta">
         <div class="example-tag">Модульний диван</div>
-        <div class="example-desc">Темна тканина → світлий велюр</div>
+        <div class="example-desc">Бордовий велюр → теракотовий велюр</div>
       </div>
     </div>
 
     <div class="example-card">
       <div class="example-imgs">
-        <img src="https://images.unsplash.com/photo-1567016432779-094069958ea5?w=300&q=80" alt="До">
-        <img src="https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=300&q=80" alt="Після">
+        <img src="/examples/case2-before.png" alt="До">
+        <img src="/examples/case2-after.png"  alt="Після">
         <span class="example-img-label lbl-before">ДО</span>
         <span class="example-img-label lbl-after">ПІСЛЯ</span>
       </div>
       <div class="example-meta">
         <div class="example-tag">Кутовий диван</div>
-        <div class="example-desc">Сірий → гірчичний жаккард</div>
+        <div class="example-desc">Темно-коричнева тканина → гірчичний жаккард</div>
       </div>
     </div>
 
     <div class="example-card">
       <div class="example-imgs">
-        <img src="https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=300&q=80" alt="До">
-        <img src="https://images.unsplash.com/photo-1618220179428-22790b461013?w=300&q=80" alt="Після">
+        <img src="/examples/case3-before.jpg" alt="До">
+        <img src="/examples/case3-after.jpg"  alt="Після">
         <span class="example-img-label lbl-before">ДО</span>
         <span class="example-img-label lbl-after">ПІСЛЯ</span>
       </div>
       <div class="example-meta">
-        <div class="example-tag">Крісло</div>
-        <div class="example-desc">Класичне → смарагдова шкіра</div>
+        <div class="example-tag">Кутовий диван</div>
+        <div class="example-desc">Сірий велюр → смарагдовий велюр</div>
       </div>
     </div>
 
@@ -1484,6 +1542,58 @@ function handleUpload(type, input) {
   reader.readAsDataURL(file);
 }
 
+// ── Fit result to original photo dimensions ──
+function fitToOriginalSize(resultDataUrl, originalDataUrl) {
+  return new Promise(resolve => {
+    const orig = new Image();
+    orig.onload = () => {
+      const res = new Image();
+      res.onload = () => {
+        const c = document.createElement('canvas');
+        c.width  = orig.naturalWidth;
+        c.height = orig.naturalHeight;
+        c.getContext('2d').drawImage(res, 0, 0, c.width, c.height);
+        resolve(c.toDataURL('image/jpeg', 0.92));
+      };
+      res.src = resultDataUrl;
+    };
+    orig.src = originalDataUrl;
+  });
+}
+
+function applySecureWatermark(dataUrl) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => {
+      const c   = document.createElement('canvas');
+      c.width   = img.naturalWidth;
+      c.height  = img.naturalHeight;
+      const ctx = c.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+
+      const sz   = Math.max(12, Math.round(c.width * 0.028));
+      const stepX = sz * 9;
+      const stepY = sz * 5;
+      const diag  = Math.hypot(c.width, c.height);
+
+      ctx.save();
+      ctx.globalAlpha   = 0.14;
+      ctx.fillStyle     = '#ffffff';
+      ctx.font          = `${sz}px sans-serif`;
+      ctx.textAlign     = 'center';
+      ctx.textBaseline  = 'middle';
+      ctx.translate(c.width / 2, c.height / 2);
+      ctx.rotate(-Math.PI / 6);
+      for (let y = -diag; y < diag; y += stepY)
+        for (let x = -diag; x < diag; x += stepX)
+          ctx.fillText('✦ MAGICUM', x, y);
+      ctx.restore();
+
+      resolve(c.toDataURL('image/jpeg', 0.88));
+    };
+    img.src = dataUrl;
+  });
+}
 
 // ── Compress ──
 function compressImage(base64, mime, maxW = 800, maxH = 600, quality = 0.8) {
@@ -1530,8 +1640,8 @@ async function runVisualize() {
 
   try {
     const [sendFurniture, sendFabric] = await Promise.all([
-      compressImage(furnitureBase64, furnitureMime, 1024, 1024, 0.92),
-      compressImage(fabricBase64,    fabricMime,    1024, 1024, 0.92)
+      compressImage(furnitureBase64, furnitureMime, 1024, 1024, 0.85),
+      compressImage(fabricBase64,    fabricMime,    1024, 1024, 0.85)
     ]);
 
     ritualShow(furnitureDataUrl, _ritualFabricColor);
@@ -1557,9 +1667,17 @@ async function runVisualize() {
     lastMime = data.mimeType || 'image/jpeg';
 
     const resultUrl = `data:${lastMime};base64,${lastB64}`;
-    const afterImg = document.getElementById('afterImg');
+    const afterImg  = document.getElementById('afterImg');
+    const beforeImg = document.getElementById('beforeImg');
 
-    afterImg.src = resultUrl;
+    // Resize result to exactly match original photo dimensions
+    const fittedUrl     = furnitureDataUrl ? await fitToOriginalSize(resultUrl, furnitureDataUrl) : resultUrl;
+    const watermarkedUrl = await applySecureWatermark(fittedUrl);
+    afterImg.src = watermarkedUrl;
+    if (furnitureDataUrl) beforeImg.src = furnitureDataUrl;
+    document.getElementById('sliderRange').value = 50;
+    document.getElementById('beforeImgWrap').style.width = '50%';
+    document.getElementById('sliderLine').style.left = '50%';
 
     const resultWrap = document.getElementById('resultWrap');
     resultWrap.style.display = 'block';
@@ -1735,11 +1853,12 @@ function switchTab(name) {
 function getLitopysKey() { return STORE('litopys_' + (sessionStorage.getItem(STORE('key')) || 'guest')); }
 
 function saveCurrentVisualization() {
-  const afterImg = document.getElementById('afterImg');
+  const afterImg  = document.getElementById('afterImg');
+  const beforeImg = document.getElementById('beforeImg');
   if (!afterImg || afterImg.style.display === 'none') { alert('Спочатку проявіть образ!'); return; }
   const entries = JSON.parse(localStorage.getItem(getLitopysKey()) || '[]');
   const now = new Date();
-  entries.unshift({ after: afterImg.src, before: furnitureDataUrl || '', date: now.toLocaleDateString('uk-UA'), time: now.toLocaleTimeString('uk-UA', { hour:'2-digit', minute:'2-digit' }) });
+  entries.unshift({ after: afterImg.src, before: beforeImg.src, date: now.toLocaleDateString('uk-UA'), time: now.toLocaleTimeString('uk-UA', { hour:'2-digit', minute:'2-digit' }) });
   if (entries.length > 30) entries.pop();
   localStorage.setItem(getLitopysKey(), JSON.stringify(entries));
   renderLitopys();
@@ -1848,8 +1967,39 @@ function saveSeal() {
   setTimeout(() => document.getElementById('sealStatus').textContent = '', 2500);
 }
 
-function activateSeal(text) {}
-function activateSealFull() {}
+function activateSeal(text) { activateSealFull(); }
+
+function activateSealFull() {
+  const wm      = document.getElementById('resultWatermark');
+  const text    = localStorage.getItem(getSealKey()) || '';
+  const opacity = (localStorage.getItem(getSealOpacityKey()) || '55') / 100;
+  const pos     = localStorage.getItem(getSealPosKey()) || 'br';
+
+  if (!text && !_sealLogoUrl) { wm.style.display = 'none'; return; }
+
+  wm.className      = 'wm-' + pos;
+  wm.id             = 'resultWatermark';
+  wm.style.opacity  = opacity;
+  wm.style.display  = 'block';
+  wm.innerHTML      = '';
+
+  if (_sealLogoUrl) {
+    const img = document.createElement('img');
+    img.src = _sealLogoUrl; img.alt = 'seal';
+    wm.appendChild(img);
+  }
+  if (text) {
+    if (_sealLogoUrl) {
+      const div = document.createElement('div');
+      div.style.cssText = 'font-size:11px;letter-spacing:2px;margin-top:3px;';
+      div.textContent = text;
+      wm.appendChild(div);
+    } else {
+      wm.textContent    = text;
+      wm.style.color    = `rgba(201,168,76,${opacity})`;
+    }
+  }
+}
 
 // Logout
 function logout() {
@@ -2101,6 +2251,18 @@ function wizardSelectColor(hex, code, colorName, fabricNameStr) {
   setStatus(`✦ ${fullName}`, 'var(--gold-light)');
 }
 
+// ── Slider ──
+(function() {
+  const range      = document.getElementById('sliderRange');
+  const beforeWrap = document.getElementById('beforeImgWrap');
+  const line       = document.getElementById('sliderLine');
+
+  range.addEventListener('input', e => {
+    const v = e.target.value + '%';
+    beforeWrap.style.width = v;
+    line.style.left = v;
+  });
+})();
 
 // ── i18n ──
 const TRANSLATIONS = {
@@ -2291,13 +2453,12 @@ async function downloadPDF() {
   let y = 50;
 
   // Images
-  const afterImg = document.getElementById('afterImg');
+  const afterImg  = document.getElementById('afterImg');
+  const beforeImg = document.getElementById('beforeImg');
 
-  async function addImg(src, label, x, imgY, imgW, imgH) {
-    if (!src || src === window.location.href) return;
+  async function addImg(el, label, x, imgY, imgW, imgH) {
+    if (!el || !el.src || el.src === window.location.href) return;
     try {
-      const el = new Image();
-      await new Promise(r => { el.onload = r; el.onerror = r; el.src = src; });
       const canvas = document.createElement('canvas');
       const scale  = Math.min(imgW*3.78/el.naturalWidth, imgH*3.78/el.naturalHeight, 1);
       canvas.width  = el.naturalWidth  * scale;
@@ -2311,8 +2472,8 @@ async function downloadPDF() {
     } catch(e) {}
   }
 
-  await addImg(furnitureDataUrl, 'ДО',    15,  y, 85, 65);
-  await addImg(afterImg?.src,    'ПІСЛЯ', 110, y, 85, 65);
+  await addImg(beforeImg, 'ДО', 15,  y, 85, 65);
+  await addImg(afterImg,  'ПІСЛЯ', 110, y, 85, 65);
   y += 72;
 
   // Divider
@@ -2391,13 +2552,13 @@ async function handleB2BForm(e) {
     <!-- DEMO -->
     <div class="b2b-widget-demo">
       <div class="b2b-demo-card">
-        <div class="b2b-demo-img" style="background-image:url('https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=300&q=80')"></div>
+        <div class="b2b-demo-img" style="background-image:url('/_w/result.webp')"></div>
         <div class="b2b-demo-card-label">Картка товару</div>
         <button class="btn-activate">◆ Активувати магію</button>
       </div>
       <div style="font-size:18px;color:var(--gold);flex-shrink:0;align-self:center">→</div>
       <div class="b2b-demo-card" style="border-color:rgba(201,168,76,0.5);display:flex;flex-direction:column;padding:10px">
-        <div class="b2b-demo-img" style="background-image:url('https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=300&q=80');flex-shrink:0;margin-bottom:0"></div>
+        <div class="b2b-demo-img" style="background-image:url('/_w/eye.webp');flex-shrink:0;margin-bottom:0"></div>
         <div style="flex:1;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;color:var(--gold-light);line-height:1.3;text-align:center;letter-spacing:1px;padding:0;width:100%">Народження дива за 30 секунд</div>
       </div>
     </div>
