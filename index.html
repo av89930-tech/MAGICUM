@@ -1653,9 +1653,8 @@ async function runVisualize() {
     const beforeImg = document.getElementById('beforeImg');
 
     // Resize result to exactly match original photo dimensions
-    const fittedUrl     = furnitureDataUrl ? await fitToOriginalSize(resultUrl, furnitureDataUrl) : resultUrl;
-    const watermarkedUrl = await applySecureWatermark(fittedUrl);
-    afterImg.src = watermarkedUrl;
+    const fittedUrl = furnitureDataUrl ? await fitToOriginalSize(resultUrl, furnitureDataUrl) : resultUrl;
+    afterImg.src = fittedUrl;
     if (furnitureDataUrl) beforeImg.src = furnitureDataUrl;
     document.getElementById('sliderRange').value = 50;
     document.getElementById('beforeImgWrap').style.width = '50%';
