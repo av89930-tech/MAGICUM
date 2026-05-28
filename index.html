@@ -1507,12 +1507,29 @@ function handleUpload(type, input) {
 function fitToOriginalSize(resultDataUrl, originalDataUrl) {
   return new Promise(resolve => {
     const orig = new Image();
+    orig.onerror = () => resolve(resultDataUrl);
     orig.onload = () => {
       const res = new Image();
+      res.onerror = () => resolve(resultDataUrl);
       res.onload = () => {
-        // Повертаємо результат як є — без масштабування до розмірів оригіналу,
-        // щоб не розтягувати зображення Gemini
-        resolve(resultDataUrl);
+        // Якщо розміри однакові — повертаємо як є
+        if (res.naturalWidth === orig.naturalWidth && res.naturalHeight === orig.naturalHeight) {
+          resolve(resultDataUrl);
+          return;
+        }
+        // Cover-crop: масштабуємо результат щоб він заповнив оригінальні розміри,
+        // обрізаємо по центру — це усуває розтягування вліво/вправо
+        const canvas = document.createElement('canvas');
+        canvas.width  = orig.naturalWidth;
+        canvas.height = orig.naturalHeight;
+        const ctx = canvas.getContext('2d');
+        const scale  = Math.max(orig.naturalWidth / res.naturalWidth, orig.naturalHeight / res.naturalHeight);
+        const scaledW = res.naturalWidth  * scale;
+        const scaledH = res.naturalHeight * scale;
+        const dx = (orig.naturalWidth  - scaledW) / 2;
+        const dy = (orig.naturalHeight - scaledH) / 2;
+        ctx.drawImage(res, dx, dy, scaledW, scaledH);
+        resolve(canvas.toDataURL('image/jpeg', 0.92));
       };
       res.src = resultDataUrl;
     };
