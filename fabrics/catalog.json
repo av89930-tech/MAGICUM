@@ -88,14 +88,27 @@
               "id": "velvet-vega",
               "name": "Vega",
               "colors": [
-                { "hex": "#1c1c1c", "code": "VG-001", "name": "Антрацит" },
-                { "hex": "#2e4057", "code": "VG-002", "name": "Сталевий" },
-                { "hex": "#4e6b52", "code": "VG-003", "name": "Хакі" },
-                { "hex": "#5d4037", "code": "VG-004", "name": "Горіх" },
-                { "hex": "#8b0000", "code": "VG-005", "name": "Вишня" },
-                { "hex": "#9b59b6", "code": "VG-006", "name": "Фіолет" },
-                { "hex": "#c4a882", "code": "VG-007", "name": "Карамель" },
-                { "hex": "#e8e0d5", "code": "VG-008", "name": "Льон" }
+                { "image": "fabrics/oberon/vega/28412.webp", "code": "28412", "article": "03", "name": "Пісочний" },
+                { "image": "fabrics/oberon/vega/27294.webp", "code": "27294", "article": "04", "name": "Світло-сірий" },
+                { "image": "fabrics/oberon/vega/27295.webp", "code": "27295", "article": "05", "name": "Тілесний" },
+                { "image": "fabrics/oberon/vega/27296.webp", "code": "27296", "article": "06", "name": "Сіро-бежевий" },
+                { "image": "fabrics/oberon/vega/27297.webp", "code": "27297", "article": "07", "name": "Кавовий" },
+                { "image": "fabrics/oberon/vega/27298.webp", "code": "27298", "article": "08", "name": "Бежево-сірий" },
+                { "image": "fabrics/oberon/vega/27299.webp", "code": "27299", "article": "10", "name": "Сірий" },
+                { "image": "fabrics/oberon/vega/27300.webp", "code": "27300", "article": "13", "name": "Жовтий" },
+                { "image": "fabrics/oberon/vega/27301.webp", "code": "27301", "article": "14", "name": "Помаранчевий" },
+                { "image": "fabrics/oberon/vega/27302.webp", "code": "27302", "article": "23", "name": "Сіро-блакитний" },
+                { "image": "fabrics/oberon/vega/27303.webp", "code": "27303", "article": "25", "name": "Бірюзовий" },
+                { "image": "fabrics/oberon/vega/27304.webp", "code": "27304", "article": "27", "name": "Зелений" },
+                { "image": "fabrics/oberon/vega/27305.webp", "code": "27305", "article": "32", "name": "Морська хвиля" },
+                { "image": "fabrics/oberon/vega/27306.webp", "code": "27306", "article": "33", "name": "Сизий" },
+                { "image": "fabrics/oberon/vega/27307.webp", "code": "27307", "article": "34", "name": "Сіро-коричневий" },
+                { "image": "fabrics/oberon/vega/27308.webp", "code": "27308", "article": "35", "name": "Графіт" },
+                { "image": "fabrics/oberon/vega/27309.webp", "code": "27309", "article": "36", "name": "Коричневий" },
+                { "image": "fabrics/oberon/vega/27310.webp", "code": "27310", "article": "38", "name": "Синій" },
+                { "image": "fabrics/oberon/vega/27311.webp", "code": "27311", "article": "39", "name": "Темно-синій" },
+                { "image": "fabrics/oberon/vega/27312.webp", "code": "27312", "article": "40", "name": "Трав'яний" },
+                { "image": "fabrics/oberon/vega/27313.webp", "code": "27313", "article": "70", "name": "Чорний" }
               ]
             }
           ]
