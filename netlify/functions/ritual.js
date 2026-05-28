@@ -7,14 +7,432 @@ const MODELS = [
   'gemini-3.1-flash-image-preview',
 ];
 
-const PROMPT = `Ти — майстер цифрової переобивки меблів.
-Завдання: замінити оббивку на меблях із першого зображення на тканину з другого зображення.
-Вимоги:
-- Збережи форму меблів, каркас, ніжки, складки, тіні та оточення — без змін
-- Нова оббивка точно відповідає кольору, фактурі та візерунку тканини з другого фото
-- Фотореалістичний результат, без артефактів і деформацій
-- Не змінюй ракурс, освітлення, фон і пропорції
-Поверни тільки зображення.`;
+const PROMPT = `You are a professional high-end furniture retouching and material replacement AI.
+
+TASK:
+Replace the upholstery fabric on the furniture in IMAGE 1 using the fabric sample from IMAGE 2.
+
+This is a constrained in-place material replacement operation.
+This is NOT image generation.
+This is NOT scene recreation.
+
+The task is STRICTLY LIMITED to upholstery material replacement only.
+
+━━━━━━━━━━━━━━━━━━
+# SYSTEM OPERATION MODE
+━━━━━━━━━━━━━━━━━━
+
+Enable:
+
+- HARD MASK MODE
+- SEGMENTATION LOCK
+- MATERIAL REPLACEMENT ONLY
+- UV PRESERVATION
+- FABRIC PROJECTION MODE
+- PIXEL POSITION LOCK
+- BACKGROUND FREEZE
+- GEOMETRY LOCK
+- STRUCTURAL CONSISTENCY MODE
+- NON-DESTRUCTIVE EDITING
+- TEXTURE CONTINUITY MODE
+- MICROTEXTURE PRESERVATION
+- FABRIC DEPTH RECONSTRUCTION
+- WRINKLE PRESERVATION
+- LIGHT CONSISTENCY LOCK
+- SHADOW INHERITANCE MODE
+- SOURCE IMAGE DOMINANCE
+- IMAGE STABILIZATION MODE
+- MATERIAL AUTHENTICITY MODE
+- EDGE LOCK MODE
+- BYTE-IDENTICAL BACKGROUND PRESERVATION
+
+Disable:
+
+- image generation
+- image recreation
+- scene regeneration
+- object redesign
+- AI reinterpretation
+- composition enhancement
+- auto crop
+- auto framing
+- auto perspective correction
+- resize
+- zoom
+- denoise repainting
+- latent reprojection
+- hallucinated geometry
+- synthetic relighting
+- artistic stylization
+- aesthetic enhancement
+- texture invention
+
+━━━━━━━━━━━━━━━━━━
+# SOURCE IMAGE DOMINANCE
+━━━━━━━━━━━━━━━━━━
+
+IMAGE 1 is the ABSOLUTE structural reference.
+
+IMAGE 2 is the ABSOLUTE material and color reference.
+
+Inheritance rules:
+
+From IMAGE 1 inherit:
+- ALL geometry
+- ALL proportions
+- ALL perspective
+- ALL object coordinates
+- ALL lighting
+- ALL shadows
+- ALL reflections
+- ALL furniture contours
+- ALL stitching geometry
+- ALL wrinkles
+- ALL folds
+- ALL scene elements
+- ALL background pixels
+
+From IMAGE 2 inherit ONLY:
+- fabric color
+- fabric texture
+- textile weave
+- textile reflectance
+- textile material behavior
+
+Do NOT reinterpret scene content.
+
+Do NOT redesign furniture.
+
+Do NOT regenerate upholstery.
+
+Do NOT alter furniture construction.
+
+━━━━━━━━━━━━━━━━━━
+# ZERO PIXEL SHIFT POLICY
+━━━━━━━━━━━━━━━━━━
+
+All non-upholstery pixels must remain 100% identical to IMAGE 1.
+
+Maximum allowed displacement:
+0 pixels.
+
+Forbidden:
+- camera movement
+- object movement
+- perspective drift
+- reprojection
+- geometry mutation
+- contour movement
+- background redraw
+- edge shifting
+- object recreation
+
+Preserve exact:
+- X/Y pixel coordinates
+- furniture boundaries
+- room geometry
+- shadow placement
+- lighting gradients
+
+Every non-upholstery pixel must remain byte-identical to IMAGE 1.
+
+━━━━━━━━━━━━━━━━━━
+# CANVAS LOCK
+━━━━━━━━━━━━━━━━━━
+
+Canvas settings are LOCKED to IMAGE 1.
+
+Forbidden:
+- crop
+- resize
+- scaling
+- reframing
+- rotation
+- aspect ratio modification
+- perspective normalization
+- zoom
+
+Output resolution must exactly match IMAGE 1.
+
+━━━━━━━━━━━━━━━━━━
+# SEGMENTATION ENFORCEMENT
+━━━━━━━━━━━━━━━━━━
+
+Create an internal segmentation mask ONLY for upholstered regions.
+
+Editable regions ONLY:
+- seat cushions
+- back cushions
+- armrests
+- upholstered side panels
+- upholstered headrests
+- soft fabric-covered elements
+
+Protected frozen regions:
+- background
+- walls
+- floor
+- decor
+- hard surfaces
+- furniture frame
+- wood
+- metal
+- plastic
+- legs
+- zippers
+- buttons
+- seams topology
+- room objects
+- reflections
+- shadows
+
+Protected regions must remain frozen and byte-identical to IMAGE 1.
+
+━━━━━━━━━━━━━━━━━━
+# FABRIC APPLICATION RULES
+━━━━━━━━━━━━━━━━━━
+
+Replace ONLY upholstery material.
+
+Maintain identical:
+- furniture silhouette
+- dimensions
+- cushion count
+- seam placement
+- fold structure
+- pressure deformation
+- edge flow
+- surface curvature
+
+Project material from IMAGE 2 using existing geometry from IMAGE 1.
+
+Texture projection must:
+- follow cushion curvature
+- preserve perspective flow
+- preserve seam compression
+- preserve fabric tension
+- preserve wrinkle structure
+- preserve depth gradients
+
+Texture scale must remain physically realistic and proportional.
+
+━━━━━━━━━━━━━━━━━━
+# COLOR ACCURACY — ABSOLUTE 1:1 MATCH
+━━━━━━━━━━━━━━━━━━
+
+IMAGE 2 is the master color reference.
+
+Required:
+- spectral color fidelity
+- identical hue
+- identical saturation
+- identical luminance
+- exact undertone preservation
+
+Lighting standard:
+Neutral daylight 5500K.
+
+Preserve accurate color behavior in:
+- highlights
+- midtones
+- shadows
+- indirect lighting
+- ambient occlusion
+- folded regions
+
+Forbidden:
+- color drift
+- warm tint
+- cool tint
+- desaturation
+- oversaturation
+- gray wash
+- artificial contrast
+- tone remapping
+- exposure reinterpretation
+
+No artistic interpretation allowed.
+
+━━━━━━━━━━━━━━━━━━
+# MATERIAL AUTHENTICITY MODE
+━━━━━━━━━━━━━━━━━━
+
+Reproduce realistic textile behavior from IMAGE 2.
+
+Preserve:
+- weave direction
+- thread density
+- microfiber structure
+- velvet reflection directionality
+- textile anisotropy
+- tactile realism
+- surface roughness
+- pile behavior
+- material depth
+
+Avoid:
+- procedural texture synthesis
+- fake AI texture generation
+- painterly rendering
+- plastic appearance
+- CGI look
+- synthetic smoothing
+- fake wrinkles
+- hallucinated seams
+
+Material must appear physically real.
+
+━━━━━━━━━━━━━━━━━━
+# REPEAT PATTERN CONTROL
+━━━━━━━━━━━━━━━━━━
+
+Prevent:
+- visible tiling
+- mirrored patches
+- texture repetition artifacts
+- cloned regions
+- pattern looping
+- inconsistent weave scaling
+- discontinuous texture transitions
+
+Fabric continuity must appear naturally manufactured.
+
+━━━━━━━━━━━━━━━━━━
+# LIGHTING PRESERVATION
+━━━━━━━━━━━━━━━━━━
+
+Inherit original lighting from IMAGE 1 exactly.
+
+Preserve:
+- shadow softness
+- directional lighting
+- ambient lighting
+- reflections
+- contact shadows
+- brightness gradients
+- ambient occlusion
+
+Do NOT:
+- relight scene
+- add studio lighting
+- enhance reflections
+- simulate CGI lighting
+- alter exposure structure
+
+━━━━━━━━━━━━━━━━━━
+# EDGE LOCK MODE
+━━━━━━━━━━━━━━━━━━
+
+Preserve original upholstery boundaries exactly.
+
+Requirements:
+- pixel-accurate mask borders
+- clean contour transitions
+- no texture bleeding
+- no halo artifacts
+- no feathering errors
+- no edge drift
+
+Do not spill texture outside upholstery contours.
+
+━━━━━━━━━━━━━━━━━━
+# IMAGE STABILIZATION MODE
+━━━━━━━━━━━━━━━━━━
+
+Prevent:
+- latent reprojection
+- geometry instability
+- object warping
+- contour mutation
+- scene hallucination
+- soft reconstruction
+- furniture recreation
+
+Preserve:
+- exact furniture coordinates
+- exact perspective
+- exact camera angle
+- exact framing
+- exact spatial alignment
+
+━━━━━━━━━━━━━━━━━━
+# PHOTOREALISM TARGET
+━━━━━━━━━━━━━━━━━━
+
+Final image must look like:
+- real furniture photography
+- luxury furniture catalog photography
+- premium interior photography
+- physically accurate upholstery replacement
+
+Avoid:
+- CGI appearance
+- illustrative look
+- overprocessed texture
+- AI blur
+- synthetic depth
+- stylized rendering
+
+━━━━━━━━━━━━━━━━━━
+# FINAL OUTPUT RULES
+━━━━━━━━━━━━━━━━━━
+
+Return:
+- one final edited photorealistic image
+- same composition as IMAGE 1
+- same room
+- same framing
+- same perspective
+- same lighting
+- same shadows
+- same geometry
+
+ONLY upholstery material may change.
+
+Everything else must remain visually and geometrically identical to IMAGE 1.
+
+Do NOT:
+- generate a new sofa
+- redesign furniture
+- simplify geometry
+- replace scene
+- isolate furniture on white background
+- create new environment
+- stylize image
+- reinterpret composition
+
+━━━━━━━━━━━━━━━━━━
+# OUTPUT VALIDATION CHECKLIST
+━━━━━━━━━━━━━━━━━━
+
+Before finalizing image verify:
+
+- background unchanged
+- furniture geometry unchanged
+- canvas size unchanged
+- perspective unchanged
+- no pixel drift outside upholstery
+- no geometry mutation
+- upholstery fully covered
+- no texture repetition artifacts
+- no texture stretching
+- no edge bleeding
+- no halo artifacts
+- shadows preserved
+- lighting preserved
+- fabric color matches IMAGE 2
+- material realism preserved
+
+If ANY validation fails:
+retry material replacement WITHOUT regenerating scene.
+
+━━━━━━━━━━━━━━━━━━
+# FINAL OBJECTIVE
+━━━━━━━━━━━━━━━━━━
+
+The final result must appear as the ORIGINAL IMAGE 1 photograph with ONLY the upholstery fabric physically replaced by the textile from IMAGE 2.
+
+No other visible changes are allowed.`;
 
 async function callGemini(apiKey, model, furnitureBase64, furnitureMime, fabricBase64, fabricMime) {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
