@@ -87,6 +87,8 @@
             {
               "id": "velvet-vega",
               "name": "Vega",
+              "preview": "fabrics/oberon/vega/vega-preview.webp",
+              "palette": "fabrics/oberon/vega/vega-palette.webp",
               "colors": [
                 { "image": "fabrics/oberon/vega/28412.webp", "code": "28412", "article": "03", "name": "Пісочний" },
                 { "image": "fabrics/oberon/vega/27294.webp", "code": "27294", "article": "04", "name": "Світло-сірий" },

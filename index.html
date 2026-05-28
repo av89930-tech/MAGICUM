@@ -2172,10 +2172,19 @@ function wizardRender() {
     body.innerHTML = `<div class="wizard-section-title">${escapeHTML(category.name)} · ${escapeHTML(dealer.name)}</div>
       <div class="fabric-list">
         ${category.fabrics.map(f => {
-          const dots = f.colors.slice(0,5).map(c =>
-            `<span class="fabric-btn-dot" style="background:${escapeHTML(c.hex)}"></span>`).join('');
+          let thumb = '';
+          if (f.preview) {
+            thumb = `<img src="/${escapeHTML(f.preview)}" style="width:48px;height:48px;object-fit:cover;border-radius:3px;flex-shrink:0;border:1px solid rgba(201,168,76,0.2);" alt="${escapeHTML(f.name)}">`;
+          } else {
+            const dots = f.colors.slice(0,5).map(c =>
+              c.image
+                ? `<span class="fabric-btn-dot" style="background-image:url('/${escapeHTML(c.image)}');background-size:cover;"></span>`
+                : `<span class="fabric-btn-dot" style="background:${escapeHTML(c.hex||'#888')}"></span>`
+            ).join('');
+            thumb = `<div class="fabric-btn-dots">${dots}</div>`;
+          }
           return `<button class="fabric-btn" onclick="wizardSelectFabric('${escapeHTML(f.id)}')">
-            <div class="fabric-btn-dots">${dots}</div>
+            ${thumb}
             <span>${escapeHTML(f.name)}</span>
             <span class="fabric-btn-count">${f.colors.length} кол.</span>
           </button>`;
