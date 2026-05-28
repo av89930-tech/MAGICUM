@@ -1641,8 +1641,7 @@ async function runVisualize() {
     try { data = await resp.json(); }
     catch (e) { throw new Error('Сервер недоступний. Спробуйте пізніше.'); }
     if (!resp.ok || !data.success) throw new Error(data.error || 'Помилка сервера');
-    // Update anon counter if no key and no Google
-    if (!_key && !getGoogleUser()) consumeAnonUse();
+    // Update usage hint after generation
     updateUsageHint();
 
     lastB64  = data.imageBase64;
@@ -2359,18 +2358,7 @@ function toggleLang() {
 document.addEventListener('DOMContentLoaded', applyLang);
 
 // ── Netlify Identity / Google Auth ──
-const FREE_ANON_LIMIT   = 3;
 const FREE_GOOGLE_LIMIT = 10;
-const ANON_USES_KEY     = 'mgc_anon_uses';
-
-function getAnonUsesLeft() {
-  const used = parseInt(localStorage.getItem(ANON_USES_KEY) || '0', 10);
-  return Math.max(0, FREE_ANON_LIMIT - used);
-}
-function consumeAnonUse() {
-  const used = parseInt(localStorage.getItem(ANON_USES_KEY) || '0', 10);
-  localStorage.setItem(ANON_USES_KEY, String(used + 1));
-}
 
 function getGoogleUser() {
   if (typeof netlifyIdentity === 'undefined') return null;
@@ -2417,12 +2405,9 @@ function updateUsageHint() {
     hint.textContent = '✦ Google-акаунт · до ' + FREE_GOOGLE_LIMIT + ' безкоштовних візуалізацій';
     hint.style.display = 'block';
   } else {
-    const left = getAnonUsesLeft();
-    hint.textContent = left > 0
-      ? `✦ Залишилось безкоштовних спроб: ${left} з ${FREE_ANON_LIMIT}`
-      : '✦ Безкоштовні спроби вичерпано — увійдіть через Google або отримайте ключ';
+    hint.textContent = '✦ Для генерації потрібен вхід через Google';
     hint.style.display = 'block';
-    hint.style.color   = left === 0 ? '#e05555' : 'var(--text-muted)';
+    hint.style.color   = 'var(--text-muted)';
   }
 }
 
