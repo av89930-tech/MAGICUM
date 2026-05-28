@@ -1307,12 +1307,15 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
 <div class="modal-overlay" id="modalShop">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal('modalShop')">✕</button>
-    <div class="modal-eyebrow">✦ Брама Магіки ✦</div>
-    <h2 class="modal-title">Магічне Сховище</h2>
-    <p class="modal-subtitle">Введіть <strong>ключ Брами</strong>, щоб отримати доступ до особистого кабінету Майстра-Алхіміка.</p>
-    <input type="text" id="gateKeyInput" class="modal-input" placeholder="Введіть ключ (напр. MAGICUM-2026)">
+    <div class="modal-eyebrow">🐦‍⬛ Відправ ворона за ключем 🐦‍⬛</div>
+    <h2 class="modal-title">Отримай ключ</h2>
+    <p class="modal-subtitle" style="white-space:pre-line;">🔑 <strong>Silver Thread</strong> — 10 візуалізацій · 50 грн
+🔑 <strong>Golden Seam</strong> — 30 візуалізацій · 100 грн
+
+Ворон живе внизу сторінки</p>
+    <input type="text" id="gateKeyInput" class="modal-input" placeholder="Введіть ключ" style="text-transform:uppercase;">
     <div id="shopError" class="modal-error"></div>
-    <button class="modal-btn" id="gateKeyBtn" onclick="verifyGateKey()" data-i18n="gate_open">✦ ВІДКРИТИ БРАМУ</button>
+    <button class="modal-btn" id="gateKeyBtn" onclick="verifyGateKey()">✦ АКТИВУВАТИ КЛЮЧ</button>
   </div>
 </div>
 
@@ -1611,9 +1614,25 @@ async function runVisualize() {
   if (!furnitureBase64) { setStatus('⚠ Завантажте фото меблів', 'var(--gold)'); return; }
   if (!fabricBase64)    { setStatus('⚠ Оберіть або завантажте тканину', 'var(--gold)'); return; }
 
-  if (!getGoogleUser()) {
-    setStatus('⚠ Для ритуалу потрібен вхід через Google', 'var(--gold)');
+  const googleUser = getGoogleUser();
+  if (!googleUser) {
+    updateUsageHint();
     if (typeof netlifyIdentity !== 'undefined') netlifyIdentity.open('login');
+    return;
+  }
+
+  // Check access: active key or free uses remaining
+  const email = googleUser.email;
+  const activeKey = getActiveKey(email);
+  if (!activeKey) {
+    const freeUsed = getFreeUsed(email);
+    if (freeUsed >= FREE_GOOGLE_LIMIT) {
+      showRavenMessage();
+      return;
+    }
+  } else if (activeKey.remaining !== null && activeKey.remaining <= 0) {
+    clearActiveKey(email);
+    showRavenMessage();
     return;
   }
 
@@ -1641,7 +1660,14 @@ async function runVisualize() {
     try { data = await resp.json(); }
     catch (e) { throw new Error('Сервер недоступний. Спробуйте пізніше.'); }
     if (!resp.ok || !data.success) throw new Error(data.error || 'Помилка сервера');
-    // Update usage hint after generation
+    // Deduct usage
+    const activeKeyAfter = getActiveKey(email);
+    if (activeKeyAfter && activeKeyAfter.remaining !== null) {
+      activeKeyAfter.remaining--;
+      setActiveKey(email, activeKeyAfter);
+    } else if (!activeKeyAfter) {
+      setFreeUsed(email, getFreeUsed(email) + 1);
+    }
     updateUsageHint();
 
     lastB64  = data.imageBase64;
@@ -1770,22 +1796,24 @@ async function verifyGateKey() {
   const key = document.getElementById('gateKeyInput').value.trim().toUpperCase();
   const err = document.getElementById('shopError');
   const btn = document.getElementById('gateKeyBtn');
-  if (!key) { err.textContent = t('err_no_key'); return; }
+  if (!key) { err.textContent = 'Введіть ключ'; return; }
+  const googleUser = getGoogleUser();
+  if (!googleUser) { err.textContent = 'Спочатку увійдіть через Google'; return; }
   err.textContent = '⏳';
   if (btn) btn.disabled = true;
   try {
-    const res  = await fetch('/verify-key', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ key }) });
+    const res  = await fetch('/.netlify/functions/verify-key', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key })
+    });
     const data = await res.json();
-    if (!data.valid) { err.textContent = t('err_bad_key'); return; }
-    const name = data.name || ('Майстер ' + key.split('-')[0]);
-    sessionStorage.setItem(STORE('user'), name);
-    sessionStorage.setItem(STORE('key'),  key);
-    sessionStorage.setItem(STORE('remaining'), data.remaining === null ? '∞' : String(data.remaining ?? ''));
+    if (!data.valid) { err.textContent = '✕ Невірний ключ'; return; }
+    setActiveKey(googleUser.email, { key, type: data.type, name: data.name, remaining: data.remaining });
     closeModal('modalShop');
-    updateNavBadge();
-    setTimeout(openCabinet, 200);
+    updateUsageHint();
   } catch(e) {
-    err.textContent = t('err_network');
+    err.textContent = 'Помилка мережі. Спробуйте ще раз.';
   } finally {
     if (btn) btn.disabled = false;
   }
@@ -2358,7 +2386,25 @@ function toggleLang() {
 document.addEventListener('DOMContentLoaded', applyLang);
 
 // ── Netlify Identity / Google Auth ──
-const FREE_GOOGLE_LIMIT = 10;
+const FREE_GOOGLE_LIMIT = 3;
+const FREE_KEY_PREFIX   = 'mgc_free_';
+const ACTIVE_KEY_PREFIX = 'mgc_key_';
+
+function getFreeUsed(email)       { return parseInt(localStorage.getItem(FREE_KEY_PREFIX + email) || '0', 10); }
+function setFreeUsed(email, n)    { localStorage.setItem(FREE_KEY_PREFIX + email, String(n)); }
+function getActiveKey(email)      { try { return JSON.parse(localStorage.getItem(ACTIVE_KEY_PREFIX + email)); } catch(_) { return null; } }
+function setActiveKey(email, obj) { localStorage.setItem(ACTIVE_KEY_PREFIX + email, JSON.stringify(obj)); }
+function clearActiveKey(email)    { localStorage.removeItem(ACTIVE_KEY_PREFIX + email); }
+
+const RAVEN_MSG = `Відправ ворона за ключем 🐦‍⬛\n🔑 Silver Thread — 10 візуалізацій · 50 грн\n🔑 Golden Seam — 30 візуалізацій · 100 грн\nВорон живе внизу сторінки`;
+
+function showRavenMessage() {
+  const modal = document.getElementById('modalShop');
+  document.getElementById('shopError').textContent = '';
+  document.getElementById('gateKeyInput').value = '';
+  if (modal) modal.classList.add('open');
+  updateUsageHint();
+}
 
 function getGoogleUser() {
   if (typeof netlifyIdentity === 'undefined') return null;
@@ -2398,17 +2444,38 @@ function handleGoogleAuth() {
 function updateUsageHint() {
   const hint = document.getElementById('usageHint');
   if (!hint) return;
-  const masterKey = sessionStorage.getItem(STORE('key'));
-  if (masterKey) { hint.style.display = 'none'; return; }
   const googleUser = getGoogleUser();
-  if (googleUser) {
-    hint.textContent = '✦ Google-акаунт · до ' + FREE_GOOGLE_LIMIT + ' безкоштовних візуалізацій';
-    hint.style.display = 'block';
-  } else {
-    hint.textContent = '✦ Для генерації потрібен вхід через Google';
+  if (!googleUser) {
+    hint.textContent   = '✦ Для 3 безкоштовних генерацій потрібен вхід через Google';
     hint.style.display = 'block';
     hint.style.color   = 'var(--text-muted)';
+    return;
   }
+  const email     = googleUser.email;
+  const activeKey = getActiveKey(email);
+  if (activeKey) {
+    if (activeKey.remaining === null) {
+      hint.textContent = '✦ КЛЮЧ ОДІНА · БЕЗЛІМІТ ✦';
+      hint.style.color = 'var(--gold)';
+    } else if (activeKey.remaining > 0) {
+      hint.textContent = `✦ Залишилось ${activeKey.remaining} 🔑 ${activeKey.name}`;
+      hint.style.color = activeKey.remaining <= 3 ? '#e05555' : 'var(--text-muted)';
+    } else {
+      hint.textContent = '🐦‍⬛ Відправ ворона за ключем';
+      hint.style.color = '#e05555';
+    }
+    hint.style.display = 'block';
+    return;
+  }
+  const freeLeft = FREE_GOOGLE_LIMIT - getFreeUsed(email);
+  if (freeLeft > 0) {
+    hint.textContent   = `✦ Залишилось безкоштовних: ${freeLeft} з ${FREE_GOOGLE_LIMIT}`;
+    hint.style.color   = 'var(--text-muted)';
+  } else {
+    hint.textContent   = '🐦‍⬛ Відправ ворона за ключем';
+    hint.style.color   = '#e05555';
+  }
+  hint.style.display = 'block';
 }
 
 if (typeof netlifyIdentity !== 'undefined') {
