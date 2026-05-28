@@ -7,7 +7,7 @@ const MODELS = [
   'gemini-3.1-flash-image-preview',
 ];
 
-const PROMPT = `You are a professional high-end furniture retouching and material replacement AI.
+const PROMPT_BASE = `You are a professional high-end furniture retouching and material replacement AI.
 
 TASK:
 Replace the upholstery fabric on the furniture in IMAGE 1 using the fabric sample from IMAGE 2.
@@ -434,18 +434,25 @@ The final result must appear as the ORIGINAL IMAGE 1 photograph with ONLY the up
 
 No other visible changes are allowed.`;
 
-async function callGemini(apiKey, model, furnitureBase64, furnitureMime, fabricBase64, fabricMime) {
+function buildPrompt(imgWidth, imgHeight) {
+  const dimBlock = (imgWidth && imgHeight)
+    ? `\n\n━━━━━━━━━━━━━━━━━━\n# MANDATORY CANVAS DIMENSIONS\n━━━━━━━━━━━━━━━━━━\n\nIMAGE 1 is exactly ${imgWidth}×${imgHeight} pixels.\n\nYour output MUST be exactly ${imgWidth} pixels wide and ${imgHeight} pixels tall.\n\nDo NOT widen the image.\nDo NOT extend the canvas left or right.\nDo NOT add extra sofa sections.\nDo NOT change aspect ratio.\n\nOutput width: ${imgWidth}px. Output height: ${imgHeight}px. These are hard limits.`
+    : '';
+  return PROMPT_BASE + dimBlock;
+}
+
+async function callGemini(apiKey, model, furnitureBase64, furnitureMime, fabricBase64, fabricMime, imgWidth, imgHeight) {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
   const body = {
     contents: [{
       parts: [
-        { text: PROMPT },
+        { text: buildPrompt(imgWidth, imgHeight) },
         { inline_data: { mime_type: furnitureMime, data: furnitureBase64 } },
         { inline_data: { mime_type: fabricMime,    data: fabricBase64   } }
       ]
     }],
     generationConfig: {
-      temperature: 0.7,
+      temperature: 0.4,
       responseModalities: ['IMAGE', 'TEXT'],
       candidateCount: 1
     },
@@ -540,7 +547,7 @@ exports.handler = async (event) => {
   try { body = JSON.parse(event.body || '{}'); }
   catch (_) { return cors(400, { success: false, error: 'Invalid JSON' }); }
 
-  const { furnitureBase64, furnitureMime = 'image/jpeg', fabricBase64, fabricMime = 'image/jpeg' } = body;
+  const { furnitureBase64, furnitureMime = 'image/jpeg', fabricBase64, fabricMime = 'image/jpeg', imgWidth, imgHeight } = body;
   if (!furnitureBase64 || !fabricBase64) return cors(400, { success: false, error: 'Missing images' });
 
   // ── Try each model with backoff ──────────────────────────────────────────
@@ -548,7 +555,7 @@ exports.handler = async (event) => {
   for (const model of MODELS) {
     try {
       const result = await withBackoff(
-        () => callGemini(GEMINI_KEY, model, furnitureBase64, furnitureMime, fabricBase64, fabricMime),
+        () => callGemini(GEMINI_KEY, model, furnitureBase64, furnitureMime, fabricBase64, fabricMime, imgWidth, imgHeight),
         3,   // спроб
         1500 // базова затримка мс
       );

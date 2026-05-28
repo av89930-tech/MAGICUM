@@ -1589,6 +1589,15 @@ function compressImage(base64, mime, maxW = 800, maxH = 600, quality = 0.8) {
   });
 }
 
+function getImgDims(b64, mime) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => resolve({ w: img.naturalWidth, h: img.naturalHeight });
+    img.onerror = () => resolve({ w: 0, h: 0 });
+    img.src = `data:${mime};base64,${b64}`;
+  });
+}
+
 // ── Status ──
 function setStatus(msg, color = 'var(--text-muted)') {
   const el = document.getElementById('ritualStatus');
@@ -1636,6 +1645,9 @@ async function runVisualize() {
       compressImage(fabricBase64,    fabricMime,    1024, 1024, 0.85)
     ]);
 
+    // Виміряти точні розміри стиснутого фото для передачі Gemini
+    const { w: imgWidth, h: imgHeight } = await getImgDims(sendFurniture, 'image/jpeg');
+
     ritualShow(furnitureDataUrl, _ritualFabricColor);
 
     const _key   = sessionStorage.getItem(STORE('key')) || '';
@@ -1645,7 +1657,7 @@ async function runVisualize() {
     const resp = await fetch('/.netlify/functions/ritual', {
       method: 'POST',
       headers: _headers,
-      body: JSON.stringify({ furnitureBase64: sendFurniture, furnitureMime: 'image/jpeg', fabricBase64: sendFabric, fabricMime: 'image/jpeg', key: _key })
+      body: JSON.stringify({ furnitureBase64: sendFurniture, furnitureMime: 'image/jpeg', fabricBase64: sendFabric, fabricMime: 'image/jpeg', key: _key, imgWidth, imgHeight })
     });
     let data;
     try { data = await resp.json(); }
