@@ -2196,14 +2196,14 @@ function wizardRender() {
     body.innerHTML = `<div class="wizard-section-title">${escapeHTML(fabric.name)} · ${fabric.colors.length} кольорів</div>
       <div class="color-grid">
         ${fabric.colors.map(c => {
-          const swatch = c.image
-            ? `<div class="color-circle" style="background-image:url('/${escapeHTML(c.image)}');background-size:cover;background-position:center;border-radius:4px;width:44px;height:44px;border:2px solid rgba(255,255,255,0.15);box-shadow:0 2px 8px rgba(0,0,0,0.5);"></div>`
-            : `<div class="color-circle" style="background:${escapeHTML(c.hex)}"></div>`;
-          const label = c.article ? `${escapeHTML(c.article)} · ${escapeHTML(c.name)}` : escapeHTML(c.name);
-          return `<div class="color-swatch" onclick="wizardSelectColor('${escapeHTML(c.image||c.hex||'')}','${escapeHTML(c.code)}','${escapeHTML(c.name)}','${escapeHTML(fabric.name)}','${c.image?'img':'hex'}','${escapeHTML(c.article||'')}')">
-            ${swatch}
+          const bg = c.image
+            ? `background-image:url('/${escapeHTML(c.image)}');background-size:cover;background-position:center;`
+            : `background:${escapeHTML(c.hex||'#888')};`;
+          const label = c.article ? `${escapeHTML(c.article)}` : escapeHTML(c.code);
+          return `<div class="color-swatch" onclick="wizardPreviewColor('${escapeHTML(c.image||c.hex||'')}','${escapeHTML(c.code)}','${escapeHTML(c.name)}','${escapeHTML(fabric.name)}','${c.image?'img':'hex'}','${escapeHTML(c.article||'')}')">
+            <div style="${bg}width:44px;height:44px;border-radius:3px;border:1px solid rgba(255,255,255,0.15);box-shadow:0 2px 6px rgba(0,0,0,0.5);flex-shrink:0;"></div>
             <div class="color-code">${escapeHTML(c.code)}</div>
-            <div class="color-name">${label}</div>
+            <div class="color-name">${label} · ${escapeHTML(c.name)}</div>
           </div>`;
         }).join('')}
       </div>`;
@@ -2215,6 +2215,34 @@ function wizardRender() {
 function wizardSelectDealer(id)   { _wiz.dealer = id;   _wiz.step = 2; wizardRender(); }
 function wizardSelectCategory(id) { _wiz.category = id; _wiz.step = 3; wizardRender(); }
 function wizardSelectFabric(id)   { _wiz.fabric = id;   _wiz.step = 4; wizardRender(); }
+
+function wizardPreviewColor(value, code, colorName, fabricNameStr, type, article) {
+  const body = document.getElementById('wizardBody');
+  const dealer = _catalogData.dealers.find(d => d.id === _wiz.dealer);
+  const fullLabel = `${dealer.name} · ${fabricNameStr}${article ? ' ' + article : ''} — ${colorName}`;
+
+  const visual = type === 'img'
+    ? `<img src="/${escapeHTML(value)}" style="width:100%;height:50vw;max-height:240px;object-fit:cover;display:block;border:1px solid rgba(201,168,76,0.3);">`
+    : `<div style="width:100%;height:160px;background:${escapeHTML(value)};border:1px solid rgba(201,168,76,0.3);"></div>`;
+
+  body.innerHTML = `
+    <div style="text-align:center;">
+      <div style="font-size:9px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:10px;">Ваш вибір</div>
+      ${visual}
+      <div style="padding:14px 0 4px;font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--text-primary);letter-spacing:1px;">${escapeHTML(fabricNameStr)}</div>
+      <div style="font-size:11px;color:var(--text-muted);letter-spacing:2px;margin-bottom:4px;">${article ? article + ' · ' : ''}${escapeHTML(colorName)}</div>
+      <div style="font-size:10px;color:var(--gold);letter-spacing:2px;margin-bottom:20px;">${escapeHTML(code)}</div>
+      <button class="btn-visualize" style="font-size:11px;padding:14px;letter-spacing:3px;margin-bottom:8px;"
+        onclick="wizardSelectColor('${escapeHTML(value)}','${escapeHTML(code)}','${escapeHTML(colorName)}','${escapeHTML(fabricNameStr)}','${type}','${escapeHTML(article||'')}')">
+        ✦ ДОДАТИ ЦЮ ТКАНИНУ
+      </button>
+      <button style="width:100%;background:transparent;border:1px solid var(--border);color:var(--text-muted);padding:10px;font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.3s;"
+        onmouseenter="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'"
+        onmouseleave="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'"
+        onclick="_wiz.step=4;wizardRender()">← НАЗАД ДО КОЛЬОРІВ</button>
+    </div>`;
+  body.scrollTop = 0;
+}
 
 function wizardSelectColor(value, code, colorName, fabricNameStr, type, article) {
   const dealer = _catalogData.dealers.find(d => d.id === _wiz.dealer);
