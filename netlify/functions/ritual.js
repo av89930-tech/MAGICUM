@@ -400,12 +400,6 @@ Do NOT:
 - create new environment
 - stylize image
 - reinterpret composition
-- add watermarks
-- add text overlays
-- add logos
-- add copyright marks
-- add signatures
-- add any visible markings of any kind
 
 ━━━━━━━━━━━━━━━━━━
 # OUTPUT VALIDATION CHECKLIST
