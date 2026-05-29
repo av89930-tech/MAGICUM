@@ -1,5 +1,6 @@
 // ── MAGICUM · verify-key.js ─────────────────────────────────────────────────
-// Keys are stored ONLY in Netlify environment variables — never in code.
+// Keys are stored in CABINET_KEYS env var as JSON:
+// {"odin":"...","silver":[...],"golden":[...]}
 // ---------------------------------------------------------------------------
 
 function cors(statusCode, body) {
@@ -36,20 +37,23 @@ exports.handler = async (event) => {
   const key = (body.key || '').trim().toUpperCase();
   if (!key) return cors(400, { valid: false });
 
-  // Odin key — unlimited
-  const odinKey = (process.env.ODIN_KEY || '').trim().toUpperCase();
+  // Parse CABINET_KEYS (JSON format)
+  let vault = {};
+  try { vault = JSON.parse(process.env.CABINET_KEYS || '{}'); }
+  catch (_) { vault = {}; }
+
+  const odinKey    = (vault.odin    || '').trim().toUpperCase();
+  const silverKeys = (vault.silver  || []).map(k => k.trim().toUpperCase());
+  const goldenKeys = (vault.golden  || []).map(k => k.trim().toUpperCase());
+
   if (odinKey && key === odinKey) {
     return cors(200, { valid: true, type: 'odin', name: 'Ключ Одіна', remaining: null });
   }
 
-  // Silver Thread keys — 10 visualizations
-  const silverKeys = (process.env.SILVER_KEYS || '').split(',').map(k => k.trim().toUpperCase()).filter(Boolean);
   if (silverKeys.includes(key)) {
     return cors(200, { valid: true, type: 'silver', name: 'Silver Thread', remaining: 10 });
   }
 
-  // Golden Seam keys — 30 visualizations
-  const goldenKeys = (process.env.GOLDEN_KEYS || '').split(',').map(k => k.trim().toUpperCase()).filter(Boolean);
   if (goldenKeys.includes(key)) {
     return cors(200, { valid: true, type: 'golden', name: 'Golden Seam', remaining: 30 });
   }
