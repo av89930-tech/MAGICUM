@@ -549,9 +549,10 @@ exports.handler = async (event) => {
     try {
       const result = await withBackoff(
         () => callGemini(GEMINI_KEY, model, furnitureBase64, furnitureMime, fabricBase64, fabricMime),
-        3,   // спроб
-        1500 // базова затримка мс
+        3,
+        1500
       );
+      await sendTelegram(`✅ MAGICUM ritual OK\nМодель: ${model}`);
       return cors(200, { success: true, ...result });
     } catch (e) {
       errors.push(`[${model}]: ${e.message}`);
@@ -559,8 +560,7 @@ exports.handler = async (event) => {
   }
 
   // All models failed — notify via Telegram
-  const errMsg = `🔴 MAGICUM ritual FAILED\n${errors.join('\n')}`;
-  await sendTelegram(errMsg);
+  await sendTelegram(`🔴 MAGICUM ritual FAILED\n${errors.join('\n')}`);
 
   return cors(500, { success: false, error: 'Всі спроби вичерпано. Спробуйте за хвилину.' });
 };

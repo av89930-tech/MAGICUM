@@ -1626,8 +1626,8 @@ async function runVisualize() {
     const resultUrl = `data:${lastMime};base64,${lastB64}`;
     const afterImg = document.getElementById('afterImg');
 
-    const fittedUrl = furnitureDataUrl ? await fitToOriginalSize(resultUrl, furnitureDataUrl) : resultUrl;
-    afterImg.src = fittedUrl;
+
+    afterImg.src = resultUrl;
 
     const resultWrap = document.getElementById('resultWrap');
     resultWrap.style.display = 'block';
