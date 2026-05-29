@@ -222,11 +222,17 @@ Texture scale must remain physically realistic and proportional.
 
 IMAGE 2 is the master color reference.
 
+CRITICAL COLOR FIDELITY RULE:
+Strictly preserve the hue, saturation, and lightness of the fabric swatch in IMAGE 2.
+Do NOT apply automatic color balancing, saturation boosts, or exposure correction.
+Map the texture using ONLY the original ambient occlusion and lighting map from IMAGE 1.
+The fabric color in the output MUST match IMAGE 2 as closely as physically possible given the scene lighting.
+
 Required:
 - spectral color fidelity
-- identical hue
-- identical saturation
-- identical luminance
+- identical hue — measured against IMAGE 2
+- identical saturation — do not boost or reduce
+- identical lightness baseline — only modulated by inherited shadows from IMAGE 1
 - exact undertone preservation
 
 Lighting standard:
@@ -245,6 +251,8 @@ Forbidden:
 - warm tint
 - cool tint
 - desaturation
+- automatic color grading
+- automatic white balance adjustment on the fabric
 - oversaturation
 - gray wash
 - artificial contrast
@@ -555,23 +563,34 @@ exports.handler = async (event) => {
   if (!furnitureBase64 || !fabricBase64) return cors(400, { success: false, error: 'Missing images' });
 
   // ── Try each model with backoff ──────────────────────────────────────────
+  const ts = new Date().toISOString();
+  const furnitureSizeKB = Math.round(furnitureBase64.length * 0.75 / 1024);
+  const fabricSizeKB    = Math.round(fabricBase64.length    * 0.75 / 1024);
   const errors = [];
+
   for (const model of MODELS) {
+    const t0 = Date.now();
     try {
       const result = await withBackoff(
         () => callGemini(GEMINI_KEY, model, furnitureBase64, furnitureMime, fabricBase64, fabricMime),
         3,
         1500
       );
-      await sendTelegram(`✅ MAGICUM ritual OK\nМодель: ${model}`);
+      const elapsed = ((Date.now() - t0) / 1000).toFixed(1);
+      const resultSizeKB = Math.round((result.imageBase64 || '').length * 0.75 / 1024);
+      await sendTelegram(
+        `✅ MAGICUM OK · ${ts}\nМодель: ${model}\nЧас: ${elapsed}s\nВхід: меблі ${furnitureSizeKB}KB · тканина ${fabricSizeKB}KB\nРезультат: ${resultSizeKB}KB`
+      );
       return cors(200, { success: true, ...result });
     } catch (e) {
-      errors.push(`[${model}]: ${e.message}`);
+      errors.push(`[${model}] ${((Date.now() - t0)/1000).toFixed(1)}s: ${e.message}`);
     }
   }
 
   // All models failed — notify via Telegram
-  await sendTelegram(`🔴 MAGICUM ritual FAILED\n${errors.join('\n')}`);
+  await sendTelegram(
+    `🔴 MAGICUM FAILED · ${ts}\nВхід: меблі ${furnitureSizeKB}KB · тканина ${fabricSizeKB}KB\n${errors.join('\n')}`
+  );
 
   return cors(500, { success: false, error: 'Всі спроби вичерпано. Спробуйте за хвилину.' });
 };
