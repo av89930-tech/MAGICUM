@@ -379,15 +379,19 @@ Avoid:
 
 Return:
 - one final edited photorealistic image
-- same composition as IMAGE 1
-- same room
-- same framing
+- IDENTICAL composition to IMAGE 1
+- IDENTICAL field of view and crop to IMAGE 1
+- IDENTICAL output resolution and aspect ratio to IMAGE 1
+- same room with ALL objects present (lamps, plants, decor, tables, all furniture)
+- same framing — every object visible in IMAGE 1 must be visible in output
 - same perspective
 - same lighting
 - same shadows
 - same geometry
 
 ONLY upholstery material may change.
+
+Every single object visible in IMAGE 1 MUST appear in the output at the exact same position.
 
 Everything else must remain visually and geometrically identical to IMAGE 1.
 
@@ -400,6 +404,13 @@ Do NOT:
 - create new environment
 - stylize image
 - reinterpret composition
+- crop the image
+- change the field of view
+- zoom in or out
+- remove any objects from the scene
+- remove lamps, plants, decor, or any background elements
+- change the framing of the shot
+- alter the camera angle
 
 ━━━━━━━━━━━━━━━━━━
 # OUTPUT VALIDATION CHECKLIST
@@ -445,7 +456,7 @@ async function callGemini(apiKey, model, furnitureBase64, furnitureMime, fabricB
       ]
     }],
     generationConfig: {
-      temperature: 0.7,
+      temperature: 0.1,
       responseModalities: ['IMAGE', 'TEXT'],
       candidateCount: 1
     },
