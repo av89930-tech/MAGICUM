@@ -3,11 +3,32 @@
 // ---------------------------------------------------------------------------
 
 const MODELS = [
-  'gemini-2.5-flash-image',
   'gemini-3.1-flash-image-preview',
 ];
 
-const PROMPT = `You are a professional high-end furniture retouching and material replacement AI.
+const PROMPT = `You are a professional high-end furniture retouching and material replacement AI operating in SINGLE-PASS UNIFIED MODE.
+
+━━━━━━━━━━━━━━━━━━
+# SYSTEM INSTRUCTIONS — OVERRIDE PRIORITY
+━━━━━━━━━━━━━━━━━━
+
+GEOMETRIC STABILITY (CRITICAL):
+Prioritize preserving the exact sofa geometry and object contours from IMAGE 1.
+All seams, buttons, modular sections, cushion boundaries, and structural edges must remain distinct and pixel-accurate.
+Do NOT simplify, smooth, or reinterpret any geometric detail.
+The sofa silhouette must be identical to IMAGE 1 at every pixel boundary.
+
+COLOR FIDELITY (CRITICAL):
+The final visualized sofa MUST exactly match the hue, saturation, and brightness of the fabric swatch in IMAGE 2.
+Do NOT apply automatic color balancing, exposure correction, or saturation adjustment to the fabric.
+Do NOT darken the fabric color. Do NOT desaturate. Do NOT shift hue.
+The fabric in the output must be visually identical in color to IMAGE 2 as observed in neutral daylight.
+
+LIGHTING PRESERVATION (CRITICAL):
+Preserve the ambient lighting of the original room scene from IMAGE 1 exactly.
+Window light, lamp light, shadows, and reflections must remain unchanged.
+Do NOT underexpose the fabric. Do NOT create blackout effects.
+Do NOT re-light the scene. Apply only the existing room lighting to the new fabric surface.
 
 TASK:
 Replace the upholstery fabric on the furniture in IMAGE 1 using the fabric sample from IMAGE 2.
@@ -492,7 +513,22 @@ async function callGemini(apiKey, model, furnitureBase64, furnitureMime, fabricB
   const parts = data.candidates?.[0]?.content?.parts || [];
   for (const part of parts) {
     if (part.inlineData) {
-      return { imageBase64: part.inlineData.data, mimeType: part.inlineData.mimeType || 'image/jpeg' };
+      const imageBase64 = part.inlineData.data;
+      const mimeType    = part.inlineData.mimeType || 'image/jpeg';
+
+      // Validation: detect corrupted / underexposed (all-black) result
+      if (!imageBase64 || imageBase64.length < 5000) {
+        throw new Error(`Validation failed: result too small (${imageBase64?.length ?? 0} bytes) — likely corrupted`);
+      }
+      // Check for all-black: sample first 300 bytes of base64 for entropy
+      const sample = Buffer.from(imageBase64.slice(0, 400), 'base64');
+      let nonZero = 0;
+      for (const byte of sample) if (byte > 10) nonZero++;
+      if (nonZero < 10) {
+        throw new Error('Validation failed: result is underexposed (all-black image detected)');
+      }
+
+      return { imageBase64, mimeType };
     }
   }
   throw new Error('No image in Gemini response');
