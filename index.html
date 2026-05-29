@@ -292,7 +292,7 @@ nav {
   border: 1px solid var(--border);
 }
 .result-img-container #afterImg {
-  display: block; width: 100%; height: auto; object-fit: contain;
+  display: block; width: 100%; height: auto;
 }
 
 #resultWatermark {
@@ -1650,8 +1650,7 @@ async function runVisualize() {
     const resultUrl = `data:${lastMime};base64,${lastB64}`;
     const afterImg = document.getElementById('afterImg');
 
-    const fittedUrl = furnitureDataUrl ? await fitToOriginalSize(resultUrl, furnitureDataUrl) : resultUrl;
-    afterImg.src = fittedUrl;
+    afterImg.src = resultUrl;
 
     const resultWrap = document.getElementById('resultWrap');
     resultWrap.style.display = 'block';
