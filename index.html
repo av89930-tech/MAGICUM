@@ -191,7 +191,7 @@ nav {
 .right-col { display: none; }
 
 /* Upload cards */
-.upload-area { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.upload-area { display: flex; flex-direction: column; gap: 8px; }
 .upload-card {
   background: var(--bg-card); border: 1px solid var(--border);
   padding: 12px; cursor: pointer; transition: all 0.3s;
@@ -212,10 +212,10 @@ nav {
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
 .card-preview {
-  width: 100%; aspect-ratio: 1;
+  width: 100%; aspect-ratio: 4/3;
   background: var(--bg-panel); border: 1px dashed rgba(201,168,76,0.2);
   overflow: hidden; display: flex; align-items: center; justify-content: center;
-  background-size: cover; background-position: center;
+  background-size: contain; background-position: center; background-repeat: no-repeat;
 }
 .card-preview img { width: 100%; height: 100%; object-fit: contain; background: var(--bg-panel); display: block; }
 .card-preview-empty {
@@ -247,6 +247,12 @@ nav {
 }
 .btn-visualize:hover:not(:disabled) { box-shadow: 0 0 80px rgba(201,168,76,0.7); transform: translateY(-3px); }
 .btn-visualize:disabled { opacity: 0.65; cursor: wait; }
+.btn-visualize-wrap {
+  position: sticky; bottom: 0; z-index: 50;
+  background: linear-gradient(to top, var(--bg-dark) 75%, transparent);
+  padding: 14px 0 8px; margin: 0 -4vw;
+  padding-left: 4vw; padding-right: 4vw;
+}
 
 #ritualStatus {
   margin-top: 12px; font-size: 11px; letter-spacing: 2px;
@@ -288,12 +294,11 @@ nav {
 
 /* ── RESULT IMAGE ── */
 .result-img-container {
-  position: relative; width: 100%; overflow: hidden;
+  position: relative; width: 100%;
   border: 1px solid var(--border);
-  aspect-ratio: 4/3;
 }
 .result-img-container #afterImg {
-  display: block; width: 100%; height: 100%; object-fit: cover;
+  display: block; width: 100%; height: auto;
 }
 
 #resultWatermark {
@@ -881,14 +886,14 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
 
       <button class="btn-catalog" onclick="openFabricWizard()">✦ Каталог тканин дилерів</button>
 
-      <div style="text-align:center;">
+      <div class="btn-visualize-wrap">
         <button class="btn-visualize" id="generateBtn" onclick="runVisualize()">
           <span>✦</span><span id="btnText">ПРОЯВИТИ ОБРАЗ</span>
         </button>
         <div id="usageHint" style="display:none;font-size:10px;letter-spacing:2px;text-align:center;margin-top:8px;color:var(--text-muted);"></div>
-        <div id="ritualStatus"></div>
-        <div id="workspaceEnd"></div>
       </div>
+      <div id="ritualStatus" style="text-align:center;"></div>
+      <div id="workspaceEnd"></div>
     </div>
 
     <!-- ПРАВА: каталог тканин -->
@@ -1410,6 +1415,11 @@ function loadFabricFromUrl(url, name) {
   const img = document.getElementById('fabric-img');
   img.crossOrigin = 'anonymous';
   img.onload = () => {
+    // Показуємо превью тканини
+    img.style.display = 'block';
+    const em = document.getElementById('fabric-empty');
+    if (em) em.style.display = 'none';
+    document.getElementById('fabric-preview').style.backgroundImage = 'none';
     try {
       const canvas = document.createElement('canvas');
       canvas.width = img.naturalWidth; canvas.height = img.naturalHeight;
@@ -1426,8 +1436,28 @@ function loadFabricFromUrl(url, name) {
       fabricMime   = 'image/jpeg';
       fabricName   = name;
     } catch(e) {
+      // CORS заблокував canvas — пробуємо через fetch як blob
       fabricBase64 = null;
+      fetch(url)
+        .then(r => r.blob())
+        .then(blob => {
+          const reader = new FileReader();
+          reader.onload = ev => {
+            const full = ev.target.result;
+            fabricBase64 = full.split(',')[1];
+            fabricMime   = blob.type || 'image/jpeg';
+            fabricName   = name;
+          };
+          reader.readAsDataURL(blob);
+        })
+        .catch(() => {
+          setStatus('⚠ Не вдалось завантажити тканину з каталогу. Завантажте своє фото.', 'var(--gold)');
+        });
     }
+  };
+  img.onerror = () => {
+    fabricBase64 = null;
+    setStatus('⚠ Не вдалось завантажити тканину з каталогу. Завантажте своє фото.', 'var(--gold)');
   };
   img.src = url;
 }
@@ -1454,6 +1484,7 @@ function handleUpload(type, input) {
       img.src = full; img.style.display = 'block';
       const em = document.getElementById('photo-empty');
       if (em) em.style.display = 'none';
+      document.getElementById('photo-preview').style.backgroundImage = 'none';
     } else {
       fabricBase64 = b64; fabricMime = mime;
       fabricName   = file.name.replace(/\.[^/.]+$/, '') || 'тканина';
@@ -1461,6 +1492,7 @@ function handleUpload(type, input) {
       img.src = full; img.style.display = 'block';
       const em = document.getElementById('fabric-empty');
       if (em) em.style.display = 'none';
+      document.getElementById('fabric-preview').style.backgroundImage = 'none';
       document.querySelectorAll('.catalog-item').forEach(i => i.classList.remove('selected'));
       // Витягуємо домінантний колір для ритуалу
       const _ci = new Image(); _ci.onload = () => {
@@ -1484,11 +1516,9 @@ function fitToOriginalSize(resultDataUrl, originalDataUrl) {
     orig.onload = () => {
       const res = new Image();
       res.onload = () => {
-        const c = document.createElement('canvas');
-        c.width  = orig.naturalWidth;
-        c.height = orig.naturalHeight;
-        c.getContext('2d').drawImage(res, 0, 0, c.width, c.height);
-        resolve(c.toDataURL('image/jpeg', 0.92));
+        // Повертаємо результат як є — без масштабування до розмірів оригіналу,
+        // щоб не розтягувати зображення Gemini
+        resolve(resultDataUrl);
       };
       res.src = resultDataUrl;
     };
@@ -1625,7 +1655,6 @@ async function runVisualize() {
 
     const resultUrl = `data:${lastMime};base64,${lastB64}`;
     const afterImg = document.getElementById('afterImg');
-
 
     afterImg.src = resultUrl;
 
@@ -2240,6 +2269,7 @@ function wizardSelectColor(value, code, colorName, fabricNameStr, type, article)
 
     const previewImg = document.getElementById('fabric-img');
     previewImg.src = '/' + value; previewImg.style.display = 'block';
+    document.getElementById('fabric-preview').style.backgroundImage = 'none';
   } else {
     _ritualFabricColor = value;
     const canvas = document.createElement('canvas');
@@ -2253,6 +2283,7 @@ function wizardSelectColor(value, code, colorName, fabricNameStr, type, article)
     fabricBase64 = dataUrl.split(',')[1]; fabricMime = 'image/jpeg';
     const previewImg = document.getElementById('fabric-img');
     previewImg.src = dataUrl; previewImg.style.display = 'block';
+    document.getElementById('fabric-preview').style.backgroundImage = 'none';
   }
 
   fabricName = fullName;
@@ -2681,6 +2712,8 @@ async function handleB2BForm(e) {
 
   </div>
 </div>
+
+
 
 
 </body>
