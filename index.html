@@ -40,7 +40,7 @@
   --border: rgba(201,168,76,0.2);
 }
 
-html { scroll-behavior: smooth; background: #000; scroll-snap-type: y proximity; }
+html { scroll-behavior: smooth; background: #000; scroll-snap-type: y mandatory; }
 
 body {
   background: var(--bg-dark);
@@ -418,6 +418,7 @@ nav > * { box-sizing: border-box; }
 .sp-section {
   padding: 0 8px 40px;
   border-top: 1px solid var(--border);
+  scroll-snap-align: start;
 }
 .sp-eyebrow {
   text-align: center; font-size: 10px; letter-spacing: 4px;
