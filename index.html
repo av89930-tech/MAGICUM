@@ -2646,7 +2646,9 @@ function downloadOdinLb() {
   const img = document.getElementById('odinLbImg');
   const a = document.createElement('a');
   a.href = img.src;
-  a.download = 'magicum-visualization.jpg';
+  const n = (parseInt(localStorage.getItem('mgc_dl_count') || '0', 10)) + 1;
+  localStorage.setItem('mgc_dl_count', String(n));
+  a.download = n === 1 ? 'magicum-visualization.jpg' : `magicum-visualization${n}.jpg`;
   a.click();
 }
 </script>
