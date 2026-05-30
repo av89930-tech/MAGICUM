@@ -196,7 +196,7 @@ nav > * { box-sizing: border-box; }
 .right-col { display: none; }
 
 /* Upload cards */
-.upload-area { display: flex; flex-direction: column; gap: 8px; }
+.upload-area { display: flex; flex-direction: column; gap: 4px; }
 .upload-card {
   background: var(--bg-card); border: 1px solid var(--border);
   padding: 12px; cursor: pointer; transition: all 0.3s;
@@ -241,7 +241,7 @@ nav > * { box-sizing: border-box; }
 /* Visualize button */
 .btn-visualize {
   display: inline-flex; align-items: center; gap: 14px;
-  padding: 18px 20px; width: 100%; justify-content: center;
+  padding: 12px 20px; width: 100%; justify-content: center;
   background: linear-gradient(135deg, #b8922a, #c9a84c, #e8c97a, #c9a84c, #b8922a);
   background-size: 200% auto;
   color: var(--bg-dark); font-family: 'Montserrat', sans-serif;
@@ -846,9 +846,9 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
 
 <!-- WORKSPACE -->
 <section id="workspace">
-  <div style="text-align:center;padding:8px 0 8px;position:relative">
+  <div style="text-align:center;padding:2px 0 2px;position:relative">
     <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(34px,9vw,48px);font-weight:300;font-style:italic;color:var(--text-primary);letter-spacing:3px;line-height:1;margin:0">Магічна лабораторія</h2>
-    <div style="width:60px;height:1px;background:linear-gradient(to right,transparent,var(--gold),transparent);margin:12px auto 0"></div>
+    <div style="width:60px;height:1px;background:linear-gradient(to right,transparent,var(--gold),transparent);margin:4px auto 0"></div>
   </div>
   <div class="workspace-grid">
 
@@ -894,7 +894,7 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
         <button class="btn-visualize" id="generateBtn" onclick="runVisualize()">
           <span>✦</span><span id="btnText">ПОЧАТИ МАГІЮ</span>
         </button>
-        <div id="usageHint" style="display:none;font-size:10px;letter-spacing:2px;text-align:center;margin-top:8px;color:var(--text-muted);"></div>
+        <div id="usageHint" style="display:none;font-size:10px;letter-spacing:2px;text-align:center;margin-top:4px;color:var(--text-muted);"></div>
       </div>
       <div id="ritualStatus" style="text-align:center;"></div>
       <div id="workspaceEnd"></div>
