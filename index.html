@@ -253,10 +253,9 @@ nav > * { box-sizing: border-box; }
 .btn-visualize:hover:not(:disabled) { box-shadow: 0 0 80px rgba(201,168,76,0.7); transform: translateY(-3px); }
 .btn-visualize:disabled { opacity: 0.65; cursor: wait; }
 .btn-visualize-wrap {
-  position: sticky; bottom: 0; z-index: 50;
+  position: fixed; bottom: 0; left: 8px; right: 8px; z-index: 50;
   background: linear-gradient(to top, var(--bg-dark) 75%, transparent);
-  padding: 14px 0 8px; margin: 0 -8px;
-  padding-left: 8px; padding-right: 8px;
+  padding: 14px 0 8px;
 }
 
 #ritualStatus {
@@ -891,7 +890,7 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
 
       <div class="btn-visualize-wrap">
         <button class="btn-visualize" id="generateBtn" onclick="runVisualize()">
-          <span>✦</span><span id="btnText">ПРОЯВИТИ ОБРАЗ</span>
+          <span>✦</span><span id="btnText">ПОЧАТИ МАГІЮ</span>
         </button>
         <div id="usageHint" style="display:none;font-size:10px;letter-spacing:2px;text-align:center;margin-top:8px;color:var(--text-muted);"></div>
       </div>
@@ -1550,7 +1549,7 @@ function setStatus(msg, color = 'var(--text-muted)') {
 function setBtnState(loading) {
   const btn = document.getElementById('generateBtn');
   btn.disabled = loading;
-  document.getElementById('btnText').textContent = loading ? 'РИТУАЛ ТРИВАЄ...' : 'ПРОЯВИТИ ОБРАЗ';
+  document.getElementById('btnText').textContent = loading ? 'РИТУАЛ ТРИВАЄ...' : 'ПОЧАТИ МАГІЮ';
 }
 
 // ── Main ritual ──
