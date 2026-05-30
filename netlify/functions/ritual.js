@@ -19,6 +19,13 @@ All seams, buttons, modular sections, cushion boundaries, and structural edges m
 Do NOT simplify, smooth, or reinterpret any geometric detail.
 The sofa silhouette must be identical to IMAGE 1 at every pixel boundary.
 
+POSITION LOCK (CRITICAL):
+The sofa MUST remain at the EXACT same position in the frame as in IMAGE 1.
+Do NOT shift the sofa left, right, up, or down by even a single pixel.
+The sofa's left edge, right edge, top edge, and bottom edge must align pixel-perfectly with IMAGE 1.
+Do NOT re-center, re-crop, or reframe the sofa.
+The output image must be a pixel-accurate overlay of IMAGE 1 with ONLY the fabric texture changed.
+
 COLOR FIDELITY (CRITICAL):
 The final visualized sofa MUST exactly match the hue, saturation, and brightness of the fabric swatch in IMAGE 2.
 Do NOT apply automatic color balancing, exposure correction, or saturation adjustment to the fabric.
