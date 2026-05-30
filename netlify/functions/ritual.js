@@ -2,10 +2,7 @@
 // Gemini image generation with exponential backoff + Telegram error alerts
 // ---------------------------------------------------------------------------
 
-const MODELS = [
-  // 'gemini-2.5-flash-image', // on pause
-  'gemini-3.1-flash-image-preview',
-];
+const MODEL = 'gemini-3.1-flash-image';
 
 const PROMPT = `You are a professional high-end furniture retouching and material replacement AI operating in SINGLE-PASS UNIFIED MODE.
 
@@ -595,35 +592,29 @@ exports.handler = async (event) => {
   const { furnitureBase64, furnitureMime = 'image/jpeg', fabricBase64, fabricMime = 'image/jpeg' } = body;
   if (!furnitureBase64 || !fabricBase64) return cors(400, { success: false, error: 'Missing images' });
 
-  // ── Try each model with backoff ──────────────────────────────────────────
+  // ── Call model with backoff ──────────────────────────────────────────────
   const ts = new Date().toLocaleString('uk-UA', { timeZone: 'Europe/Kyiv', hour12: false }).replace(',', '');
   const furnitureSizeKB = Math.round(furnitureBase64.length * 0.75 / 1024);
   const fabricSizeKB    = Math.round(fabricBase64.length    * 0.75 / 1024);
-  const errors = [];
+  const t0 = Date.now();
 
-  for (const model of MODELS) {
-    const t0 = Date.now();
-    try {
-      const result = await withBackoff(
-        () => callGemini(GEMINI_KEY, model, furnitureBase64, furnitureMime, fabricBase64, fabricMime),
-        3,
-        1500
-      );
-      const elapsed = ((Date.now() - t0) / 1000).toFixed(1);
-      const resultSizeKB = Math.round((result.imageBase64 || '').length * 0.75 / 1024);
-      await sendTelegram(
-        `✅ MAGICUM OK · ${ts}\nМодель: ${model}\nЧас: ${elapsed}s\nВхід: меблі ${furnitureSizeKB}KB · тканина ${fabricSizeKB}KB\nРезультат: ${resultSizeKB}KB`
-      );
-      return cors(200, { success: true, ...result });
-    } catch (e) {
-      errors.push(`[${model}] ${((Date.now() - t0)/1000).toFixed(1)}s: ${e.message}`);
-    }
+  try {
+    const result = await withBackoff(
+      () => callGemini(GEMINI_KEY, MODEL, furnitureBase64, furnitureMime, fabricBase64, fabricMime),
+      3,
+      1500
+    );
+    const elapsed = ((Date.now() - t0) / 1000).toFixed(1);
+    const resultSizeKB = Math.round((result.imageBase64 || '').length * 0.75 / 1024);
+    await sendTelegram(
+      `✅ MAGICUM OK · ${ts}\nМодель: ${MODEL}\nЧас: ${elapsed}s\nВхід: меблі ${furnitureSizeKB}KB · тканина ${fabricSizeKB}KB\nРезультат: ${resultSizeKB}KB`
+    );
+    return cors(200, { success: true, ...result });
+  } catch (e) {
+    const elapsed = ((Date.now() - t0) / 1000).toFixed(1);
+    await sendTelegram(
+      `🔴 MAGICUM FAILED · ${ts}\nМодель: ${MODEL}\nЧас: ${elapsed}s\nВхід: меблі ${furnitureSizeKB}KB · тканина ${fabricSizeKB}KB\nПомилка: ${e.message}`
+    );
+    return cors(500, { success: false, error: 'Сервер недоступний. Спробуйте пізніше.' });
   }
-
-  // All models failed — notify via Telegram
-  await sendTelegram(
-    `🔴 MAGICUM FAILED · ${ts}\nВхід: меблі ${furnitureSizeKB}KB · тканина ${fabricSizeKB}KB\n${errors.join('\n')}`
-  );
-
-  return cors(500, { success: false, error: 'Всі спроби вичерпано. Спробуйте за хвилину.' });
 };
