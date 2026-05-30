@@ -589,7 +589,7 @@ exports.handler = async (event) => {
   if (!furnitureBase64 || !fabricBase64) return cors(400, { success: false, error: 'Missing images' });
 
   // ── Try each model with backoff ──────────────────────────────────────────
-  const ts = new Date().toISOString();
+  const ts = new Date().toLocaleString('uk-UA', { timeZone: 'Europe/Kyiv', hour12: false }).replace(',', '');
   const furnitureSizeKB = Math.round(furnitureBase64.length * 0.75 / 1024);
   const fabricSizeKB    = Math.round(fabricBase64.length    * 0.75 / 1024);
   const errors = [];
