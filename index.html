@@ -221,8 +221,7 @@ nav > * { box-sizing: border-box; }
   background: var(--bg-card); border: 1px dashed rgba(201,168,76,0.2);
   overflow: hidden; display: flex; align-items: center; justify-content: center;
 }
-.card-preview.has-image { aspect-ratio: unset; display: block; }
-.card-preview img { width: 100%; height: auto; display: block; }
+.card-preview img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .card-preview-empty {
   font-size: 10px; color: var(--text-muted); letter-spacing: 2px;
   text-align: center; padding: 12px;
