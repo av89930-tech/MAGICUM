@@ -13,3 +13,13 @@
   from = "/api/*"
   to   = "/.netlify/functions/:splat"
   status = 200
+
+[[redirects]]
+  from = "/case-save"
+  to   = "/.netlify/functions/case-save"
+  status = 200
+
+[[redirects]]
+  from = "/case/*"
+  to   = "/.netlify/functions/case-view"
+  status = 200
