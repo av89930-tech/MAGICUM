@@ -57,7 +57,11 @@ exports.handler = async (event) => {
   };
 
   try {
-    const store = getStore('cases');
+    const store = getStore({
+      name: 'cases',
+      siteID: process.env.NETLIFY_SITE_ID,
+      token: process.env.NETLIFY_TOKEN,
+    });
     await store.setJSON(id, caseData);
     return cors(200, { success: true, url: `/case/${id}` });
   } catch (e) {
