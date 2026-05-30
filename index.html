@@ -61,7 +61,7 @@ body {
 nav {
   position: absolute;
   top: 30px;
-  left: 30px; right: 30px;
+  left: 8px; right: 8px;
   z-index: 10;
   display: flex; align-items: stretch; overflow: hidden;
   border: 1px solid var(--border);
@@ -108,7 +108,7 @@ nav > * { box-sizing: border-box; }
   position: relative; height: 100dvh; overflow: hidden;
   display: flex; flex-direction: column;
   justify-content: space-between; align-items: center;
-  padding: 70px 30px 32px; overflow: hidden; text-align: center;
+  padding: 70px 8px 32px; overflow: hidden; text-align: center;
 }
 .hero-bg {
   position: absolute; inset: 0; z-index: 0;
@@ -186,7 +186,7 @@ nav > * { box-sizing: border-box; }
 .btn-b2b:hover { border-color: var(--gold); color: var(--gold); }
 
 /* ── WORKSPACE ── */
-#workspace { padding: 16px 4vw 20px; position: relative; z-index: 1; }
+#workspace { padding: 16px 8px 20px; position: relative; z-index: 1; }
 
 .workspace-grid {
   display: grid; grid-template-columns: 1fr;
@@ -255,8 +255,8 @@ nav > * { box-sizing: border-box; }
 .btn-visualize-wrap {
   position: sticky; bottom: 0; z-index: 50;
   background: linear-gradient(to top, var(--bg-dark) 75%, transparent);
-  padding: 14px 0 8px; margin: 0 -4vw;
-  padding-left: 4vw; padding-right: 4vw;
+  padding: 14px 0 8px; margin: 0 -8px;
+  padding-left: 8px; padding-right: 8px;
 }
 
 #ritualStatus {
@@ -367,7 +367,7 @@ nav > * { box-sizing: border-box; }
 
 /* ── SOCIAL PROOF ── */
 .sp-section {
-  padding: 48px 6vw 40px;
+  padding: 48px 8px 40px;
   border-top: 1px solid var(--border);
 }
 .sp-eyebrow {
@@ -493,7 +493,7 @@ nav > * { box-sizing: border-box; }
 
 /* ── FOOTER ── */
 footer {
-  border-top: 1px solid var(--border); padding: 24px 6vw;
+  border-top: 1px solid var(--border); padding: 24px 8px;
   display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;
 }
 footer p { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--text-muted); }
