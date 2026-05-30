@@ -1621,11 +1621,6 @@ async function runVisualize() {
   setStatus('', '');
 
   try {
-    const [sendFurniture, sendFabric] = await Promise.all([
-      compressImage(furnitureBase64, furnitureMime, 1024, 1024, 0.85),
-      compressImage(fabricBase64,    fabricMime,    1024, 1024, 0.85)
-    ]);
-
     ritualShow(furnitureDataUrl, _ritualFabricColor);
 
     const _key   = sessionStorage.getItem(STORE('key')) || '';
@@ -1635,7 +1630,7 @@ async function runVisualize() {
     const resp = await fetch('/.netlify/functions/ritual', {
       method: 'POST',
       headers: _headers,
-      body: JSON.stringify({ furnitureBase64: sendFurniture, furnitureMime: 'image/jpeg', fabricBase64: sendFabric, fabricMime: 'image/jpeg', key: _key })
+      body: JSON.stringify({ furnitureBase64, furnitureMime, fabricBase64, fabricMime, key: _key })
     });
     let data;
     try { data = await resp.json(); }
