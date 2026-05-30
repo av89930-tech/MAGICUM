@@ -59,28 +59,31 @@ body {
 
 /* ── NAV ── */
 nav {
-  position: absolute; top: 0; left: 0; right: 0; z-index: 10;
+  position: absolute;
+  top: max(12px, env(safe-area-inset-top));
+  left: 16px; right: 16px;
+  z-index: 10;
   display: flex; align-items: stretch; overflow: hidden;
-  margin: max(12px, env(safe-area-inset-top)) 16px 0;
   border: 1px solid var(--border);
   height: 36px;
+  box-sizing: border-box;
 }
+nav > * { box-sizing: border-box; }
 .nav-lang {
   font-size: 11px; letter-spacing: 2px; color: var(--gold);
-  border-left: 1px solid var(--border); padding: 0 14px;
-  cursor: pointer; transition: all 0.3s;
+  border: none; border-left: 1px solid var(--border); padding: 0 14px;
+  cursor: pointer; transition: all 0.3s; background: transparent;
   display: flex; align-items: center; justify-content: center;
 }
 .nav-lang:hover { background: var(--gold); color: var(--bg-dark); }
 .nav-google {
   font-size: 10px; letter-spacing: 1px; color: var(--text-muted);
-  border-left: 1px solid var(--border); padding: 0 12px;
+  border: none; border-left: 1px solid var(--border); padding: 0 12px;
   cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 6px;
   background: transparent; font-family: 'Montserrat', sans-serif;
 }
 .nav-google:hover { color: var(--gold); }
 .nav-google.signed-in { color: var(--gold); }
-nav > button, nav > div { background: transparent; }
 .nav-google svg { width:14px; height:14px; flex-shrink:0; }
 
 .btn-shop {
