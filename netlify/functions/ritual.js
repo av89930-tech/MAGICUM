@@ -476,52 +476,41 @@ The final result must appear as the ORIGINAL IMAGE 1 photograph with ONLY the up
 No other visible changes are allowed.`;
 
 async function callGemini(apiKey, model, furnitureBase64, furnitureMime, fabricBase64, fabricMime) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-  const body = {
+  const { GoogleGenAI } = await import('@google/genai');
+  const ai = new GoogleGenAI({ apiKey });
+
+  const response = await ai.models.generateContent({
+    model,
     contents: [{
+      role: 'user',
       parts: [
         { text: PROMPT },
-        { inline_data: { mime_type: furnitureMime, data: furnitureBase64 } },
-        { inline_data: { mime_type: fabricMime,    data: fabricBase64   } }
+        { inlineData: { mimeType: furnitureMime, data: furnitureBase64 } },
+        { inlineData: { mimeType: fabricMime,    data: fabricBase64   } }
       ]
     }],
-    generationConfig: {
+    config: {
       temperature: 0.1,
       responseModalities: ['IMAGE', 'TEXT'],
-      candidateCount: 1
-    },
-    safetySettings: [
-      { category: 'HARM_CATEGORY_HARASSMENT',        threshold: 'BLOCK_NONE' },
-      { category: 'HARM_CATEGORY_HATE_SPEECH',       threshold: 'BLOCK_NONE' },
-      { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
-      { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' }
-    ]
-  };
-
-  const resp = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-    signal: AbortSignal.timeout(90_000)
+      candidateCount: 1,
+      safetySettings: [
+        { category: 'HARM_CATEGORY_HARASSMENT',        threshold: 'BLOCK_NONE' },
+        { category: 'HARM_CATEGORY_HATE_SPEECH',       threshold: 'BLOCK_NONE' },
+        { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
+        { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' }
+      ]
+    }
   });
 
-  if (!resp.ok) {
-    const err = await resp.json().catch(() => ({}));
-    throw new Error(err.error?.message || `HTTP ${resp.status}`);
-  }
-
-  const data = await resp.json();
-  const parts = data.candidates?.[0]?.content?.parts || [];
+  const parts = response.candidates?.[0]?.content?.parts || [];
   for (const part of parts) {
     if (part.inlineData) {
       const imageBase64 = part.inlineData.data;
       const mimeType    = part.inlineData.mimeType || 'image/jpeg';
 
-      // Validation: detect corrupted / underexposed (all-black) result
       if (!imageBase64 || imageBase64.length < 5000) {
         throw new Error(`Validation failed: result too small (${imageBase64?.length ?? 0} bytes) — likely corrupted`);
       }
-      // Check for all-black: sample first 300 bytes of base64 for entropy
       const sample = Buffer.from(imageBase64.slice(0, 400), 'base64');
       let nonZero = 0;
       for (const byte of sample) if (byte > 10) nonZero++;
