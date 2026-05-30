@@ -3,7 +3,7 @@
 // ---------------------------------------------------------------------------
 
 const MODELS = [
-  'gemini-2.5-flash-image',
+  // 'gemini-2.5-flash-image', // on pause
   'gemini-3.1-flash-image-preview',
 ];
 
