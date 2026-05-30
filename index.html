@@ -310,6 +310,51 @@ nav > * { box-sizing: border-box; }
   display: block; width: 100%; height: auto;
 }
 
+/* ── ODIN EXPAND BUTTON ── */
+#odinExpandBtn {
+  display: none;
+  position: absolute; top: 8px; right: 8px; z-index: 10;
+  width: 32px; height: 32px;
+  background: rgba(14,14,14,0.75);
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font-size: 16px; line-height: 1;
+  cursor: pointer;
+  align-items: center; justify-content: center;
+  transition: background .2s;
+}
+#odinExpandBtn:hover { background: rgba(201,168,76,0.18); }
+.odin-active #odinExpandBtn { display: flex; }
+
+/* ── ODIN LIGHTBOX ── */
+#odinLightbox {
+  display: none;
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(0,0,0,0.93);
+  align-items: center; justify-content: center;
+  flex-direction: column;
+}
+#odinLightbox.open { display: flex; }
+#odinLightbox img {
+  max-width: 96vw; max-height: 88vh;
+  object-fit: contain;
+  border: 1px solid rgba(201,168,76,0.3);
+}
+.odin-lb-actions {
+  display: flex; gap: 12px; margin-top: 14px;
+}
+.odin-lb-btn {
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px; letter-spacing: 2px;
+  padding: 8px 20px; cursor: pointer;
+  text-transform: uppercase;
+  transition: background .2s;
+}
+.odin-lb-btn:hover { background: rgba(201,168,76,0.15); }
+
 #resultWatermark {
   position: absolute;
   font-family: 'Cormorant Garamond', serif;
@@ -939,9 +984,19 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
 
   <!-- RESULT -->
   <div class="result-wrap" id="resultWrap" style="display:none">
-    <div class="result-img-container">
+    <div class="result-img-container" id="resultImgContainer">
       <img id="afterImg" alt="Результат">
       <div id="resultWatermark"></div>
+      <button id="odinExpandBtn" onclick="openOdinLightbox()" title="Розгорнути">⛶</button>
+    </div>
+  </div>
+
+  <!-- ODIN LIGHTBOX -->
+  <div id="odinLightbox" onclick="closeOdinLightboxOutside(event)">
+    <img id="odinLbImg" src="" alt="Результат повний розмір">
+    <div class="odin-lb-actions">
+      <button class="odin-lb-btn" onclick="downloadOdinLb()">↓ Завантажити</button>
+      <button class="odin-lb-btn" onclick="closeOdinLightbox()">✕ Закрити</button>
     </div>
   </div>
 
@@ -1621,6 +1676,7 @@ async function runVisualize() {
 
     const resultWrap = document.getElementById('resultWrap');
     resultWrap.style.display = 'block';
+    updateOdinExpandBtn();
 
     document.getElementById('saveArea').style.display = 'block';
     document.getElementById('saveStatus').innerHTML = '';
@@ -1746,6 +1802,7 @@ async function verifyGateKey() {
     setActiveKey(googleUser.email, { key, type: data.type, name: data.name, remaining: data.remaining });
     closeModal('modalShop');
     updateUsageHint();
+    updateOdinExpandBtn();
   } catch(e) {
     err.textContent = 'Помилка мережі. Спробуйте ще раз.';
   } finally {
@@ -1958,7 +2015,10 @@ document.querySelectorAll('.modal-overlay').forEach(o =>
   o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); })
 );
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(o => o.classList.remove('open'));
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal-overlay.open').forEach(o => o.classList.remove('open'));
+    closeOdinLightbox();
+  }
 });
 
 // ── Ritual Overlay ──────────────────────────────────────────────────────────
@@ -2402,12 +2462,12 @@ function updateUsageHint() {
 }
 
 if (typeof netlifyIdentity !== 'undefined') {
-  netlifyIdentity.on('init',  user => { updateGoogleBtn(user); updateUsageHint(); });
-  netlifyIdentity.on('login', user => { updateGoogleBtn(user); updateUsageHint(); netlifyIdentity.close(); });
-  netlifyIdentity.on('logout', ()  => { updateGoogleBtn(null); updateUsageHint(); });
+  netlifyIdentity.on('init',  user => { updateGoogleBtn(user); updateUsageHint(); updateOdinExpandBtn(); });
+  netlifyIdentity.on('login', user => { updateGoogleBtn(user); updateUsageHint(); updateOdinExpandBtn(); netlifyIdentity.close(); });
+  netlifyIdentity.on('logout', ()  => { updateGoogleBtn(null); updateUsageHint(); updateOdinExpandBtn(); });
   netlifyIdentity.init();
 }
-document.addEventListener('DOMContentLoaded', updateUsageHint);
+document.addEventListener('DOMContentLoaded', () => { updateUsageHint(); updateOdinExpandBtn(); });
 
 
 // ── Calculator ──
@@ -2550,6 +2610,47 @@ async function handleB2BForm(e) {
     status.textContent = '❌ Помилка. Напишіть нам напряму: av89930@gmail.com';
   }
 }
+
+/* ── ODIN LIGHTBOX ── */
+function updateOdinExpandBtn() {
+  const container = document.getElementById('resultImgContainer');
+  if (!container) return;
+  const user = getGoogleUser();
+  if (!user) { container.classList.remove('odin-active'); return; }
+  const ak = getActiveKey(user.email);
+  if (ak && ak.key === 'Bay2026') {
+    container.classList.add('odin-active');
+  } else {
+    container.classList.remove('odin-active');
+  }
+}
+
+function openOdinLightbox() {
+  const src = document.getElementById('afterImg').src;
+  if (!src) return;
+  document.getElementById('odinLbImg').src = src;
+  document.getElementById('odinLightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeOdinLightbox() {
+  document.getElementById('odinLightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeOdinLightboxOutside(e) {
+  if (e.target === document.getElementById('odinLightbox')) closeOdinLightbox();
+}
+
+function downloadOdinLb() {
+  const img = document.getElementById('odinLbImg');
+  const a = document.createElement('a');
+  a.href = img.src;
+  const n = (parseInt(localStorage.getItem('mgc_dl_count') || '0', 10)) + 1;
+  localStorage.setItem('mgc_dl_count', String(n));
+  a.download = n === 1 ? 'magicum-visualization.jpg' : `magicum-visualization${n}.jpg`;
+  a.click();
+}
 </script>
 
 <!-- MODAL: B2B WIDGET -->
@@ -2595,7 +2696,7 @@ async function handleB2BForm(e) {
       </div>
       <div class="b2b-step">
         <div class="b2b-step-num">3</div>
-        <div class="b2b-step-text"><strong style="color:var(--text-primary)">Клієнт завантажує тканину</strong> — і за 20 секунд бачить свій диван у новому матеріалі. Більше сумнівів — менше повернень.</div>
+        <div class="b2b-step-text"><strong style="color:var(--text-primary)">Клієнт завантажує тканину</strong> — і за 20 секунд бачить свій диван у новому матеріалі. Менше сумнівів-менше повернень.</div>
       </div>
     </div>
 
