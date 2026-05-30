@@ -217,14 +217,15 @@ nav > * { box-sizing: border-box; }
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
 .card-preview {
-  width: 100%;
+  width: 100%; aspect-ratio: 4/3;
   background: var(--bg-card); border: 1px dashed rgba(201,168,76,0.2);
-  overflow: hidden;
+  overflow: hidden; display: flex; align-items: center; justify-content: center;
 }
+.card-preview.has-image { aspect-ratio: unset; display: block; }
 .card-preview img { width: 100%; height: auto; display: block; }
 .card-preview-empty {
   font-size: 10px; color: var(--text-muted); letter-spacing: 2px;
-  text-align: center; padding: 40px 12px; min-height: 80px; display: flex; align-items: center; justify-content: center;
+  text-align: center; padding: 12px;
 }
 #photo-preview  { background-image: url('/demo-sofa.jpg'); }
 #fabric-preview { background-image: url('/demo-fabric.jpg'); }
@@ -1498,7 +1499,7 @@ function handleUpload(type, input) {
       img.src = full; img.style.display = 'block';
       const em = document.getElementById('photo-empty');
       if (em) em.style.display = 'none';
-      document.getElementById('photo-preview').style.backgroundImage = 'none';
+      document.getElementById('photo-preview').classList.add('has-image');
     } else {
       fabricBase64 = b64; fabricMime = mime;
       fabricName   = file.name.replace(/\.[^/.]+$/, '') || 'тканина';
@@ -1506,7 +1507,7 @@ function handleUpload(type, input) {
       img.src = full; img.style.display = 'block';
       const em = document.getElementById('fabric-empty');
       if (em) em.style.display = 'none';
-      document.getElementById('fabric-preview').style.backgroundImage = 'none';
+      document.getElementById('fabric-preview').classList.add('has-image');
       document.querySelectorAll('.catalog-item').forEach(i => i.classList.remove('selected'));
       // Витягуємо домінантний колір для ритуалу
       const _ci = new Image(); _ci.onload = () => {
