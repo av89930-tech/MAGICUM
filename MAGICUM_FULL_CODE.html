@@ -59,41 +59,36 @@ body {
 
 /* ── NAV ── */
 nav {
-  position: absolute;
-  top: 30px;
-  left: 8px; right: 8px;
-  z-index: 10;
-  display: flex; align-items: stretch; overflow: hidden;
-  border: 1px solid var(--border);
-  height: 36px;
-  box-sizing: border-box;
+  position: absolute; top: 0; left: 0; right: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: max(12px, env(safe-area-inset-top)) 16px 12px;
 }
-nav > * { box-sizing: border-box; }
 .nav-lang {
   font-size: 11px; letter-spacing: 2px; color: var(--gold);
-  border: none; border-left: 1px solid var(--border); padding: 0 14px;
-  cursor: pointer; transition: all 0.3s; background: transparent;
-  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--border); padding: 0 14px;
+  cursor: pointer; transition: all 0.3s;
+  height: 36px; display: flex; align-items: center;
 }
 .nav-lang:hover { background: var(--gold); color: var(--bg-dark); }
 .nav-google {
   font-size: 10px; letter-spacing: 1px; color: var(--text-muted);
-  border: none; border-left: 1px solid var(--border); padding: 0 12px;
+  border: 1px solid var(--border); padding: 0 12px;
   cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 6px;
   background: transparent; font-family: 'Montserrat', sans-serif;
+  height: 36px;
 }
-.nav-google:hover { color: var(--gold); }
-.nav-google.signed-in { color: var(--gold); }
+.nav-google:hover { border-color: var(--gold); color: var(--gold); }
+.nav-google.signed-in { color: var(--gold); border-color: rgba(201,168,76,0.5); }
 .nav-google svg { width:14px; height:14px; flex-shrink:0; }
 
 .btn-shop {
   font-family: 'Cormorant Garamond', serif;
   font-size: 9px; font-weight: 600; letter-spacing: 1px;
   color: var(--gold-light); background: transparent;
-  border: none; padding: 0 16px;
+  border: 1px solid rgba(201,168,76,0.4); padding: 0 10px;
   cursor: pointer; position: relative; overflow: hidden;
   transition: all 0.3s; white-space: nowrap; text-align: center; line-height: 1;
-  flex: 1; display: flex; align-items: center; justify-content: center;
+  height: 36px; display: flex; align-items: center; justify-content: center;
 }
 .btn-shop::before {
   content: ''; position: absolute; inset: 0;
@@ -108,7 +103,7 @@ nav > * { box-sizing: border-box; }
   position: relative; height: 100dvh; overflow: hidden;
   display: flex; flex-direction: column;
   justify-content: space-between; align-items: center;
-  padding: 70px 8px 32px; overflow: hidden; text-align: center;
+  padding: 70px 5vw 32px; overflow: hidden; text-align: center;
 }
 .hero-bg {
   position: absolute; inset: 0; z-index: 0;
@@ -122,7 +117,7 @@ nav > * { box-sizing: border-box; }
     rgba(10,10,10,0.85) 100%);
 }
 .hero-bg::before {
-  content: ''; position: absolute; inset: 30px 8px;
+  content: ''; position: absolute; inset: 30px;
   border: 1px solid rgba(201,168,76,0.12);
   z-index: 1; pointer-events: none;
 }
@@ -186,17 +181,17 @@ nav > * { box-sizing: border-box; }
 .btn-b2b:hover { border-color: var(--gold); color: var(--gold); }
 
 /* ── WORKSPACE ── */
-#workspace { padding: 0 8px 0; position: relative; z-index: 1; }
+#workspace { padding: 16px 4vw 20px; position: relative; z-index: 1; }
 
 .workspace-grid {
   display: grid; grid-template-columns: 1fr;
   gap: 24px; max-width: 1200px; margin: 0 auto;
 }
-.left-col { display: flex; flex-direction: column; gap: 4px; }
+.left-col { display: flex; flex-direction: column; gap: 10px; }
 .right-col { display: none; }
 
 /* Upload cards */
-.upload-area { display: flex; flex-direction: column; gap: 8px; }
+.upload-area { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .upload-card {
   background: var(--bg-card); border: 1px solid var(--border);
   padding: 12px; cursor: pointer; transition: all 0.3s;
@@ -217,12 +212,12 @@ nav > * { box-sizing: border-box; }
   display: flex; align-items: center; justify-content: center; flex-shrink: 0;
 }
 .card-preview {
-  width: 100%; aspect-ratio: 8/3;
-  background: var(--bg-card); border: 1px dashed rgba(201,168,76,0.2);
+  width: 100%; aspect-ratio: 1;
+  background: var(--bg-panel); border: 1px dashed rgba(201,168,76,0.2);
   overflow: hidden; display: flex; align-items: center; justify-content: center;
-  background-size: contain; background-position: center; background-repeat: no-repeat;
+  background-size: cover; background-position: center;
 }
-.card-preview img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.card-preview img { width: 100%; height: 100%; object-fit: contain; background: var(--bg-panel); display: block; }
 .card-preview-empty {
   font-size: 10px; color: var(--text-muted); letter-spacing: 2px;
   text-align: center; padding: 12px;
@@ -241,26 +236,17 @@ nav > * { box-sizing: border-box; }
 /* Visualize button */
 .btn-visualize {
   display: inline-flex; align-items: center; gap: 14px;
-  padding: 18px 20px; width: 100%; justify-content: center;
+  padding: 16px 20px; width: 100%; justify-content: center;
   background: linear-gradient(135deg, #b8922a, #c9a84c, #e8c97a, #c9a84c, #b8922a);
   background-size: 200% auto;
   color: var(--bg-dark); font-family: 'Montserrat', sans-serif;
   font-size: 12px; font-weight: 700; letter-spacing: 4px; text-transform: uppercase;
   border: none; cursor: pointer; transition: all 0.4s;
-  border-radius: 60px;
-  box-shadow: 0 0 40px rgba(201,168,76,0.5), 0 0 80px rgba(201,168,76,0.2), inset 0 1px 0 rgba(255,255,255,0.3);
+  box-shadow: 0 0 60px rgba(201,168,76,0.4), inset 0 1px 0 rgba(255,255,255,0.2);
   animation: shimmer 3s linear infinite;
-  position: relative; overflow: hidden;
 }
-
-.btn-visualize:hover:not(:disabled) {
-  box-shadow: 0 0 60px rgba(201,168,76,0.8), 0 0 120px rgba(201,168,76,0.3), inset 0 1px 0 rgba(255,255,255,0.3);
-  transform: translateY(-2px) scale(1.01);
-}
+.btn-visualize:hover:not(:disabled) { box-shadow: 0 0 80px rgba(201,168,76,0.7); transform: translateY(-3px); }
 .btn-visualize:disabled { opacity: 0.65; cursor: wait; }
-.btn-visualize-wrap {
-  padding: 4px 0 0;
-}
 
 #ritualStatus {
   margin-top: 12px; font-size: 11px; letter-spacing: 2px;
@@ -285,7 +271,7 @@ nav > * { box-sizing: border-box; }
 }
 .catalog-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .catalog-item:hover { border-color: var(--gold); }
-.catalog-item.selected { border-color: var(--gold); box-shadow: 0 0 16px var(--border); }
+.catalog-item.selected { border-color: var(--gold); box-shadow: 0 0 16px rgba(201,168,76,0.4); }
 .catalog-item-name {
   position: absolute; bottom: 0; left: 0; right: 0;
   background: rgba(0,0,0,0.7); font-size: 8px; letter-spacing: 1px;
@@ -306,7 +292,7 @@ nav > * { box-sizing: border-box; }
   border: 1px solid var(--border);
 }
 .result-img-container #afterImg {
-  display: block; width: 100%; height: auto;
+  display: block; width: 100%; height: auto; object-fit: contain;
 }
 
 #resultWatermark {
@@ -370,7 +356,7 @@ nav > * { box-sizing: border-box; }
 
 /* ── SOCIAL PROOF ── */
 .sp-section {
-  padding: 4px 8px 40px;
+  padding: 48px 6vw 40px;
   border-top: 1px solid var(--border);
 }
 .sp-eyebrow {
@@ -496,7 +482,7 @@ nav > * { box-sizing: border-box; }
 
 /* ── FOOTER ── */
 footer {
-  border-top: 1px solid var(--border); padding: 24px 8px;
+  border-top: 1px solid var(--border); padding: 24px 6vw;
   display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center;
 }
 footer p { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--text-muted); }
@@ -541,7 +527,7 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
   font-size: 11px; font-weight: 700; letter-spacing: 3px;
   text-transform: uppercase; border: none; cursor: pointer; transition: all 0.3s;
 }
-.modal-btn:hover { box-shadow: 0 0 30px var(--border); transform: translateY(-1px); }
+.modal-btn:hover { box-shadow: 0 0 30px rgba(201,168,76,0.4); transform: translateY(-1px); }
 .modal-error { font-size: 11px; color: #e05555; text-align: center; margin-top: 10px; letter-spacing: 1px; min-height: 16px; }
 
 /* Cabinet */
@@ -815,17 +801,19 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
   <div class="hero-bg"></div>
   <nav>
     <button class="btn-shop" onclick="openShop()">✦ Магічне сховище Майстра-Алхіміка</button>
-    <button class="nav-google" id="googleAuthBtn" onclick="handleGoogleAuth()">
-      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
-        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-      </svg>
-      <span id="googleAuthLabel">Google</span>
-    </button>
-    <div class="nav-lang" id="navUserBadge" style="display:none;" onclick="openCabinet()"></div>
-    <div class="nav-lang" id="navLang" onclick="toggleLang()" title="Switch language">UA</div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <button class="nav-google" id="googleAuthBtn" onclick="handleGoogleAuth()">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+        </svg>
+        <span id="googleAuthLabel">Google</span>
+      </button>
+      <div class="nav-lang" id="navUserBadge" style="display:none;" onclick="openCabinet()"></div>
+      <div class="nav-lang" id="navLang" onclick="toggleLang()" style="cursor:pointer" title="Switch language">UA</div>
+    </div>
   </nav>
   <div class="hero-top">
     <div class="hero-eyebrow">Digital Alchemist Atelier</div>
@@ -838,15 +826,17 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
   <div class="hero-middle"></div>
   <div class="hero-bottom">
     <a href="#workspace" class="btn-hero-cta">
-      <span>✦</span><span>Вхід в лабораторію</span>
+      <span>✦</span><span>Почати Ритуал</span>
     </a>
+    <a href="#workspace" class="hero-sub-link">[ Перейти до Лабораторії ]</a>
     <button class="btn-b2b" onclick="openModal('modalB2B')">◆ Віджет для магазинів B2B</button>
   </div>
 </section>
 
 <!-- WORKSPACE -->
 <section id="workspace">
-  <div style="text-align:center;padding:8px 0 8px;position:relative">
+  <div style="text-align:center;padding:28px 0 8px;position:relative">
+    <div style="font-size:9px;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:10px">✦ &nbsp; ✦ &nbsp; ✦</div>
     <h2 style="font-family:'Cormorant Garamond',serif;font-size:clamp(34px,9vw,48px);font-weight:300;font-style:italic;color:var(--text-primary);letter-spacing:3px;line-height:1;margin:0">Магічна лабораторія</h2>
     <div style="width:60px;height:1px;background:linear-gradient(to right,transparent,var(--gold),transparent);margin:12px auto 0"></div>
   </div>
@@ -858,7 +848,7 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
 
         <div class="upload-card">
           <div class="card-header">
-            <div class="card-label"><span class="card-icon">📷</span>Вибрати меблі</div>
+            <div class="card-label"><span class="card-icon">📷</span>Додати меблі</div>
             <div class="card-num">1</div>
           </div>
           <div class="card-preview" id="photo-preview">
@@ -869,7 +859,6 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
             style="position:absolute;width:0;height:0;left:0;top:0;"
             onchange="handleUpload('photo',this)">
           <label class="card-btn" for="input-photo">Завантажити</label>
-          <button class="card-btn" style="margin-top:4px;background:transparent;border-color:var(--gold);color:var(--gold);" onclick="openModal('modalFurnitureCatalog')">✦ Каталог меблів виробників</button>
         </div>
 
         <div class="upload-card">
@@ -891,14 +880,14 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
 
       <button class="btn-catalog" onclick="openFabricWizard()">✦ Каталог тканин дилерів</button>
 
-      <div class="btn-visualize-wrap">
+      <div style="text-align:center;">
         <button class="btn-visualize" id="generateBtn" onclick="runVisualize()">
-          <span>✦</span><span id="btnText">ПОЧАТИ МАГІЮ</span>
+          <span>✦</span><span id="btnText">ПРОЯВИТИ ОБРАЗ</span>
         </button>
         <div id="usageHint" style="display:none;font-size:10px;letter-spacing:2px;text-align:center;margin-top:8px;color:var(--text-muted);"></div>
+        <div id="ritualStatus"></div>
+        <div id="workspaceEnd"></div>
       </div>
-      <div id="ritualStatus" style="text-align:center;"></div>
-      <div id="workspaceEnd"></div>
     </div>
 
     <!-- ПРАВА: каталог тканин -->
@@ -1264,16 +1253,6 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
 </div>
 
 <!-- MODAL: SHOP -->
-<div class="modal-overlay" id="modalFurnitureCatalog" onclick="if(event.target===this)closeModal('modalFurnitureCatalog')">
-  <div class="modal-box" style="max-width:560px;max-height:85vh;overflow-y:auto;padding:32px 28px">
-    <button class="modal-close" onclick="closeModal('modalFurnitureCatalog')">✕</button>
-    <div class="modal-eyebrow">🛋 Каталог</div>
-    <h2 class="modal-title">Меблі виробників</h2>
-    <p style="color:var(--text-muted);font-size:14px;margin-bottom:24px;">Оберіть фото меблів з каталогу виробника — воно буде автоматично завантажено як основа для візуалізації.</p>
-    <p style="color:var(--gold);font-size:13px;text-align:center;padding:40px 0;">Каталог поповнюється.<br>Незабаром тут з'являться фото від виробників.</p>
-  </div>
-</div>
-
 <div class="modal-overlay" id="modalShop">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal('modalShop')">✕</button>
@@ -1499,7 +1478,7 @@ function handleUpload(type, input) {
       img.src = full; img.style.display = 'block';
       const em = document.getElementById('photo-empty');
       if (em) em.style.display = 'none';
-      document.getElementById('photo-preview').classList.add('has-image');
+      document.getElementById('photo-preview').style.backgroundImage = 'none';
     } else {
       fabricBase64 = b64; fabricMime = mime;
       fabricName   = file.name.replace(/\.[^/.]+$/, '') || 'тканина';
@@ -1507,7 +1486,7 @@ function handleUpload(type, input) {
       img.src = full; img.style.display = 'block';
       const em = document.getElementById('fabric-empty');
       if (em) em.style.display = 'none';
-      document.getElementById('fabric-preview').classList.add('has-image');
+      document.getElementById('fabric-preview').style.backgroundImage = 'none';
       document.querySelectorAll('.catalog-item').forEach(i => i.classList.remove('selected'));
       // Витягуємо домінантний колір для ритуалу
       const _ci = new Image(); _ci.onload = () => {
@@ -1524,7 +1503,56 @@ function handleUpload(type, input) {
   reader.readAsDataURL(file);
 }
 
+// ── Fit result to original photo dimensions ──
+function fitToOriginalSize(resultDataUrl, originalDataUrl) {
+  return new Promise(resolve => {
+    const orig = new Image();
+    orig.onload = () => {
+      const res = new Image();
+      res.onload = () => {
+        // Повертаємо результат як є — без масштабування до розмірів оригіналу,
+        // щоб не розтягувати зображення Gemini
+        resolve(resultDataUrl);
+      };
+      res.src = resultDataUrl;
+    };
+    orig.src = originalDataUrl;
+  });
+}
 
+function applySecureWatermark(dataUrl) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => {
+      const c   = document.createElement('canvas');
+      c.width   = img.naturalWidth;
+      c.height  = img.naturalHeight;
+      const ctx = c.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+
+      const sz   = Math.max(12, Math.round(c.width * 0.028));
+      const stepX = sz * 9;
+      const stepY = sz * 5;
+      const diag  = Math.hypot(c.width, c.height);
+
+      ctx.save();
+      ctx.globalAlpha   = 0.14;
+      ctx.fillStyle     = '#ffffff';
+      ctx.font          = `${sz}px sans-serif`;
+      ctx.textAlign     = 'center';
+      ctx.textBaseline  = 'middle';
+      ctx.translate(c.width / 2, c.height / 2);
+      ctx.rotate(-Math.PI / 6);
+      for (let y = -diag; y < diag; y += stepY)
+        for (let x = -diag; x < diag; x += stepX)
+          ctx.fillText('✦ MAGICUM', x, y);
+      ctx.restore();
+
+      resolve(c.toDataURL('image/jpeg', 0.88));
+    };
+    img.src = dataUrl;
+  });
+}
 
 // ── Compress ──
 function compressImage(base64, mime, maxW = 800, maxH = 600, quality = 0.8) {
@@ -1552,7 +1580,7 @@ function setStatus(msg, color = 'var(--text-muted)') {
 function setBtnState(loading) {
   const btn = document.getElementById('generateBtn');
   btn.disabled = loading;
-  document.getElementById('btnText').textContent = loading ? 'РИТУАЛ ТРИВАЄ...' : 'ПОЧАТИ МАГІЮ';
+  document.getElementById('btnText').textContent = loading ? 'РИТУАЛ ТРИВАЄ...' : 'ПРОЯВИТИ ОБРАЗ';
 }
 
 // ── Main ritual ──
@@ -1586,6 +1614,11 @@ async function runVisualize() {
   setStatus('', '');
 
   try {
+    const [sendFurniture, sendFabric] = await Promise.all([
+      compressImage(furnitureBase64, furnitureMime, 1024, 1024, 0.85),
+      compressImage(fabricBase64,    fabricMime,    1024, 1024, 0.85)
+    ]);
+
     ritualShow(furnitureDataUrl, _ritualFabricColor);
 
     const _key   = sessionStorage.getItem(STORE('key')) || '';
@@ -1595,7 +1628,7 @@ async function runVisualize() {
     const resp = await fetch('/.netlify/functions/ritual', {
       method: 'POST',
       headers: _headers,
-      body: JSON.stringify({ furnitureBase64, furnitureMime, fabricBase64, fabricMime, key: _key })
+      body: JSON.stringify({ furnitureBase64: sendFurniture, furnitureMime: 'image/jpeg', fabricBase64: sendFabric, fabricMime: 'image/jpeg', key: _key })
     });
     let data;
     try { data = await resp.json(); }
@@ -1617,7 +1650,8 @@ async function runVisualize() {
     const resultUrl = `data:${lastMime};base64,${lastB64}`;
     const afterImg = document.getElementById('afterImg');
 
-    afterImg.src = resultUrl;
+    const fittedUrl = furnitureDataUrl ? await fitToOriginalSize(resultUrl, furnitureDataUrl) : resultUrl;
+    afterImg.src = fittedUrl;
 
     const resultWrap = document.getElementById('resultWrap');
     resultWrap.style.display = 'block';
@@ -1759,13 +1793,13 @@ function updateNavBadge() {
   const lang  = document.getElementById('navLang');
   if (user) {
     badge.textContent = '✦ ' + user;
-    badge.style.display = 'flex';
+    badge.style.display = 'block';
     lang.style.display  = 'none';
     const seal = localStorage.getItem(getSealKey() || '');
     if (seal) activateSeal(seal);
   } else {
     badge.style.display = 'none';
-    lang.style.display  = 'flex';
+    lang.style.display  = 'block';
   }
 }
 
@@ -2676,6 +2710,642 @@ async function handleB2BForm(e) {
 
 
 
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     SERVER CODE — FOR REFERENCE ONLY — NOT EXECUTED BY BROWSER
+     These are Netlify serverless functions embedded for context portability.
+     ═══════════════════════════════════════════════════════════════════════════ -->
+
+<!-- ── netlify/functions/ritual.js ────────────────────────────────────────── -->
+<script type="text/plain" id="server-ritual-js">
+// ── MAGICUM · Netlify Function: ritual.js ──────────────────────────────────
+// Gemini image generation with exponential backoff + Telegram error alerts
+// ---------------------------------------------------------------------------
+
+const MODELS = [
+  'gemini-2.5-flash-image',
+  'gemini-3.1-flash-image-preview',
+];
+
+const PROMPT = `You are a professional high-end furniture retouching and material replacement AI.
+
+TASK:
+Replace the upholstery fabric on the furniture in IMAGE 1 using the fabric sample from IMAGE 2.
+
+This is a constrained in-place material replacement operation.
+This is NOT image generation.
+This is NOT scene recreation.
+
+The task is STRICTLY LIMITED to upholstery material replacement only.
+
+━━━━━━━━━━━━━━━━━━
+# SYSTEM OPERATION MODE
+━━━━━━━━━━━━━━━━━━
+
+Enable:
+
+- HARD MASK MODE
+- SEGMENTATION LOCK
+- MATERIAL REPLACEMENT ONLY
+- UV PRESERVATION
+- FABRIC PROJECTION MODE
+- PIXEL POSITION LOCK
+- BACKGROUND FREEZE
+- GEOMETRY LOCK
+- STRUCTURAL CONSISTENCY MODE
+- NON-DESTRUCTIVE EDITING
+- TEXTURE CONTINUITY MODE
+- MICROTEXTURE PRESERVATION
+- FABRIC DEPTH RECONSTRUCTION
+- WRINKLE PRESERVATION
+- LIGHT CONSISTENCY LOCK
+- SHADOW INHERITANCE MODE
+- SOURCE IMAGE DOMINANCE
+- IMAGE STABILIZATION MODE
+- MATERIAL AUTHENTICITY MODE
+- EDGE LOCK MODE
+- BYTE-IDENTICAL BACKGROUND PRESERVATION
+
+Disable:
+
+- image generation
+- image recreation
+- scene regeneration
+- object redesign
+- AI reinterpretation
+- composition enhancement
+- auto crop
+- auto framing
+- auto perspective correction
+- resize
+- zoom
+- denoise repainting
+- latent reprojection
+- hallucinated geometry
+- synthetic relighting
+- artistic stylization
+- aesthetic enhancement
+- texture invention
+
+━━━━━━━━━━━━━━━━━━
+# SOURCE IMAGE DOMINANCE
+━━━━━━━━━━━━━━━━━━
+
+IMAGE 1 is the ABSOLUTE structural reference.
+
+IMAGE 2 is the ABSOLUTE material and color reference.
+
+Inheritance rules:
+
+From IMAGE 1 inherit:
+- ALL geometry
+- ALL proportions
+- ALL perspective
+- ALL object coordinates
+- ALL lighting
+- ALL shadows
+- ALL reflections
+- ALL furniture contours
+- ALL stitching geometry
+- ALL wrinkles
+- ALL folds
+- ALL scene elements
+- ALL background pixels
+
+From IMAGE 2 inherit ONLY:
+- fabric color
+- fabric texture
+- textile weave
+- textile reflectance
+- textile material behavior
+
+Do NOT reinterpret scene content.
+
+Do NOT redesign furniture.
+
+Do NOT regenerate upholstery.
+
+Do NOT alter furniture construction.
+
+━━━━━━━━━━━━━━━━━━
+# ZERO PIXEL SHIFT POLICY
+━━━━━━━━━━━━━━━━━━
+
+All non-upholstery pixels must remain 100% identical to IMAGE 1.
+
+Maximum allowed displacement:
+0 pixels.
+
+Forbidden:
+- camera movement
+- object movement
+- perspective drift
+- reprojection
+- geometry mutation
+- contour movement
+- background redraw
+- edge shifting
+- object recreation
+
+Preserve exact:
+- X/Y pixel coordinates
+- furniture boundaries
+- room geometry
+- shadow placement
+- lighting gradients
+
+Every non-upholstery pixel must remain byte-identical to IMAGE 1.
+
+━━━━━━━━━━━━━━━━━━
+# CANVAS LOCK
+━━━━━━━━━━━━━━━━━━
+
+Canvas settings are LOCKED to IMAGE 1.
+
+Forbidden:
+- crop
+- resize
+- scaling
+- reframing
+- rotation
+- aspect ratio modification
+- perspective normalization
+- zoom
+
+Output resolution must exactly match IMAGE 1.
+
+━━━━━━━━━━━━━━━━━━
+# SEGMENTATION ENFORCEMENT
+━━━━━━━━━━━━━━━━━━
+
+Create an internal segmentation mask ONLY for upholstered regions.
+
+Editable regions ONLY:
+- seat cushions
+- back cushions
+- armrests
+- upholstered side panels
+- upholstered headrests
+- soft fabric-covered elements
+
+Protected frozen regions:
+- background
+- walls
+- floor
+- decor
+- hard surfaces
+- furniture frame
+- wood
+- metal
+- plastic
+- legs
+- zippers
+- buttons
+- seams topology
+- room objects
+- reflections
+- shadows
+
+Protected regions must remain frozen and byte-identical to IMAGE 1.
+
+━━━━━━━━━━━━━━━━━━
+# FABRIC APPLICATION RULES
+━━━━━━━━━━━━━━━━━━
+
+Replace ONLY upholstery material.
+
+Maintain identical:
+- furniture silhouette
+- dimensions
+- cushion count
+- seam placement
+- fold structure
+- pressure deformation
+- edge flow
+- surface curvature
+
+Project material from IMAGE 2 using existing geometry from IMAGE 1.
+
+Texture projection must:
+- follow cushion curvature
+- preserve perspective flow
+- preserve seam compression
+- preserve fabric tension
+- preserve wrinkle structure
+- preserve depth gradients
+
+Texture scale must remain physically realistic and proportional.
+
+━━━━━━━━━━━━━━━━━━
+# COLOR ACCURACY — ABSOLUTE 1:1 MATCH
+━━━━━━━━━━━━━━━━━━
+
+IMAGE 2 is the master color reference.
+
+Required:
+- spectral color fidelity
+- identical hue
+- identical saturation
+- identical luminance
+- exact undertone preservation
+
+Lighting standard:
+Neutral daylight 5500K.
+
+Preserve accurate color behavior in:
+- highlights
+- midtones
+- shadows
+- indirect lighting
+- ambient occlusion
+- folded regions
+
+Forbidden:
+- color drift
+- warm tint
+- cool tint
+- desaturation
+- oversaturation
+- gray wash
+- artificial contrast
+- tone remapping
+- exposure reinterpretation
+
+No artistic interpretation allowed.
+
+━━━━━━━━━━━━━━━━━━
+# MATERIAL AUTHENTICITY MODE
+━━━━━━━━━━━━━━━━━━
+
+Reproduce realistic textile behavior from IMAGE 2.
+
+Preserve:
+- weave direction
+- thread density
+- microfiber structure
+- velvet reflection directionality
+- textile anisotropy
+- tactile realism
+- surface roughness
+- pile behavior
+- material depth
+
+Avoid:
+- procedural texture synthesis
+- fake AI texture generation
+- painterly rendering
+- plastic appearance
+- CGI look
+- synthetic smoothing
+- fake wrinkles
+- hallucinated seams
+
+Material must appear physically real.
+
+━━━━━━━━━━━━━━━━━━
+# REPEAT PATTERN CONTROL
+━━━━━━━━━━━━━━━━━━
+
+Prevent:
+- visible tiling
+- mirrored patches
+- texture repetition artifacts
+- cloned regions
+- pattern looping
+- inconsistent weave scaling
+- discontinuous texture transitions
+
+Fabric continuity must appear naturally manufactured.
+
+━━━━━━━━━━━━━━━━━━
+# LIGHTING PRESERVATION
+━━━━━━━━━━━━━━━━━━
+
+Inherit original lighting from IMAGE 1 exactly.
+
+Preserve:
+- shadow softness
+- directional lighting
+- ambient lighting
+- reflections
+- contact shadows
+- brightness gradients
+- ambient occlusion
+
+Do NOT:
+- relight scene
+- add studio lighting
+- enhance reflections
+- simulate CGI lighting
+- alter exposure structure
+
+━━━━━━━━━━━━━━━━━━
+# EDGE LOCK MODE
+━━━━━━━━━━━━━━━━━━
+
+Preserve original upholstery boundaries exactly.
+
+Requirements:
+- pixel-accurate mask borders
+- clean contour transitions
+- no texture bleeding
+- no halo artifacts
+- no feathering errors
+- no edge drift
+
+Do not spill texture outside upholstery contours.
+
+━━━━━━━━━━━━━━━━━━
+# IMAGE STABILIZATION MODE
+━━━━━━━━━━━━━━━━━━
+
+Prevent:
+- latent reprojection
+- geometry instability
+- object warping
+- contour mutation
+- scene hallucination
+- soft reconstruction
+- furniture recreation
+
+Preserve:
+- exact furniture coordinates
+- exact perspective
+- exact camera angle
+- exact framing
+- exact spatial alignment
+
+━━━━━━━━━━━━━━━━━━
+# PHOTOREALISM TARGET
+━━━━━━━━━━━━━━━━━━
+
+Final image must look like:
+- real furniture photography
+- luxury furniture catalog photography
+- premium interior photography
+- physically accurate upholstery replacement
+
+Avoid:
+- CGI appearance
+- illustrative look
+- overprocessed texture
+- AI blur
+- synthetic depth
+- stylized rendering
+
+━━━━━━━━━━━━━━━━━━
+# FINAL OUTPUT RULES
+━━━━━━━━━━━━━━━━━━
+
+Return:
+- one final edited photorealistic image
+- same composition as IMAGE 1
+- same room
+- same framing
+- same perspective
+- same lighting
+- same shadows
+- same geometry
+
+ONLY upholstery material may change.
+
+Everything else must remain visually and geometrically identical to IMAGE 1.
+
+Do NOT:
+- generate a new sofa
+- redesign furniture
+- simplify geometry
+- replace scene
+- isolate furniture on white background
+- create new environment
+- stylize image
+- reinterpret composition
+
+━━━━━━━━━━━━━━━━━━
+# OUTPUT VALIDATION CHECKLIST
+━━━━━━━━━━━━━━━━━━
+
+Before finalizing image verify:
+
+- background unchanged
+- furniture geometry unchanged
+- canvas size unchanged
+- perspective unchanged
+- no pixel drift outside upholstery
+- no geometry mutation
+- upholstery fully covered
+- no texture repetition artifacts
+- no texture stretching
+- no edge bleeding
+- no halo artifacts
+- shadows preserved
+- lighting preserved
+- fabric color matches IMAGE 2
+- material realism preserved
+
+If ANY validation fails:
+retry material replacement WITHOUT regenerating scene.
+
+━━━━━━━━━━━━━━━━━━
+# FINAL OBJECTIVE
+━━━━━━━━━━━━━━━━━━
+
+The final result must appear as the ORIGINAL IMAGE 1 photograph with ONLY the upholstery fabric physically replaced by the textile from IMAGE 2.
+
+No other visible changes are allowed.`;
+
+async function callGemini(apiKey, model, furnitureBase64, furnitureMime, fabricBase64, fabricMime) {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+  const body = {
+    contents: [{
+      parts: [
+        { text: PROMPT },
+        { inline_data: { mime_type: furnitureMime, data: furnitureBase64 } },
+        { inline_data: { mime_type: fabricMime,    data: fabricBase64   } }
+      ]
+    }],
+    generationConfig: {
+      temperature: 0.7,
+      responseModalities: ['IMAGE', 'TEXT'],
+      candidateCount: 1
+    },
+    safetySettings: [
+      { category: 'HARM_CATEGORY_HARASSMENT',        threshold: 'BLOCK_NONE' },
+      { category: 'HARM_CATEGORY_HATE_SPEECH',       threshold: 'BLOCK_NONE' },
+      { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
+      { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' }
+    ]
+  };
+
+  const resp = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+    signal: AbortSignal.timeout(90_000)
+  });
+
+  if (!resp.ok) {
+    const err = await resp.json().catch(() => ({}));
+    throw new Error(err.error?.message || `HTTP ${resp.status}`);
+  }
+
+  const data = await resp.json();
+  const parts = data.candidates?.[0]?.content?.parts || [];
+  for (const part of parts) {
+    if (part.inlineData) {
+      return { imageBase64: part.inlineData.data, mimeType: part.inlineData.mimeType || 'image/jpeg' };
+    }
+  }
+  throw new Error('No image in Gemini response');
+}
+
+async function withBackoff(fn, attempts = 3, baseDelay = 1500) {
+  let lastErr;
+  for (let i = 0; i < attempts; i++) {
+    try { return await fn(); }
+    catch (e) {
+      lastErr = e;
+      if (i < attempts - 1) await new Promise(r => setTimeout(r, baseDelay * Math.pow(2, i)));
+    }
+  }
+  throw lastErr;
+}
+
+async function sendTelegram(msg) {
+  const token  = process.env.TELEGRAM_BOT_TOKEN;
+  const chatId = process.env.TELEGRAM_CHAT_ID;
+  if (!token || !chatId) return;
+  try {
+    await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: chatId, text: msg.slice(0, 4096), parse_mode: 'HTML' }),
+      signal: AbortSignal.timeout(5000)
+    });
+  } catch (_) {}
+}
+
+function cors(statusCode, body) {
+  return {
+    statusCode,
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+    },
+    body: JSON.stringify(body)
+  };
+}
+
+exports.handler = async (event) => {
+  // CORS preflight
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      statusCode: 204,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS'
+      },
+      body: ''
+    };
+  }
+
+  if (event.httpMethod !== 'POST') return cors(405, { success: false, error: 'Method not allowed' });
+
+  const GEMINI_KEY = process.env.GEMINI_API_KEY;
+  if (!GEMINI_KEY) return cors(500, { success: false, error: 'Server misconfiguration' });
+
+  let body;
+  try { body = JSON.parse(event.body || '{}'); }
+  catch (_) { return cors(400, { success: false, error: 'Invalid JSON' }); }
+
+  const { furnitureBase64, furnitureMime = 'image/jpeg', fabricBase64, fabricMime = 'image/jpeg' } = body;
+  if (!furnitureBase64 || !fabricBase64) return cors(400, { success: false, error: 'Missing images' });
+
+  // ── Try each model with backoff ──────────────────────────────────────────
+  const errors = [];
+  for (const model of MODELS) {
+    try {
+      const result = await withBackoff(
+        () => callGemini(GEMINI_KEY, model, furnitureBase64, furnitureMime, fabricBase64, fabricMime),
+        3,   // спроб
+        1500 // базова затримка мс
+      );
+      return cors(200, { success: true, ...result });
+    } catch (e) {
+      errors.push(`[${model}]: ${e.message}`);
+    }
+  }
+
+  // All models failed — notify via Telegram
+  const errMsg = `🔴 MAGICUM ritual FAILED\n${errors.join('\n')}`;
+  await sendTelegram(errMsg);
+
+  return cors(500, { success: false, error: 'Всі спроби вичерпано. Спробуйте за хвилину.' });
+};
+</script>
+
+<!-- ── netlify/functions/verify-key.js ───────────────────────────────────── -->
+<script type="text/plain" id="server-verify-key-js">
+// ── MAGICUM · verify-key.js ─────────────────────────────────────────────────
+// Keys are stored ONLY in Netlify environment variables — never in code.
+// ---------------------------------------------------------------------------
+
+function cors(statusCode, body) {
+  return {
+    statusCode,
+    headers: {
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': 'Content-Type'
+    },
+    body: JSON.stringify(body)
+  };
+}
+
+exports.handler = async (event) => {
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      statusCode: 204,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS'
+      },
+      body: ''
+    };
+  }
+
+  if (event.httpMethod !== 'POST') return cors(405, { valid: false });
+
+  let body;
+  try { body = JSON.parse(event.body || '{}'); }
+  catch (_) { return cors(400, { valid: false }); }
+
+  const key = (body.key || '').trim().toUpperCase();
+  if (!key) return cors(400, { valid: false });
+
+  // Odin key — unlimited
+  const odinKey = (process.env.ODIN_KEY || '').trim().toUpperCase();
+  if (odinKey && key === odinKey) {
+    return cors(200, { valid: true, type: 'odin', name: 'Ключ Одіна', remaining: null });
+  }
+
+  // Silver Thread keys — 10 visualizations
+  const silverKeys = (process.env.SILVER_KEYS || '').split(',').map(k => k.trim().toUpperCase()).filter(Boolean);
+  if (silverKeys.includes(key)) {
+    return cors(200, { valid: true, type: 'silver', name: 'Silver Thread', remaining: 10 });
+  }
+
+  // Golden Seam keys — 30 visualizations
+  const goldenKeys = (process.env.GOLDEN_KEYS || '').split(',').map(k => k.trim().toUpperCase()).filter(Boolean);
+  if (goldenKeys.includes(key)) {
+    return cors(200, { valid: true, type: 'golden', name: 'Golden Seam', remaining: 30 });
+  }
+
+  return cors(200, { valid: false });
+};
+</script>
 
 </body>
 </html>

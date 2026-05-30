@@ -42,9 +42,9 @@ exports.handler = async (event) => {
   try { vault = JSON.parse(process.env.CABINET_KEYS || '{}'); }
   catch (_) { vault = {}; }
 
-  const odinKey    = (vault.odin   || '').trim().toUpperCase();
-  const silverKeys = (vault.silver || []).map(k => k.trim().toUpperCase());
-  const goldenKeys = (vault.golden || []).map(k => k.trim().toUpperCase());
+  const odinKey    = (vault.odin    || '').trim().toUpperCase();
+  const silverKeys = (vault.silver  || []).map(k => k.trim().toUpperCase());
+  const goldenKeys = (vault.golden  || []).map(k => k.trim().toUpperCase());
 
   if (odinKey && key === odinKey) {
     return cors(200, { valid: true, type: 'odin', name: 'Ключ Одіна', remaining: null });
