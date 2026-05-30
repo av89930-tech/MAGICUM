@@ -60,7 +60,7 @@ body {
 /* ── NAV ── */
 nav {
   position: absolute; top: 0; left: 0; right: 0; z-index: 10;
-  display: flex; align-items: stretch;
+  display: flex; align-items: stretch; overflow: hidden;
   margin: max(12px, env(safe-area-inset-top)) 16px 0;
   border: 1px solid var(--border);
   height: 36px;
@@ -79,7 +79,8 @@ nav {
   background: transparent; font-family: 'Montserrat', sans-serif;
 }
 .nav-google:hover { color: var(--gold); }
-.nav-google.signed-in { color: var(--gold); border-color: rgba(201,168,76,0.5); }
+.nav-google.signed-in { color: var(--gold); }
+nav > button, nav > div { background: transparent; }
 .nav-google svg { width:14px; height:14px; flex-shrink:0; }
 
 .btn-shop {
@@ -1754,7 +1755,7 @@ function updateNavBadge() {
   const lang  = document.getElementById('navLang');
   if (user) {
     badge.textContent = '✦ ' + user;
-    badge.style.display = 'block';
+    badge.style.display = 'flex';
     lang.style.display  = 'none';
     const seal = localStorage.getItem(getSealKey() || '');
     if (seal) activateSeal(seal);
