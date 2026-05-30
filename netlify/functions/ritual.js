@@ -26,13 +26,6 @@ The sofa's left edge, right edge, top edge, and bottom edge must align pixel-per
 Do NOT re-center, re-crop, or reframe the sofa.
 The output image must be a pixel-accurate overlay of IMAGE 1 with ONLY the fabric texture changed.
 
-NO ZOOM (CRITICAL):
-Do NOT zoom in or zoom out.
-Do NOT scale the scene.
-The output must show EXACTLY the same field of view as IMAGE 1 — no wider, no narrower.
-The top-left corner, top-right corner, bottom-left corner, and bottom-right corner of the output must match IMAGE 1 exactly.
-Nothing from IMAGE 1 may be cropped or cut off in the output — all four edges must be fully preserved.
-
 COLOR FIDELITY (CRITICAL):
 The final visualized sofa MUST exactly match the hue, saturation, and brightness of the fabric swatch in IMAGE 2.
 Do NOT apply automatic color balancing, exposure correction, or saturation adjustment to the fabric.
