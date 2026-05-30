@@ -40,7 +40,7 @@
   --border: rgba(201,168,76,0.2);
 }
 
-html { scroll-behavior: smooth; background: #000; }
+html { scroll-behavior: smooth; background: #000; scroll-snap-type: y mandatory; }
 
 body {
   background: var(--bg-dark);
@@ -109,6 +109,7 @@ nav > * { box-sizing: border-box; }
   display: flex; flex-direction: column;
   justify-content: space-between; align-items: center;
   padding: 70px 8px 32px; overflow: hidden; text-align: center;
+  scroll-snap-align: start;
 }
 .hero-bg {
   position: absolute; inset: 0; z-index: 0;
@@ -186,7 +187,7 @@ nav > * { box-sizing: border-box; }
 .btn-b2b:hover { border-color: var(--gold); color: var(--gold); }
 
 /* ── WORKSPACE ── */
-#workspace { padding: 0 8px 0; position: relative; z-index: 1; min-height: 100dvh; }
+#workspace { padding: 0 8px 0; position: relative; z-index: 1; min-height: 100dvh; scroll-snap-align: start; }
 
 .workspace-grid {
   display: grid; grid-template-columns: 1fr;
