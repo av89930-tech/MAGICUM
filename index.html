@@ -256,6 +256,7 @@ nav > * { box-sizing: border-box; }
   position: fixed; bottom: 0; left: 8px; right: 8px; z-index: 50;
   background: linear-gradient(to top, var(--bg-dark) 75%, transparent);
   padding: 14px 0 8px;
+  display: none;
 }
 
 #ritualStatus {
@@ -1376,7 +1377,12 @@ let lastB64 = null, lastMime = null, currentHistId = null;
 window.addEventListener('DOMContentLoaded', () => {
   const nav  = document.querySelector('nav');
   const hero = document.getElementById('hero');
-  function checkNav() { nav.classList.toggle('hide-nav', hero.getBoundingClientRect().bottom < 60); }
+  const btnWrap = document.querySelector('.btn-visualize-wrap');
+  function checkNav() {
+    const heroBottom = hero.getBoundingClientRect().bottom;
+    nav.classList.toggle('hide-nav', heroBottom < 60);
+    if (btnWrap) btnWrap.style.display = heroBottom < 60 ? '' : 'none';
+  }
   window.addEventListener('scroll', checkNav, { passive: true });
   checkNav();
 
