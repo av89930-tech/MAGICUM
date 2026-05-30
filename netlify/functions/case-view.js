@@ -13,7 +13,11 @@ exports.handler = async (event) => {
 
   let caseData;
   try {
-    const store = getStore('cases');
+    const store = getStore({
+      name: 'cases',
+      siteID: process.env.NETLIFY_SITE_ID,
+      token: process.env.NETLIFY_TOKEN,
+    });
     caseData = await store.get(id, { type: 'json' });
   } catch (e) {
     return { statusCode: 500, body: `Error: ${e.message}` };
