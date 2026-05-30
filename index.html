@@ -48,10 +48,17 @@ body {
   font-family: 'Montserrat', sans-serif;
   font-weight: 300;
   overflow-x: hidden;
-  scroll-snap-type: y mandatory;
   cursor: default;
   max-width: 430px;
   margin: 0 auto;
+}
+
+#snap-root {
+  height: 100dvh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  overscroll-behavior-y: contain;
 }
 
 ::-webkit-scrollbar { width: 4px; }
@@ -858,6 +865,9 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
 <!-- NAV -->
 <main>
 
+<!-- SNAP ROOT -->
+<div id="snap-root">
+
 <!-- HERO -->
 <section id="hero">
   <div class="hero-bg"></div>
@@ -1114,6 +1124,8 @@ footer span, footer a { color: var(--gold); text-decoration: none; }
 
   </div>
 </section>
+
+</div><!-- /snap-root -->
 
 <footer>
   <p>Зв'язок з консерваторією: <span><a href="mailto:av89930@gmail.com">Надіслати ворона (Email)</a></span></p>
@@ -2230,7 +2242,7 @@ function wizardRender() {
       </div>`;
   }
 
-  body.scrollTop = 0;
+  document.getElementById('snap-root').scrollTop = 0;
 }
 
 function wizardSelectDealer(id)   { _wiz.dealer = id;   _wiz.step = 2; wizardRender(); }
@@ -2262,7 +2274,7 @@ function wizardPreviewColor(value, code, colorName, fabricNameStr, type, article
         onmouseleave="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'"
         onclick="_wiz.step=4;wizardRender()">← НАЗАД ДО КОЛЬОРІВ</button>
     </div>`;
-  body.scrollTop = 0;
+  document.getElementById('snap-root').scrollTop = 0;
 }
 
 function wizardSelectColor(value, code, colorName, fabricNameStr, type, article) {
