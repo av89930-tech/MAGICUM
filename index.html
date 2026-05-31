@@ -1589,6 +1589,7 @@ function handleUpload(type, input) {
         } catch(e){ _ritualFabricColor='#7b2fbe'; }
       }; _ci.src = full;
     }
+    setTimeout(() => document.getElementById('workspace').scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
   };
   reader.readAsDataURL(file);
 }
@@ -2327,6 +2328,7 @@ function wizardSelectColor(value, code, colorName, fabricNameStr, type, article)
   document.querySelectorAll('.catalog-item').forEach(i => i.classList.remove('selected'));
   closeModal('modalFabricWizard');
   setStatus(`✦ ${fullName}`, 'var(--gold-light)');
+  setTimeout(() => document.getElementById('workspace').scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
 }
 
 
