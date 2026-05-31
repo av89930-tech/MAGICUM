@@ -2658,12 +2658,19 @@ function closeOdinLightboxOutside(e) {
 
 function downloadOdinLb() {
   const img = document.getElementById('odinLbImg');
-  const a = document.createElement('a');
-  a.href = img.src;
   const n = (parseInt(localStorage.getItem('mgc_dl_count') || '0', 10)) + 1;
   localStorage.setItem('mgc_dl_count', String(n));
-  a.download = n === 1 ? 'magicum-visualization.jpg' : `magicum-visualization${n}.jpg`;
-  a.click();
+  const filename = n === 1 ? 'magicum-visualization.jpg' : `magicum-visualization${n}.jpg`;
+  fetch(img.src)
+    .then(r => r.blob())
+    .then(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    });
 }
 </script>
 
